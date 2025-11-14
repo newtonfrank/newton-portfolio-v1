@@ -1,0 +1,50 @@
+Newton Frank F
+Tumkur, Karnataka, India. | newtonfrank@outlook.in | +91 80735 42843 | LinkedIn: /in/newtonfrank | GitHub: /newtonfrank
+Education:
+Sri Siddhartha School of Engineering (SSSE), Tumakuru 2021-25 | CGPA: 7.75 / 10
+BE, Computer Science.
+Data Structures & Algorithms, Database Management Systems, Cloud Computing, System Design, Artificial Intelligence, Natural
+Language Processing.
+Experience:
+Frontend Developer Intern - Feb 2025 - June 2025, Onsite
+Smartchakra Private Limited
+• Engineered a comprehensive Industrial IoT (IIoT) dashboard for real-time monitoring, historical analysis, and predictive
+maintenance of industrial machinery.
+• Implemented a live data visualization module displaying high-frequency sensor streams (vibration, temperature, audio) with
+a 10-second auto-refresh for immediate operational insight.
+• Architected the platform's core features, including an advanced analytics dashboard, a multi-machine fleet overview, and
+full CRUD functionality for system settings and alert management.
+• Designed and developed an intuitive UI that presented complex data through performance metric gauges, historical
+overlays, and enabling eﬀicient diagnostics for the maintenance team.
+Frontend Developer Intern - May 2023 - Jul 2023, Remote
+Scyara Group Private Limited
+• Engineered and launched responsive, high-performance web applications using a modern tech stack of React.js and Tailwind
+CSS, serving as the primary front-end developer for client projects.
+• Architected and implemented a component-based design system in React, standardizing UI elements and streamlining the
+development process, which reduced future implementation time by 25%.
+• Designed and developed the core front-end features for multiple websites, ensuring robust cross-browser compatibility and
+a seamless, mobile-first user experience across all devices.
+• Enhanced website visibility and organic search rankings by integrating SEO best practices, including semantic HTML
+structure, strategic keyword optimization in meta tags and content, and generating XML sitemaps.
+Projects:
+Unipix – Unified Free Stock Image Search Engine - unipix-newton.vercel.app
+• Developed a web application that aggregates free stock images from Pexels, Unsplash, and Pixabay APIs, eliminating
+the need for users to visit multiple platforms.
+• Implemented keyword-based search to fetch and display images dynamically, with redirection to the original source for
+downloads.
+• Focused on scalability by avoiding image storage and leveraging API-driven integration, reducing sever overhead.
+Secure Healthcare Data Sharing with Blockchain
+• Developed decentralized application using Ethereum and Solidity for secure healthcare data sharing
+• Implemented role-based access control through smart contracts for patients and healthcare providers
+• Built React-based frontend with Web3.js integration for seamless user interactions
+Skills:
+Languages: JavaScript, Python, C, C++
+Web Development: React.js, Node.js, Express, REST APIs, MongoDB, MySQL
+Cloud & DevOps: AWS (EC2, S3), Docker, CI/CD
+Blockchain: Ethereum, Solidity, Web3.js
+Testing & Tools: Selenium, React Testing Library, Git/GitHub
+Design: Figma, Photoshop, Illustrator, Adobe XD
+Achievements:
+• Founded and led the Programming Club, increasing student hackathon participation by 50%.
+• Mentored 10+ juniors in web development, resulting in higher placement readiness.
+• Recognized for strong teamwork and adaptability during internships and collaborative projects.
