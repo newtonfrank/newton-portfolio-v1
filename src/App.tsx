@@ -27,7 +27,8 @@ function App() {
       title: 'Unipix – Unified Free Stock Image Search Engine',
       description: 'Developed a web application that aggregates free stock images from Pexels, Unsplash, and Pixabay APIs, eliminating the need for users to visit multiple platforms. Implemented keyword-based search to fetch and display images dynamically, with redirection to the original source for downloads.',
       tags: ['React.js', 'API Integration', 'UI/UX Design'],
-      imageUrl: '/unipix-screenshot.png'
+      imageUrl: '/unipix-screenshot.png',
+      url: 'https://unipix-newton.vercel.app/'
     },
     {
       title: 'Secure Healthcare Data Sharing with Blockchain',
@@ -39,7 +40,8 @@ function App() {
       title: 'Industrial IoT (IIoT) Dashboard',
       description: 'Engineered a comprehensive IIoT dashboard for real-time monitoring, historical analysis, and predictive maintenance of industrial machinery. Implemented a live data visualization module displaying high-frequency sensor streams with a 10-second auto-refresh for immediate operational insight.',
       tags: ['React.js', 'Data Visualization', 'Real-time Systems'],
-      imageUrl: '/Industrial IoT (IIoT) Dashboard screenshot.png'
+      imageUrl: '/Industrial IoT (IIoT) Dashboard screenshot.png',
+      url: 'https://www.sonicscape.co/'
     },
     {
       title: 'Component-Based Design System',
@@ -467,7 +469,9 @@ function App() {
                     ))}
                   </div>
                   <motion.a
-                    href="#"
+                    href={project.url || "#"}
+                    target={project.url ? "_blank" : undefined}
+                    rel={project.url ? "noopener noreferrer" : undefined}
                     className="inline-flex items-center gap-2 text-yellow-500 hover:text-yellow-400 transition-colors"
                     whileHover={{ x: 5 }}
                   >
