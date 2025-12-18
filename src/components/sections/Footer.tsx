@@ -7,7 +7,7 @@ import React from "react";
 
 export const Footer = () => {
     return (
-        <section className="relative h-[40vh] bg-black flex flex-col justify-center items-center pb-10">
+        <section className="relative h-[50vh] bg-black flex flex-col justify-center items-center py-20">
             <div className="absolute inset-0 bg-gradient-to-t from-black to-neutral-950 z-0 pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
@@ -32,20 +32,22 @@ export const Footer = () => {
             <div className="relative z-10 flex justify-center">
                 <Dock className="mb-0 bg-neutral-900 border-neutral-800">
                     <DockIcon onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <Home className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
+                        <div className="p-3 cursor-pointer">
+                            <Home className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
+                        </div>
                     </DockIcon>
                     <DockIcon>
-                        <Link href="https://github.com/newtonfrank" target="_blank">
+                        <Link href="https://github.com/newtonfrank" target="_blank" className="p-3">
                             <Github className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>
                     <DockIcon>
-                        <Link href="https://linkedin.com/in/newtonfrank" target="_blank">
+                        <Link href="https://linkedin.com/in/newtonfrank" target="_blank" className="p-3">
                             <Linkedin className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>
                     <DockIcon>
-                        <Link href="mailto:newtonfrank@outlook.in">
+                        <Link href="mailto:newtonfrank@outlook.in" className="p-3">
                             <Mail className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>

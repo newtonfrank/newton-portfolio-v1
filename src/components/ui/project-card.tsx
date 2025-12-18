@@ -22,7 +22,7 @@ export const ProjectCard = ({
 }: ProjectCardProps) => {
     return (
         <CardContainer className="inter-var group/card w-full">
-            <CardBody className="bg-neutral-900 border-neutral-800 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl p-6 border transition-all duration-300 hover:border-white/20">
+            <CardBody className="bg-neutral-900 border-neutral-800 relative group/card dark:hover:shadow-2xl dark:hover:shadow-indigo-500/30 dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl p-6 border transition-all duration-300 hover:border-white/40">
                 <div className="relative w-full h-60 mb-6 overflow-hidden rounded-lg border border-white/5">
                     <CardItem translateZ="50" className="w-full h-full">
                         <Image

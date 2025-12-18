@@ -47,39 +47,39 @@ export const Skills = () => {
             >
                 <div className="flex h-full w-full flex-col items-stretch justify-between gap-10">
                     <div className="flex flex-row items-center justify-between">
-                        <div className="flex flex-col items-center gap-2">
-                            <Circle ref={div1Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
-                                <User className="text-white w-8 h-8" />
+                        <div className="flex flex-col items-center gap-3">
+                            <Circle ref={div1Ref} className="border-neutral-500 bg-neutral-900 w-24 h-24">
+                                <User className="text-white w-10 h-10" />
                             </Circle>
-                            <span className="text-sm font-medium text-neutral-400">User</span>
+                            <span className="text-base font-medium text-neutral-300">User</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2">
-                            <Circle ref={div5Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
-                                <Database className="text-white w-8 h-8" />
+                        <div className="flex flex-col items-center gap-3">
+                            <Circle ref={div5Ref} className="border-neutral-500 bg-neutral-900 w-24 h-24">
+                                <Database className="text-white w-10 h-10" />
                             </Circle>
-                            <span className="text-sm font-medium text-neutral-200">Database</span>
+                            <span className="text-base font-medium text-neutral-200">Database</span>
                         </div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
-                        <div className="flex flex-col items-center gap-2">
-                            <Circle ref={div2Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
-                                <Code className="text-white w-8 h-8" />
+                        <div className="flex flex-col items-center gap-3">
+                            <Circle ref={div2Ref} className="border-neutral-500 bg-neutral-900 w-24 h-24">
+                                <Code className="text-white w-10 h-10" />
                             </Circle>
-                            <span className="text-sm font-medium text-neutral-200">Frontend (Next.js)</span>
+                            <span className="text-base font-medium text-neutral-200">Frontend (Next.js)</span>
                         </div>
-                        <div className="flex flex-col items-center gap-2">
-                            <Circle ref={div4Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
-                                <Server className="text-white w-8 h-8" />
+                        <div className="flex flex-col items-center gap-3">
+                            <Circle ref={div4Ref} className="border-neutral-500 bg-neutral-900 w-24 h-24">
+                                <Server className="text-white w-10 h-10" />
                             </Circle>
-                            <span className="text-sm font-medium text-neutral-200">Backend API</span>
+                            <span className="text-base font-medium text-neutral-200">Backend API</span>
                         </div>
                     </div>
                     <div className="flex flex-row items-center justify-center">
-                        <div className="flex flex-col items-center gap-2">
-                            <Circle ref={div3Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
-                                <Globe className="text-white w-8 h-8" />
+                        <div className="flex flex-col items-center gap-3">
+                            <Circle ref={div3Ref} className="border-neutral-500 bg-neutral-900 w-24 h-24">
+                                <Globe className="text-white w-10 h-10" />
                             </Circle>
-                            <span className="text-sm font-medium text-neutral-200">Edge Network</span>
+                            <span className="text-base font-medium text-neutral-200">Edge Network</span>
                         </div>
                     </div>
                 </div>

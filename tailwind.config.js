@@ -6,6 +6,10 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
+      fontFamily: {
+        sacramento: ["var(--font-sacramento)", "cursive"],
+        sans: ["var(--font-inter)", "sans-serif"],
+      },
       animation: {
         aurora: "aurora 60s linear infinite",
       },
