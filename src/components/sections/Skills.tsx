@@ -47,25 +47,40 @@ export const Skills = () => {
             >
                 <div className="flex h-full w-full flex-col items-stretch justify-between gap-10">
                     <div className="flex flex-row items-center justify-between">
-                        <Circle ref={div1Ref} className="border-neutral-700">
-                            <User className="text-white" />
-                        </Circle>
-                        <Circle ref={div5Ref} className="border-neutral-700">
-                            <Database className="text-white" />
-                        </Circle>
+                        <div className="flex flex-col items-center gap-2">
+                            <Circle ref={div1Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
+                                <User className="text-white w-8 h-8" />
+                            </Circle>
+                            <span className="text-sm font-medium text-neutral-400">User</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <Circle ref={div5Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
+                                <Database className="text-white w-8 h-8" />
+                            </Circle>
+                            <span className="text-sm font-medium text-neutral-200">Database</span>
+                        </div>
                     </div>
                     <div className="flex flex-row items-center justify-between">
-                        <Circle ref={div2Ref} className="border-neutral-700">
-                            <Code className="text-white" />
-                        </Circle>
-                        <Circle ref={div4Ref} className="border-neutral-700">
-                            <Server className="text-white" />
-                        </Circle>
+                        <div className="flex flex-col items-center gap-2">
+                            <Circle ref={div2Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
+                                <Code className="text-white w-8 h-8" />
+                            </Circle>
+                            <span className="text-sm font-medium text-neutral-200">Frontend (Next.js)</span>
+                        </div>
+                        <div className="flex flex-col items-center gap-2">
+                            <Circle ref={div4Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
+                                <Server className="text-white w-8 h-8" />
+                            </Circle>
+                            <span className="text-sm font-medium text-neutral-200">Backend API</span>
+                        </div>
                     </div>
                     <div className="flex flex-row items-center justify-center">
-                        <Circle ref={div3Ref} className="border-neutral-700">
-                            <Globe className="text-white" />
-                        </Circle>
+                        <div className="flex flex-col items-center gap-2">
+                            <Circle ref={div3Ref} className="border-neutral-500 bg-neutral-900 w-20 h-20">
+                                <Globe className="text-white w-8 h-8" />
+                            </Circle>
+                            <span className="text-sm font-medium text-neutral-200">Edge Network</span>
+                        </div>
                     </div>
                 </div>
 
@@ -75,36 +90,44 @@ export const Skills = () => {
                     fromRef={div1Ref}
                     toRef={div2Ref}
                     curvature={20}
-                    pathColor="#333"
-                    gradientStartColor="#0066FF"
-                    gradientStopColor="#00B2FF"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#3b82f6"
+                    gradientStopColor="#60a5fa"
+                    duration={3}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
                     fromRef={div2Ref}
                     toRef={div3Ref}
                     curvature={20}
-                    pathColor="#333"
-                    gradientStartColor="#00B2FF"
-                    gradientStopColor="#00FF99"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#60a5fa"
+                    gradientStopColor="#34d399"
+                    duration={3}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
                     fromRef={div3Ref}
                     toRef={div4Ref}
                     curvature={20}
-                    pathColor="#333"
-                    gradientStartColor="#00FF99"
-                    gradientStopColor="#FF0055"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#34d399"
+                    gradientStopColor="#f472b6"
+                    duration={3}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
                     fromRef={div4Ref}
                     toRef={div5Ref}
                     curvature={20}
-                    pathColor="#333"
-                    gradientStartColor="#FF0055"
-                    gradientStopColor="#FFCC00"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#f472b6"
+                    gradientStopColor="#fbbf24"
+                    duration={3}
                 />
 
                 {/* Reverse Beams for response */}
@@ -114,9 +137,11 @@ export const Skills = () => {
                     toRef={div4Ref}
                     curvature={-20}
                     reverse
-                    pathColor="#333"
-                    gradientStartColor="#FFCC00"
-                    gradientStopColor="#FF0055"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#fbbf24"
+                    gradientStopColor="#f472b6"
+                    duration={4}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
@@ -124,9 +149,11 @@ export const Skills = () => {
                     toRef={div3Ref}
                     curvature={-20}
                     reverse
-                    pathColor="#333"
-                    gradientStartColor="#FF0055"
-                    gradientStopColor="#00FF99"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#f472b6"
+                    gradientStopColor="#34d399"
+                    duration={4}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
@@ -134,9 +161,11 @@ export const Skills = () => {
                     toRef={div2Ref}
                     curvature={-20}
                     reverse
-                    pathColor="#333"
-                    gradientStartColor="#00FF99"
-                    gradientStopColor="#00B2FF"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#34d399"
+                    gradientStopColor="#60a5fa"
+                    duration={4}
                 />
                 <AnimatedBeam
                     containerRef={containerRef}
@@ -144,9 +173,11 @@ export const Skills = () => {
                     toRef={div1Ref}
                     curvature={-20}
                     reverse
-                    pathColor="#333"
-                    gradientStartColor="#00B2FF"
-                    gradientStopColor="#0066FF"
+                    pathColor="#404040"
+                    pathWidth={4}
+                    gradientStartColor="#60a5fa"
+                    gradientStopColor="#3b82f6"
+                    duration={4}
                 />
             </div>
         </section>

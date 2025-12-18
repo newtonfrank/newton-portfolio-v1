@@ -7,31 +7,46 @@ import React from "react";
 
 export const Footer = () => {
     return (
-        <section className="relative h-[20vh] bg-black flex flex-col justify-end pb-10">
-            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-0 pointer-events-none" />
+        <section className="relative h-[40vh] bg-black flex flex-col justify-center items-center pb-10">
+            <div className="absolute inset-0 bg-gradient-to-t from-black to-neutral-950 z-0 pointer-events-none" />
 
-            <div className="text-center text-neutral-500 mb-8 text-sm relative z-10">
+            <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4">
+                <h2 className="text-5xl md:text-9xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-600 mb-8">
+                    Let&apos;s Talk.
+                </h2>
+                <p className="text-neutral-400 max-w-lg mb-10 text-lg">
+                    Have a project in mind? Let’s build something amazing together.
+                </p>
+                <Link
+                    href="mailto:newtonfrank@outlook.in"
+                    className="px-8 py-4 rounded-full bg-white text-black font-medium hover:bg-neutral-200 transition-colors mb-16"
+                >
+                    Get in touch
+                </Link>
+            </div>
+
+            <div className="text-center text-neutral-600 mb-8 text-sm relative z-10">
                 © {new Date().getFullYear()} Newton Frank F. Crafted with Next.js & Magic UI.
             </div>
 
             <div className="relative z-10 flex justify-center">
-                <Dock className="mb-0">
+                <Dock className="mb-0 bg-neutral-900 border-neutral-800">
                     <DockIcon onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                        <Home className="h-6 w-6 text-neutral-500 hover:text-white transition-colors" />
+                        <Home className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                     </DockIcon>
                     <DockIcon>
                         <Link href="https://github.com/newtonfrank" target="_blank">
-                            <Github className="h-6 w-6 text-neutral-500 hover:text-white transition-colors" />
+                            <Github className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>
                     <DockIcon>
                         <Link href="https://linkedin.com/in/newtonfrank" target="_blank">
-                            <Linkedin className="h-6 w-6 text-neutral-500 hover:text-white transition-colors" />
+                            <Linkedin className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>
                     <DockIcon>
                         <Link href="mailto:newtonfrank@outlook.in">
-                            <Mail className="h-6 w-6 text-neutral-500 hover:text-white transition-colors" />
+                            <Mail className="h-8 w-8 text-neutral-400 hover:text-white transition-colors" />
                         </Link>
                     </DockIcon>
                 </Dock>

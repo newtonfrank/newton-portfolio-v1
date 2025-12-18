@@ -1,12 +1,14 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { CustomCursor } from '@/components/ui/custom-cursor';
+import { GrainOverlay } from '@/components/ui/grain-overlay';
+import { SmoothScroll } from '@/components/ui/smooth-scroll';
 
-// Actually, standard usage for lenis is usually a client component wrapper. 
-// Let's create a Client Layout wrapper or just import it if it's a client component.
-// @studio-freight/react-lenis is a client component usually.
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'Newton Portfolio',
+  title: 'Newton Portfolio | Full Stack Developer & Designer',
   description: 'Portfolio of Newton Frank F - Creative Developer & Designer',
   icons: {
     icon: '/favicon.png',
@@ -20,8 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-black text-white antialiased">
-        {children}
+      <body className={`${inter.variable} font-sans bg-black text-white antialiased selection:bg-white selection:text-black cursor-none`}>
+        <SmoothScroll>
+          <CustomCursor />
+          <GrainOverlay />
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );

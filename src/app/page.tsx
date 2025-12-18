@@ -1,5 +1,6 @@
-import { HeroParallaxSection } from "@/components/sections/HeroParallaxSection";
+import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
+import { Process } from "@/components/sections/Process";
 import { Projects } from "@/components/sections/Projects";
 import { Skills } from "@/components/sections/Skills";
 import { Footer } from "@/components/sections/Footer";
@@ -7,8 +8,9 @@ import { Footer } from "@/components/sections/Footer";
 export default function Home() {
     return (
         <main className="bg-black min-h-screen">
-            <HeroParallaxSection />
+            <Hero />
             <About />
+            <Process />
             <Projects />
             <Skills />
             <Footer />
