@@ -71,7 +71,7 @@ export const IconCloud = ({ iconSlugs }: { iconSlugs: string[] }) => {
                         height="42"
                         width="42"
                         alt={slug}
-                        src={`https://cdn.simpleicons.org/${slug}/${slug === "github" || slug === "nextdotjs" || slug === "vercel" ? "white" : ""}`}
+                        src={`https://cdn.simpleicons.org/${slug}${slug === "github" || slug === "nextdotjs" || slug === "vercel" ? "/white" : ""}`}
                     />
                 </a>
             ))}

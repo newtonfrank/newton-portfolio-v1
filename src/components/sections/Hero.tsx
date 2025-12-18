@@ -1,13 +1,20 @@
 "use client";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+import { DotPattern } from "@/components/ui/dot-pattern";
 import { MagneticButton } from "@/components/ui/magnetic-button";
-import { TextRevealByWord } from "@/components/ui/text-reveal";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Hero = () => {
     return (
-        <AuroraBackground className="bg-black text-white">
+        <div className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-black text-white">
+            <DotPattern
+                className={cn(
+                    "[mask-image:radial-gradient(400px_circle_at_center,white,transparent)]",
+                    "opacity-50"
+                )}
+            />
+
             <motion.div
                 initial={{ opacity: 0.0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -16,7 +23,7 @@ export const Hero = () => {
                     duration: 0.8,
                     ease: "easeInOut",
                 }}
-                className="relative flex flex-col gap-4 items-center justify-center px-4"
+                className="relative z-10 flex flex-col gap-4 items-center justify-center px-4"
             >
                 <div className="text-3xl md:text-7xl font-bold dark:text-white text-center">
                     Creative Developer <br /> & Designer
@@ -32,6 +39,6 @@ export const Hero = () => {
                     </a>
                 </MagneticButton>
             </motion.div>
-        </AuroraBackground>
+        </div>
     );
 };

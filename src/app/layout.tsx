@@ -1,6 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { SmoothScroll } from "@/components/ui/smooth-scroll";
+
 // Actually, standard usage for lenis is usually a client component wrapper. 
 // Let's create a Client Layout wrapper or just import it if it's a client component.
 // @studio-freight/react-lenis is a client component usually.
@@ -21,9 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="bg-black text-white antialiased">
-        <SmoothScroll>
-          {children}
-        </SmoothScroll>
+        {children}
       </body>
     </html>
   );
