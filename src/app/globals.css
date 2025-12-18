@@ -3,6 +3,15 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    cursor: none !important;
+  }
+
+  input,
+  textarea,
+  select {
+    cursor: text !important;
+  }
 
   /* Lenis recommended styles */
   html.lenis,

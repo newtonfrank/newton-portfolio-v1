@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { CustomCursor } from '@/components/ui/custom-cursor';
+import { SmoothCursor } from '@/components/ui/smooth-cursor';
 import { GrainOverlay } from '@/components/ui/grain-overlay';
 import { SmoothScroll } from '@/components/ui/smooth-scroll';
 
@@ -24,7 +24,7 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`${inter.variable} font-sans bg-black text-white antialiased selection:bg-white selection:text-black cursor-none`}>
         <SmoothScroll>
-          <CustomCursor />
+          <SmoothCursor />
           <GrainOverlay />
           {children}
         </SmoothScroll>
