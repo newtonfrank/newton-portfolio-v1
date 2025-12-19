@@ -1,19 +1,21 @@
-import { Hero } from "@/components/sections/Hero";
-import { About } from "@/components/sections/About";
-import { Process } from "@/components/sections/Process";
-import { Projects } from "@/components/sections/Projects";
-import { Skills } from "@/components/sections/Skills";
+import { TerminalHero } from "@/components/sections/TerminalHero";
+import { OperatorProfile } from "@/components/sections/OperatorProfile";
+import { ExecutionProtocol } from "@/components/sections/ExecutionProtocol";
+import { HoloDeck } from "@/components/sections/HoloDeck";
+import { TechConstellation } from "@/components/sections/TechConstellation";
 import { Footer } from "@/components/sections/Footer";
 
 export default function Home() {
     return (
-        <main className="bg-black min-h-screen">
-            <Hero />
-            <About />
-            <Process />
-            <Projects />
-            <Skills />
+        <main className="bg-transparent min-h-screen">
+            <TerminalHero />
+            <OperatorProfile />
+            <ExecutionProtocol />
+            <HoloDeck />
+            <TechConstellation />
             <Footer />
         </main>
     );
 }
+
+

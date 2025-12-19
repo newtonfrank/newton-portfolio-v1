@@ -1,81 +1,51 @@
 "use client";
+
 import React from "react";
-import { motion } from "motion/react";
-import { ArrowRight } from "lucide-react";
-import Link from "next/link";
-import RotatingText from "@/components/ui/rotating-text";
+import { motion } from "framer-motion";
 
 export const Hero = () => {
     return (
-        <section id="home" className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden bg-black px-4">
-            {/* Background Gradient */}
-            <div className="absolute inset-0 bg-gradient-to-b from-neutral-900/20 via-black to-black pointer-events-none" />
+        <section className="h-screen flex flex-col justify-center px-4 md:px-20 bg-transparent text-white relative overflow-hidden">
 
-            {/* Subtle Spotlight/Glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-white/5 blur-[120px] rounded-full pointer-events-none" />
-
-            <div className="relative z-10 max-w-4xl mx-auto text-center">
+            <div className="max-w-7xl w-full z-10">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, ease: "easeOut" }}
-                    className="flex flex-col items-center gap-6"
                 >
-                    {/* Tagline */}
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 mb-8">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-sm font-medium text-neutral-300 tracking-wide">Code. Design. Deploy.</span>
-                    </div>
-
-                    {/* Main Title */}
-                    <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white leading-tight mb-8 flex flex-col md:flex-row items-center gap-3 md:gap-4 justify-center">
-                        <span>Creative</span>
-                        <RotatingText
-                            texts={['Developer', 'Designer']}
-                            mainClassName="px-3 sm:px-4 md:px-5 bg-white text-black overflow-hidden py-1 sm:py-2 md:py-3 justify-center rounded-xl"
-                            staggerFrom={"last"}
-                            initial={{ y: "100%" }}
-                            animate={{ y: 0 }}
-                            exit={{ y: "-120%" }}
-                            staggerDuration={0.025}
-                            splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-                            transition={{ type: "spring", damping: 30, stiffness: 400 }}
-                            rotationInterval={4000}
-                        />
-                    </h1>
-
-                    {/* Description */}
-                    <p className="max-w-xl text-lg md:text-xl text-neutral-300 leading-relaxed">
-                        Crafting modern, minimal, and pixel-perfect digital experiences.
-                        Bridging the gap between engineering and design.
-                    </p>
-
-                    {/* Actions */}
-                    <div className="flex flex-col md:flex-row gap-4 mt-8">
-                        <Link
-                            href="mailto:newtonfrank@outlook.in"
-                            className="px-8 py-4 rounded-xl bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-colors flex items-center gap-2"
-                        >
-                            Hire Me
-                        </Link>
-                        <Link
-                            href="#projects"
-                            className="px-8 py-4 rounded-xl border border-white/20 bg-white/5 text-white font-medium text-sm hover:bg-white/10 transition-colors flex items-center gap-2"
-                        >
-                            View Work <ArrowRight size={16} />
-                        </Link>
-                    </div>
+                    <h2 className="text-xl md:text-2xl font-mono text-neutral-400 mb-6 tracking-widest">
+                        NEWTON PORTFOLIO
+                    </h2>
                 </motion.div>
+
+                <motion.h1
+                    initial={{ opacity: 0, y: 40 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                    className="text-6xl md:text-[8vw] font-bold leading-[0.9] tracking-tighter mb-10 mix-blend-difference"
+                >
+                    CREATIVE<br />
+                    DEVELOPER
+                </motion.h1>
+
+                <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+                    className="max-w-2xl text-lg md:text-2xl text-neutral-400 leading-relaxed"
+                >
+                    Building digital experiences with a focus on motion, interaction, and performance.
+                    Merging technical precision with visual excellence.
+                </motion.p>
             </div>
 
-            {/* Simplified Footer/Scroll Indicator */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 text-neutral-500 text-sm"
+                className="absolute bottom-10 left-4 md:left-20 text-xs font-mono text-neutral-600"
             >
-                Scroll to explore
+                SCROLL TO EXPLORE
             </motion.div>
         </section>
     );

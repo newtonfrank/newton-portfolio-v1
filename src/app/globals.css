@@ -13,6 +13,65 @@
     cursor: text !important;
   }
 
+  /* DOOM MODE EASTER EGG */
+  html.doom-mode {
+    filter: sepia(100%) hue-rotate(-50deg) saturate(300%) contrast(1.2);
+    animation: screenshake 0.5s infinite;
+  }
+
+  html.doom-mode .crt-overlay {
+    background: linear-gradient(rgba(255, 0, 0, 0.2) 50%, rgba(255, 0, 0, 0.1) 50%, rgba(255, 0, 0, 0.1));
+    background-size: 100% 4px;
+  }
+
+  @keyframes screenshake {
+    0% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+
+    25% {
+      transform: translate(2px, 2px) rotate(1deg);
+    }
+
+    50% {
+      transform: translate(-2px, -2px) rotate(-1deg);
+    }
+
+    75% {
+      transform: translate(0, 2px) rotate(0deg);
+    }
+
+    100% {
+      transform: translate(0, 0) rotate(0deg);
+    }
+  }
+
+  /* Custom Selection */
+  ::selection {
+    background: #06b6d4;
+    /* cyan-500 */
+    color: #000;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #050505;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #222;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #06b6d4;
+  }
+
   /* Lenis recommended styles */
   html.lenis,
   html.lenis body {
@@ -98,5 +157,34 @@
     animation: noise .2s infinite;
     opacity: .9;
     visibility: visible;
+  }
+
+  /* CRT Overlay */
+  .crt-overlay {
+    background: linear-gradient(to bottom,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0) 50%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.1));
+    background-size: 100% 4px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  .vignette {
+    background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 9998;
   }
 }
