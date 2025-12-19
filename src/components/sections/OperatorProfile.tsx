@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { MapPin, Code2, Briefcase, Calendar, Cpu, Zap, Shield, Terminal } from "lucide-react";
 import { GitHubActivity } from "@/components/ui/GitHubActivity";
@@ -49,10 +50,14 @@ export const OperatorProfile = () => {
 
                                 {/* Profile container */}
                                 <div className={`relative w-40 h-40 md:w-56 md:h-56 rounded-full border-2 border-cyan-500/50 overflow-hidden ${isGlitching ? 'animate-pulse' : ''}`}>
-                                    {/* Placeholder for profile image */}
-                                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/50 to-blue-900/50 flex items-center justify-center">
-                                        <Terminal className="w-16 h-16 md:w-24 md:h-24 text-cyan-500/50" />
-                                    </div>
+                                    {/* Profile Image */}
+                                    <Image
+                                        src="/newton-profile.jpg"
+                                        alt="Newton Frank"
+                                        fill
+                                        className="object-cover"
+                                        priority
+                                    />
 
                                     {/* Glitch effect overlay */}
                                     {isGlitching && (
