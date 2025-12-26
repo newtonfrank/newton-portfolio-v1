@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ExternalLink, Github, CheckCircle, Cpu } from "lucide-react";
 import Link from "next/link";
@@ -24,9 +25,28 @@ interface SystemDrawerProps {
 }
 
 export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) => {
-    if (!project) return null;
+    const [mounted, setMounted] = useState(false);
 
-    return (
+    useEffect(() => {
+        setMounted(true);
+        return () => setMounted(false);
+    }, []);
+
+    // Lock body scroll when drawer is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [isOpen]);
+
+    if (!project || !mounted) return null;
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <>
@@ -45,10 +65,10 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 30, stiffness: 300 }}
-                        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-lg bg-black/95 backdrop-blur-md border-l-2 border-cyan-500/50 shadow-[0_0_60px_rgba(0,255,255,0.2)] overflow-y-auto"
+                        className="fixed right-0 top-0 bottom-0 z-50 w-full max-w-md bg-black/95 backdrop-blur-md border-l-2 border-cyan-500/50 shadow-[0_0_60px_rgba(0,255,255,0.2)] flex flex-col h-[100dvh]"
                     >
                         {/* Header */}
-                        <div className="sticky top-0 bg-black/90 backdrop-blur-md border-b border-white/10 p-6 flex items-center justify-between z-10">
+                        <div className="flex-none bg-black/90 backdrop-blur-md border-b border-white/10 p-6 flex items-center justify-between z-10">
                             <div>
                                 <div className="flex items-center gap-3 mb-1">
                                     <Cpu className="w-5 h-5 text-cyan-500" />
@@ -69,10 +89,10 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                             </button>
                         </div>
 
-                        {/* Body */}
-                        <div className="p-6 space-y-8">
+                        {/* Body - Scrollable Area */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-8 min-h-0 overscroll-contain">
                             {/* Project Image */}
-                            <div className="relative aspect-video rounded-lg overflow-hidden border border-white/10">
+                            <div className="relative aspect-video rounded-lg overflow-hidden border border-white/10 flex-none">
                                 <div
                                     className="absolute inset-0 bg-cover bg-center"
                                     style={{ backgroundImage: `url(${project.image})` }}
@@ -86,7 +106,7 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                                     <span className="w-2 h-px bg-cyan-500" />
                                     MISSION_REPORT
                                 </h3>
-                                <p className="text-sm md:text-base text-neutral-300 leading-relaxed">
+                                <p className="text-sm md:text-base text-neutral-300 leading-relaxed whitespace-pre-wrap">
                                     {project.mission || project.desc}
                                 </p>
                             </div>
@@ -110,7 +130,7 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                             </div>
 
                             {/* Specifications */}
-                            <div>
+                            <div className="pb-4">
                                 <h3 className="text-xs font-mono text-cyan-500 mb-3 flex items-center gap-2">
                                     <span className="w-2 h-px bg-cyan-500" />
                                     SPECIFICATIONS
@@ -129,7 +149,7 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                         </div>
 
                         {/* Footer Actions */}
-                        <div className="sticky bottom-0 bg-black/90 backdrop-blur-md border-t border-white/10 p-6 flex gap-4">
+                        <div className="flex-none bg-black/90 backdrop-blur-md border-t border-white/10 p-6 flex gap-4 z-10">
                             {project.github && (
                                 <Link
                                     href={project.github}
@@ -152,6 +172,7 @@ export const SystemDrawer = ({ project, isOpen, onClose }: SystemDrawerProps) =>
                     </motion.div>
                 </>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };

@@ -11,6 +11,7 @@ interface ProjectCardProps {
     image: string;
     link: string;
     tags?: string[];
+    tagline?: string;
 }
 
 export const ProjectCard = ({
@@ -19,6 +20,7 @@ export const ProjectCard = ({
     image,
     link,
     tags = [],
+    tagline,
 }: ProjectCardProps) => {
     return (
         <CardContainer className="inter-var group/card w-full">
@@ -59,10 +61,20 @@ export const ProjectCard = ({
                         </CardItem>
                     </div>
 
+                    {tagline && (
+                        <CardItem
+                            as="p"
+                            translateZ="55"
+                            className="text-cyan-500 text-sm font-mono mt-1"
+                        >
+                            {tagline}
+                        </CardItem>
+                    )}
+
                     <CardItem
                         as="p"
                         translateZ="50"
-                        className="text-neutral-400 text-sm mt-2 leading-relaxed line-clamp-2"
+                        className="text-neutral-400 text-sm mt-2 leading-relaxed"
                     >
                         {description}
                     </CardItem>
@@ -91,6 +103,6 @@ export const ProjectCard = ({
                     </div>
                 </div>
             </CardBody>
-        </CardContainer>
+        </CardContainer >
     );
 };

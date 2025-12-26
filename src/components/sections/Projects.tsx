@@ -4,6 +4,14 @@ import { ProjectCard } from "@/components/ui/project-card";
 export const Projects = () => {
     const projects = [
         {
+            title: "Bitnote",
+            tagline: "The Ultimate Ecosystem for Modern Learners.",
+            description: "Your Studies, Your AI, Your Community—All in One Place.\n\nBitNote is the comprehensive edutech platform designed to bridge the gap between resources and results. From accessing peer-shared notes and project guides to mastering complex topics with our interactive AI Tutor, BitNote centralizes your academic journey. Stay ahead with real-time university updates and global education news, all while building your knowledge base.",
+            image: "/bitnote-261225.png",
+            link: "#",
+            tags: ["Next.js", "Strapi", "TypeScript", "Tailwind"]
+        },
+        {
             title: "Unipix",
             description: "Unified Free Stock Image Search Engine using Pexels, Unsplash, and Pixabay APIs. Optimizes search results through a unified interface.",
             image: "/unipix-screenshot.png",
@@ -30,6 +38,7 @@ export const Projects = () => {
                         <ProjectCard
                             key={idx}
                             title={project.title}
+                            tagline={(project as any).tagline}
                             description={project.description}
                             image={project.image}
                             link={project.link}

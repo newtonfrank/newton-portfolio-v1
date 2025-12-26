@@ -9,6 +9,16 @@ import { SystemDrawer } from "@/components/ui/SystemDrawer";
 
 const projects = [
     {
+        title: "Bitnote",
+        desc: "The Ultimate Ecosystem for Modern Learners.",
+        mission: "Your Studies, Your AI, Your Community—All in One Place.\n\nBitNote is the comprehensive edutech platform designed to bridge the gap between resources and results. From accessing peer-shared notes and project guides to mastering complex topics with our interactive AI Tutor, BitNote centralizes your academic journey. Stay ahead with real-time university updates and global education news, all while building your knowledge base.",
+        image: "/bitnote-261225.png",
+        videoSrc: "",
+        tech: ["Next.js", "Strapi", "TypeScript", "Tailwind"],
+        link: "https://app.bitnote.in",
+        status: "BETA"
+    },
+    {
         title: "UNIPIX",
         desc: "Unified Free Stock Image Search Engine. Aggregates Pexels, Unsplash, Pixabay.",
         image: "/unipix-screenshot.png",
@@ -19,7 +29,7 @@ const projects = [
     {
         title: "IIOT_DASH",
         desc: "Industrial IoT Dashboard. Real-time predictive maintenance via WebSockets.",
-        image: "/Industrial IoT (IIoT) Dashboard screenshot.png",
+        image: "IIoT-Dashboard.png",
         videoSrc: "",
         tech: ["WebSockets", "D3.js", "IoT"],
         link: "https://www.sonicscape.co/"
@@ -108,6 +118,7 @@ const ProjectCartridge = ({ project, onQuickLook, isMobile }: { project: any, on
     return (
         <motion.div
             ref={ref}
+            onClick={() => onQuickLook(project)}
             onMouseMove={handleMouseMove}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
@@ -181,7 +192,6 @@ const ProjectCartridge = ({ project, onQuickLook, isMobile }: { project: any, on
 
             <div className={`absolute top-4 right-4 flex gap-2 z-30 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`} style={{ transform: isMobile ? "none" : "translateZ(60px)" }}>
                 <button
-                    onClick={(e) => { e.stopPropagation(); onQuickLook(project); }}
                     className="p-2 bg-black/80 rounded-full border border-white/20 hover:text-cyan-400 hover:border-cyan-400 transition-colors"
                 >
                     <Eye className="w-4 h-4" />
