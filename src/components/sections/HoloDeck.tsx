@@ -15,7 +15,7 @@ const projects = [
         image: "/bitnote-261225.png",
         videoSrc: "",
         tech: ["Next.js", "Strapi", "TypeScript", "Tailwind"],
-        link: "https://app.bitnote.in",
+        link: "https://bitnote.in",
         status: "BETA"
     },
     {
