@@ -1,11 +1,38 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, memo } from "react";
 import { Command } from "cmdk";
-import { Search, Home, Code, Cpu, Monitor, Sun, Moon, Laptop, Mail, Copy, Check, Download, Linkedin } from "lucide-react";
+import { Search, Home, Code, Cpu, Monitor, Sun, Moon, Mail, Check, Download, Linkedin } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export const CommandPalette = () => {
+// Memoized Command Item Component
+const CommandItem = memo(({
+    onSelect,
+    children,
+    className,
+    icon: Icon,
+    label,
+    shortcut
+}: {
+    onSelect: () => void;
+    children: React.ReactNode;
+    className?: string;
+    icon?: React.ElementType;
+    label: string;
+    shortcut?: string;
+}) => (
+    <Command.Item
+        onSelect={onSelect}
+        className={`flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all ${className || ''}`}
+    >
+        {Icon && <Icon className="w-4 h-4 mr-3 opacity-70" />}
+        <span>{children}</span>
+        {shortcut && <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">{shortcut}</span>}
+    </Command.Item>
+));
+CommandItem.displayName = 'CommandItem';
+
+export const CommandPalette = memo(() => {
     const [open, setOpen] = useState(false);
     const [emailCopied, setEmailCopied] = useState(false);
 
@@ -21,25 +48,52 @@ export const CommandPalette = () => {
         return () => document.removeEventListener("keydown", down);
     }, []);
 
-    const run = (action: () => void) => {
+    const run = useCallback((action: () => void) => {
         setOpen(false);
         action();
-    };
+    }, []);
 
-    const copyEmail = () => {
+    const copyEmail = useCallback(() => {
         navigator.clipboard.writeText("newton@example.com"); // Replace with actual email
         setEmailCopied(true);
         setTimeout(() => setEmailCopied(false), 2000);
         setOpen(false);
-    };
+    }, []);
 
-    const switchTheme = (theme: 'dark' | 'light' | 'system') => {
+    const switchTheme = useCallback((theme: 'dark' | 'light' | 'system') => {
         // Implementation for theme switching
         // For now, this mimics the action as requested in the "Task"
         console.log(`Switching theme to ${theme}`);
         // In a real app with next-themes: setTheme(theme)
         setOpen(false);
-    };
+    }, []);
+
+    const scrollToTop = useCallback(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
+
+    const scrollToProjects = useCallback(() => {
+        document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+    }, []);
+
+    const scrollToSkills = useCallback(() => {
+        document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" });
+    }, []);
+
+    const openGithub = useCallback(() => {
+        window.open('https://github.com/newton', '_blank');
+    }, []);
+
+    const openLinkedIn = useCallback(() => {
+        window.open('https://linkedin.com/in/newton', '_blank');
+    }, []);
+
+    const downloadResume = useCallback(() => {
+        const link = document.createElement('a');
+        link.href = '/Newton_Resume.pdf';
+        link.download = 'Newton_Resume.pdf';
+        link.click();
+    }, []);
 
     return (
         <>
@@ -91,88 +145,86 @@ export const CommandPalette = () => {
                                     <Command.Empty className="p-4 text-center text-neutral-500 text-sm">NO MATCHING COMMANDS FOUND.</Command.Empty>
 
                                     <Command.Group heading="NAVIGATION" className="text-[10px] text-neutral-500 font-bold mb-2 px-2 tracking-widest mt-2">
-                                        <Command.Item
-                                            onSelect={() => run(() => window.scrollTo({ top: 0, behavior: "smooth" }))}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                        <CommandItem
+                                            onSelect={() => run(scrollToTop)}
+                                            icon={Home}
+                                            label="System Root"
+                                            shortcut="HOME"
                                         >
-                                            <Home className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>System Root</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">HOME</span>
-                                        </Command.Item>
-                                        <Command.Item
-                                            onSelect={() => run(() => document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" }))}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            System Root
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => run(scrollToProjects)}
+                                            icon={Monitor}
+                                            label="Access Holographic Deck"
+                                            shortcut="PROJ"
                                         >
-                                            <Monitor className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Access Holographic Deck</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">PROJ</span>
-                                        </Command.Item>
-                                        <Command.Item
-                                            onSelect={() => run(() => document.getElementById("skills")?.scrollIntoView({ behavior: "smooth" }))}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            Access Holographic Deck
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => run(scrollToSkills)}
+                                            icon={Cpu}
+                                            label="Tech Constellation"
+                                            shortcut="TECH"
                                         >
-                                            <Cpu className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Tech Constellation</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">TECH</span>
-                                        </Command.Item>
+                                            Tech Constellation
+                                        </CommandItem>
                                     </Command.Group>
 
                                     <div className="h-px bg-white/5 my-2 mx-2" />
 
                                     <Command.Group heading="SYSTEM ACTIONS" className="text-[10px] text-neutral-500 font-bold mb-2 px-2 tracking-widest">
-                                        <Command.Item
+                                        <CommandItem
                                             onSelect={copyEmail}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            icon={emailCopied ? Check : Mail}
+                                            label={emailCopied ? "Email Address Copied" : "Copy Secure Email"}
+                                            className={emailCopied ? "text-green-500" : ""}
                                         >
-                                            {emailCopied ? <Check className="w-4 h-4 mr-3 text-green-500" /> : <Mail className="w-4 h-4 mr-3 opacity-70" />}
-                                            <span>{emailCopied ? "Email Address Copied" : "Copy Secure Email"}</span>
-                                            <div className="ml-auto flex items-center gap-2">
-                                                <span className="text-[10px] opacity-30 hidden group-hover:block">newton@example.com</span>
-                                                <span className="text-[10px] opacity-30 border border-white/10 px-1 rounded">CPY</span>
-                                            </div>
-                                        </Command.Item>
-                                        <Command.Item
-                                            onSelect={() => run(() => window.open('https://github.com/newton', '_blank'))}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            {emailCopied ? "Email Address Copied" : "Copy Secure Email"}
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => run(openGithub)}
+                                            icon={Code}
+                                            label="Access Source Code"
+                                            shortcut="GIT"
                                         >
-                                            <Code className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Access Source Code</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">GIT</span>
-                                        </Command.Item>
-                                        <Command.Item
-                                            onSelect={() => run(() => window.open('https://linkedin.com/in/newton', '_blank'))}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            Access Source Code
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => run(openLinkedIn)}
+                                            icon={Linkedin}
+                                            label="Open LinkedIn Profile"
+                                            shortcut="LI"
                                         >
-                                            <Linkedin className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Open LinkedIn Profile</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">LI</span>
-                                        </Command.Item>
-                                        <Command.Item
-                                            onSelect={() => run(() => {
-                                                const link = document.createElement('a');
-                                                link.href = '/Newton_Resume.pdf';
-                                                link.download = 'Newton_Resume.pdf';
-                                                link.click();
-                                            })}
-                                            className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all"
+                                            Open LinkedIn Profile
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => run(downloadResume)}
+                                            icon={Download}
+                                            label="Download Resume"
+                                            shortcut="PDF"
                                         >
-                                            <Download className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Download Resume</span>
-                                            <span className="ml-auto text-[10px] opacity-30 border border-white/10 px-1 rounded">PDF</span>
-                                        </Command.Item>
+                                            Download Resume
+                                        </CommandItem>
                                     </Command.Group>
 
                                     <div className="h-px bg-white/5 my-2 mx-2" />
 
                                     <Command.Group heading="INTERFACE THEME" className="text-[10px] text-neutral-500 font-bold mb-2 px-2 tracking-widest">
-                                        <Command.Item onSelect={() => switchTheme('dark')} className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all">
-                                            <Moon className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Dark Mode</span>
-                                        </Command.Item>
-                                        <Command.Item onSelect={() => switchTheme('light')} className="flex items-center px-3 py-2 text-sm text-neutral-300 rounded hover:bg-white/5 aria-selected:bg-white/10 aria-selected:text-cyan-400 aria-selected:border-l-2 aria-selected:border-cyan-500 cursor-pointer transition-all">
-                                            <Sun className="w-4 h-4 mr-3 opacity-70" />
-                                            <span>Light Mode</span>
-                                        </Command.Item>
+                                        <CommandItem
+                                            onSelect={() => switchTheme('dark')}
+                                            icon={Moon}
+                                            label="Dark Mode"
+                                        >
+                                            Dark Mode
+                                        </CommandItem>
+                                        <CommandItem
+                                            onSelect={() => switchTheme('light')}
+                                            icon={Sun}
+                                            label="Light Mode"
+                                        >
+                                            Light Mode
+                                        </CommandItem>
                                     </Command.Group>
                                 </Command.List>
                             </Command>
@@ -182,5 +234,6 @@ export const CommandPalette = () => {
             </AnimatePresence>
         </>
     );
-};
+});
+CommandPalette.displayName = 'CommandPalette';
 

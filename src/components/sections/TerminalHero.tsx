@@ -1,22 +1,34 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Code, Cpu } from "lucide-react";
+import React, { useState, useEffect, useRef, useCallback, memo } from "react";
+import { motion } from "framer-motion";
+import { Terminal } from "lucide-react";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 interface TerminalLine {
     type: "out" | "in";
-    content: React.ReactNode;
+    content: string | React.ReactNode;
 }
 
-export const TerminalHero = () => {
+// Memoized TerminalLine component
+const TerminalLineComponent = memo(({ line, index }: { line: TerminalLine; index: number }) => (
+    <div key={index} className={`flex ${line.type === "in" ? "text-white" : "text-green-500/90"}`}>
+        <span className="mr-2 opacity-50 shrink-0">
+            {line.type === "in" ? "root@newton:~$" : ">"}
+        </span>
+        <div className="break-all">{line.content}</div>
+    </div>
+));
+TerminalLineComponent.displayName = 'TerminalLine';
+
+export const TerminalHero = memo(() => {
     const [history, setHistory] = useState<TerminalLine[]>([]);
     const [isBooting, setIsBooting] = useState(true);
     const [command, setCommand] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
     const bottomRef = useRef<HTMLDivElement>(null);
     const isMobile = useIsMobile();
+    const bootTimeouts = useRef<NodeJS.Timeout[]>([]);
 
     // Boot Sequence Data
     const bootSequence = [
@@ -28,18 +40,30 @@ export const TerminalHero = () => {
     ];
 
     useEffect(() => {
+        // Clear any existing timeouts on unmount
+        return () => {
+            bootTimeouts.current.forEach(timeout => clearTimeout(timeout));
+        };
+    }, []);
+
+    useEffect(() => {
         let delay = 0;
-        const initialLines: TerminalLine[] = [];
 
         bootSequence.forEach((line, index) => {
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setHistory(prev => [...prev, { type: "out", content: line }]);
                 if (index === bootSequence.length - 1) {
                     setTimeout(() => setIsBooting(false), 800);
                 }
             }, delay);
+            bootTimeouts.current.push(timeout);
             delay += 500 + Math.random() * 500;
         });
+
+        // Cleanup timeouts
+        return () => {
+            bootTimeouts.current.forEach(timeout => clearTimeout(timeout));
+        };
     }, []);
 
     // Auto-scroll to bottom within terminal only (not the page)
@@ -55,26 +79,23 @@ export const TerminalHero = () => {
         if (!isBooting) {
             inputRef.current?.focus();
         }
-    }, [isBooting, history]);
+    }, [isBooting]);
 
-    const handleCommand = (e: React.FormEvent) => {
+    const handleCommand = useCallback((e: React.FormEvent) => {
         e.preventDefault();
         const cmd = command.trim().toLowerCase();
 
-        // Add input to history
-        const newHistory: TerminalLine[] = [...history, { type: "in", content: command }];
-
         // Process command
-        let output: React.ReactNode = "";
+        let output: string | React.ReactNode = "";
 
         // Helper for scrolling with error handling
-        const scrollToSection = (sectionId: string, sectionName: string): React.ReactNode => {
+        const scrollToSection = (sectionId: string, sectionName: string): string => {
             const element = document.getElementById(sectionId);
             if (element) {
                 element.scrollIntoView({ behavior: "smooth" });
                 return `Navigating to [${sectionName}] sector...`;
             } else {
-                return <span className="text-red-400">ERROR: TARGET_NOT_FOUND - Section '{sectionId}' not available</span>;
+                return "ERROR: TARGET_NOT_FOUND - Section '{sectionId}' not available";
             }
         };
 
@@ -119,22 +140,25 @@ export const TerminalHero = () => {
                 output = <span className="text-red-400">Command not found: '{cmd}'. Type 'help' for list.</span>;
         }
 
-        if (output) {
-            newHistory.push({ type: "out", content: output });
-        }
-
-        setHistory(newHistory);
+        // Add input to history and output if exists
+        setHistory(prev => {
+            const newHistory = [...prev, { type: "in", content: command as string | React.ReactNode }];
+            if (output) {
+                newHistory.push({ type: "out", content: output });
+            }
+            return newHistory as TerminalLine[];
+        });
         setCommand("");
-    };
+    }, [command]);
 
     // Handle input change with haptic feedback
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         setCommand(e.target.value);
         // Haptic feedback on mobile (subtle vibration)
         if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
             navigator.vibrate(3);
         }
-    };
+    }, []);
 
     return (
         <section className="min-h-screen flex flex-col justify-center items-center px-4 relative overflow-hidden font-mono z-10 w-full pt-20">
@@ -164,12 +188,7 @@ export const TerminalHero = () => {
                     {/* History */}
                     <div className="space-y-1">
                         {history.map((line, i) => (
-                            <div key={i} className={`flex ${line.type === "in" ? "text-white" : "text-green-500/90"}`}>
-                                <span className="mr-2 opacity-50 shrink-0">
-                                    {line.type === "in" ? "root@newton:~$" : ">"}
-                                </span>
-                                <div className="break-all">{line.content}</div>
-                            </div>
+                            <TerminalLineComponent key={`${i}-${line.type}`} line={line} index={i} />
                         ))}
                     </div>
 
@@ -209,5 +228,6 @@ export const TerminalHero = () => {
             </motion.div>
         </section>
     );
-};
+});
+TerminalHero.displayName = 'TerminalHero';
 

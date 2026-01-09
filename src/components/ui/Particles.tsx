@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { Renderer, Camera, Geometry, Program, Mesh } from 'ogl';
 
 interface ParticlesProps {
@@ -40,7 +40,7 @@ const vertex = /* glsl */ `
   attribute vec3 position;
   attribute vec4 random;
   attribute vec3 color;
-  
+
   uniform mat4 modelMatrix;
   uniform mat4 viewMatrix;
   uniform mat4 projectionMatrix;
@@ -48,23 +48,23 @@ const vertex = /* glsl */ `
   uniform float uSpread;
   uniform float uBaseSize;
   uniform float uSizeRandomness;
-  
+
   varying vec4 vRandom;
   varying vec3 vColor;
-  
+
   void main() {
     vRandom = random;
     vColor = color;
-    
+
     vec3 pos = position * uSpread;
     pos.z *= 10.0;
-    
+
     vec4 mPos = modelMatrix * vec4(pos, 1.0);
     float t = uTime;
     mPos.x += sin(t * random.z + 6.28 * random.w) * mix(0.1, 1.5, random.x);
     mPos.y += sin(t * random.y + 6.28 * random.x) * mix(0.1, 1.5, random.w);
     mPos.z += sin(t * random.w + 6.28 * random.y) * mix(0.1, 1.5, random.z);
-    
+
     vec4 mvPos = viewMatrix * mPos;
 
     if (uSizeRandomness == 0.0) {
@@ -72,24 +72,23 @@ const vertex = /* glsl */ `
     } else {
       gl_PointSize = (uBaseSize * (1.0 + uSizeRandomness * (random.x - 0.5))) / length(mvPos.xyz);
     }
-    
-    gl_Position = projectionMatrix * mvPos;
+
     gl_Position = projectionMatrix * mvPos;
   }
 `;
 
 const fragment = /* glsl */ `
   precision highp float;
-  
+
   uniform float uTime;
   uniform float uAlphaParticles;
   varying vec4 vRandom;
   varying vec3 vColor;
-  
+
   void main() {
     vec2 uv = gl_PointCoord.xy;
     float d = length(uv - vec2(0.5));
-    
+
     if(uAlphaParticles < 0.5) {
       if(d > 0.5) {
         discard;
@@ -102,7 +101,7 @@ const fragment = /* glsl */ `
   }
 `;
 
-const Particles: React.FC<ParticlesProps> = ({
+const Particles: React.FC<ParticlesProps> = React.memo(({
     particleCount = 200,
     particleSpread = 10,
     speed = 0.1,
@@ -119,40 +118,72 @@ const Particles: React.FC<ParticlesProps> = ({
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const mouseRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+    const animationFrameIdRef = useRef<number>(0);
+    const rendererRef = useRef<Renderer | null>(null);
+    const particlesRef = useRef<Mesh | null>(null);
+    const cameraRef = useRef<Camera | null>(null);
+
+    // Memoized resize handler
+    const handleResize = useCallback(() => {
+        if (!containerRef.current || !rendererRef.current) return;
+
+        const container = containerRef.current;
+        const renderer = rendererRef.current;
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        renderer.setSize(width, height);
+
+        // Use the stored camera reference
+        if (cameraRef.current) {
+            cameraRef.current.perspective({
+                aspect: width / height
+            });
+        }
+    }, []);
+
+    // Memoized mouse move handler
+    const handleMouseMove = useCallback((e: MouseEvent) => {
+        if (!containerRef.current) return;
+
+        const rect = containerRef.current.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+        const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
+        mouseRef.current = { x, y };
+    }, []);
 
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
 
-        const renderer = new Renderer({ dpr: pixelRatio, depth: false, alpha: true });
+        // Initialize renderer
+        const renderer = new Renderer({
+            dpr: Math.min(pixelRatio, 2), // Cap pixel ratio to prevent performance issues
+            depth: false,
+            alpha: true
+        });
+        rendererRef.current = renderer;
+
         const gl = renderer.gl;
         container.appendChild(gl.canvas);
         gl.clearColor(0, 0, 0, 0);
 
+        // Initialize camera
         const camera = new Camera(gl, { fov: 15 });
         camera.position.set(0, 0, cameraDistance);
+        cameraRef.current = camera;
 
-        const resize = () => {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            renderer.setSize(width, height);
-            camera.perspective({ aspect: gl.canvas.width / gl.canvas.height });
-        };
-        window.addEventListener('resize', resize, false);
-        resize();
+        // Setup resize handler
+        handleResize();
+        window.addEventListener('resize', handleResize, false);
 
-        const handleMouseMove = (e: MouseEvent) => {
-            const rect = container.getBoundingClientRect();
-            const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -(((e.clientY - rect.top) / rect.height) * 2 - 1);
-            mouseRef.current = { x, y };
-        };
-
+        // Setup mouse move handler if needed
         if (moveParticlesOnHover) {
             container.addEventListener('mousemove', handleMouseMove);
         }
 
-        const count = particleCount;
+        // Generate particle data
+        const count = Math.min(particleCount, 500); // Cap particle count for performance
         const positions = new Float32Array(count * 3);
         const randoms = new Float32Array(count * 4);
         const colors = new Float32Array(count * 3);
@@ -173,6 +204,7 @@ const Particles: React.FC<ParticlesProps> = ({
             colors.set(col, i * 3);
         }
 
+        // Create geometry and program
         const geometry = new Geometry(gl, {
             position: { size: 3, data: positions },
             random: { size: 4, data: randoms },
@@ -185,7 +217,7 @@ const Particles: React.FC<ParticlesProps> = ({
             uniforms: {
                 uTime: { value: 0 },
                 uSpread: { value: particleSpread },
-                uBaseSize: { value: particleBaseSize * pixelRatio },
+                uBaseSize: { value: particleBaseSize * Math.min(pixelRatio, 2) },
                 uSizeRandomness: { value: sizeRandomness },
                 uAlphaParticles: { value: alphaParticles ? 1 : 0 }
             },
@@ -193,14 +225,16 @@ const Particles: React.FC<ParticlesProps> = ({
             depthTest: false
         });
 
+        // Create mesh
         const particles = new Mesh(gl, { mode: gl.POINTS, geometry, program });
+        particlesRef.current = particles;
 
-        let animationFrameId: number;
+        // Animation loop
         let lastTime = performance.now();
         let elapsed = 0;
 
         const update = (t: number) => {
-            animationFrameId = requestAnimationFrame(update);
+            animationFrameIdRef.current = requestAnimationFrame(update);
             const delta = t - lastTime;
             lastTime = t;
             elapsed += delta * speed;
@@ -224,19 +258,24 @@ const Particles: React.FC<ParticlesProps> = ({
             renderer.render({ scene: particles, camera });
         };
 
-        animationFrameId = requestAnimationFrame(update);
+        animationFrameIdRef.current = requestAnimationFrame(update);
 
         return () => {
-            window.removeEventListener('resize', resize);
+            window.removeEventListener('resize', handleResize);
             if (moveParticlesOnHover) {
                 container.removeEventListener('mousemove', handleMouseMove);
             }
-            cancelAnimationFrame(animationFrameId);
+
+            cancelAnimationFrame(animationFrameIdRef.current);
+
             if (container.contains(gl.canvas)) {
                 container.removeChild(gl.canvas);
             }
+
+            // Clean up references
+            rendererRef.current = null;
+            particlesRef.current = null;
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         particleCount,
         particleSpread,
@@ -248,10 +287,12 @@ const Particles: React.FC<ParticlesProps> = ({
         sizeRandomness,
         cameraDistance,
         disableRotation,
-        pixelRatio
+        pixelRatio,
+        handleResize,
+        handleMouseMove
     ]);
 
     return <div ref={containerRef} className={`relative w-full h-full ${className}`} />;
-};
+});
 
 export default Particles;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, memo, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useTechStore } from "@/store/useTechStore";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -36,7 +36,7 @@ const nodes = [
     { id: "eth", label: "Ethereum", x: 90, y: 40, type: "web3" }
 ];
 
-const connections = [
+const connections: readonly [string, string][] = [
     // Core Cluster
     ["react", "next"],
     ["react", "ts"],
@@ -87,8 +87,92 @@ const typeColors: Record<string, string> = {
     web3: "bg-violet-500 text-white border-violet-400",
 };
 
+// Memoized Connection Component
+const Connection = memo(({ connection, isNodeHighlighted, localHover, highlightedTechs }: {
+    connection: readonly [string, string];
+    isNodeHighlighted: (label: string) => boolean;
+    localHover: string | null;
+    highlightedTechs: string[];
+}) => {
+    const [a, b] = connection;
+    const nodeA = nodes.find(n => n.id === a);
+    const nodeB = nodes.find(n => n.id === b);
+
+    if (!nodeA || !nodeB) return null;
+
+    const dimmedDueToFilter = highlightedTechs.length > 0;
+    const relevantToHighlight = dimmedDueToFilter && (isNodeHighlighted(nodeA.label) || isNodeHighlighted(nodeB.label));
+    const isConnectedLocal = localHover && (localHover === a || localHover === b);
+    const isRelevant = isConnectedLocal || relevantToHighlight;
+
+    return (
+        <motion.line
+            key={`${a}-${b}`}
+            x1={`${nodeA.x}%`}
+            y1={`${nodeA.y}%`}
+            x2={`${nodeB.x}%`}
+            y2={`${nodeB.y}%`}
+            stroke="cyan"
+            strokeWidth={1}
+            initial={{ strokeOpacity: 0.1, strokeWidth: 1 }}
+            animate={{
+                strokeOpacity: isRelevant ? 0.6 : 0.05,
+                strokeWidth: isRelevant ? 2 : 1
+            }}
+            transition={{ duration: 0.3 }}
+        />
+    );
+});
+Connection.displayName = 'Connection';
+
+// Memoized Node Component
+const Node = memo(({ node, isNodeHighlighted, handleNodeHover, handleNodeLeave, localHover, highlightedTechs }: {
+    node: typeof nodes[0];
+    isNodeHighlighted: (label: string) => boolean;
+    handleNodeHover: (node: typeof nodes[0]) => void;
+    handleNodeLeave: () => void;
+    localHover: string | null;
+    highlightedTechs: string[];
+}) => {
+    const isHovered = localHover === node.id;
+    const isExternalHighlight = isNodeHighlighted(node.label);
+    const somethingIsHighlighted = highlightedTechs.length > 0;
+    const isActive = isHovered || isExternalHighlight;
+    const isDimmed = somethingIsHighlighted && !isActive;
+
+    return (
+        <motion.div
+            key={node.id}
+            className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
+            style={{ left: `${node.x}%`, top: `${node.y}%` }}
+            onHoverStart={() => handleNodeHover(node)}
+            onHoverEnd={handleNodeLeave}
+            animate={{
+                scale: isActive ? 1.2 : 1,
+                opacity: isDimmed ? 0.2 : 1,
+                y: isActive ? 0 : [0, -10, 0]
+            }}
+            transition={{
+                y: { repeat: Infinity, duration: 3 + Math.random() * 2, ease: "easeInOut" },
+                default: { duration: 0.3 }
+            }}
+        >
+            <div className={`
+                px-4 py-2 rounded-full border backdrop-blur-md font-mono text-sm transition-colors duration-300
+                ${isActive
+                    ? "bg-cyan-500 text-black border-cyan-400 font-bold shadow-[0_0_20px_rgba(0,255,255,0.5)] z-20"
+                    : "bg-black/50 text-neutral-500 border-white/10 hover:border-white/30"
+                }
+            `}>
+                {node.label}
+            </div>
+        </motion.div>
+    );
+});
+Node.displayName = 'Node';
+
 // Mobile Skill Cloud Component
-const SkillCloud = () => {
+const SkillCloud = memo(() => {
     return (
         <div className="flex flex-wrap gap-3 justify-center max-w-2xl mx-auto px-4">
             {nodes.map((node) => (
@@ -105,26 +189,27 @@ const SkillCloud = () => {
             ))}
         </div>
     );
-};
+});
+SkillCloud.displayName = 'SkillCloud';
 
-export const TechConstellation = () => {
+export const TechConstellation = memo(() => {
     const isMobile = useIsMobile();
     const { highlightedTechs, setHighlightedTechs, clearHighlight } = useTechStore();
     const [localHover, setLocalHover] = useState<string | null>(null);
 
-    const isNodeHighlighted = (nodeLabel: string) => {
+    const isNodeHighlighted = useCallback((nodeLabel: string) => {
         return highlightedTechs.includes(nodeLabel);
-    };
+    }, [highlightedTechs]);
 
-    const handleNodeHover = (node: typeof nodes[0]) => {
+    const handleNodeHover = useCallback((node: typeof nodes[0]) => {
         setLocalHover(node.id);
         setHighlightedTechs([node.label]);
-    };
+    }, [setHighlightedTechs]);
 
-    const handleNodeLeave = () => {
+    const handleNodeLeave = useCallback(() => {
         setLocalHover(null);
         clearHighlight();
-    };
+    }, [clearHighlight]);
 
     return (
         <section id="skills" className="min-h-screen bg-[#050505] relative flex flex-col items-center justify-center overflow-hidden py-20">
@@ -141,72 +226,31 @@ export const TechConstellation = () => {
             ) : (
                 <div className="relative w-full max-w-6xl aspect-square md:aspect-video">
                     <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-                        {connections.map(([a, b], i) => {
-                            const nodeA = nodes.find(n => n.id === a);
-                            const nodeB = nodes.find(n => n.id === b);
-                            if (!nodeA || !nodeB) return null;
-
-                            const dimmedDueToFilter = highlightedTechs.length > 0;
-                            const relevantToHighlight = dimmedDueToFilter && (isNodeHighlighted(nodeA.label) || isNodeHighlighted(nodeB.label));
-                            const isConnectedLocal = localHover && (localHover === a || localHover === b);
-                            const isRelevant = isConnectedLocal || relevantToHighlight;
-
+                        {connections.map((connection, index) => {
+                            const [a, b] = connection;
                             return (
-                                <motion.line
-                                    key={i}
-                                    x1={`${nodeA.x}%`}
-                                    y1={`${nodeA.y}%`}
-                                    x2={`${nodeB.x}%`}
-                                    y2={`${nodeB.y}%`}
-                                    stroke="cyan"
-                                    strokeWidth={1}
-                                    initial={{ strokeOpacity: 0.1, strokeWidth: 1 }}
-                                    animate={{
-                                        strokeOpacity: isRelevant ? 0.6 : 0.05,
-                                        strokeWidth: isRelevant ? 2 : 1
-                                    }}
-                                    transition={{ duration: 0.3 }}
+                                <Connection
+                                    key={`${a}-${b}`}
+                                    connection={connection}
+                                    isNodeHighlighted={isNodeHighlighted}
+                                    localHover={localHover}
+                                    highlightedTechs={highlightedTechs}
                                 />
                             );
                         })}
                     </svg>
 
-                    {nodes.map((node) => {
-                        const isHovered = localHover === node.id;
-                        const isExternalHighlight = isNodeHighlighted(node.label);
-                        const somethingIsHighlighted = highlightedTechs.length > 0;
-                        const isActive = isHovered || isExternalHighlight;
-                        const isDimmed = somethingIsHighlighted && !isActive;
-
-                        return (
-                            <motion.div
-                                key={node.id}
-                                className="absolute -translate-x-1/2 -translate-y-1/2 z-10 cursor-pointer"
-                                style={{ left: `${node.x}%`, top: `${node.y}%` }}
-                                onHoverStart={() => handleNodeHover(node)}
-                                onHoverEnd={handleNodeLeave}
-                                animate={{
-                                    scale: isActive ? 1.2 : 1,
-                                    opacity: isDimmed ? 0.2 : 1,
-                                    y: isActive ? 0 : [0, -10, 0]
-                                }}
-                                transition={{
-                                    y: { repeat: Infinity, duration: 3 + Math.random() * 2, ease: "easeInOut" },
-                                    default: { duration: 0.3 }
-                                }}
-                            >
-                                <div className={`
-                                    px-4 py-2 rounded-full border backdrop-blur-md font-mono text-sm transition-colors duration-300
-                                    ${isActive
-                                        ? "bg-cyan-500 text-black border-cyan-400 font-bold shadow-[0_0_20px_rgba(0,255,255,0.5)] z-20"
-                                        : "bg-black/50 text-neutral-500 border-white/10 hover:border-white/30"
-                                    }
-                                `}>
-                                    {node.label}
-                                </div>
-                            </motion.div>
-                        );
-                    })}
+                    {nodes.map((node) => (
+                        <Node
+                            key={node.id}
+                            node={node}
+                            isNodeHighlighted={isNodeHighlighted}
+                            handleNodeHover={handleNodeHover}
+                            handleNodeLeave={handleNodeLeave}
+                            localHover={localHover}
+                            highlightedTechs={highlightedTechs}
+                        />
+                    ))}
                 </div>
             )}
 
@@ -215,5 +259,6 @@ export const TechConstellation = () => {
             </div>
         </section>
     );
-};
+});
+TechConstellation.displayName = 'TechConstellation';
 

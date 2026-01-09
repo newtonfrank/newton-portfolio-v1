@@ -12,6 +12,7 @@ import { KonamiCode } from '@/components/ui/KonamiCode';
 import { ActiveSectorIndicator } from '@/components/ui/ActiveSectorIndicator';
 import { Analytics } from "@vercel/analytics/react";
 import StructuredData from '@/components/seo/StructuredData';
+import { PerformanceMonitor } from '@/components/ui/PerformanceMonitor';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jetbrainsMono = JetBrains_Mono({
@@ -119,6 +120,7 @@ export default function RootLayout({
           <SmoothCursor />
           <GrainOverlay />
           <SystemMonitor />
+          <PerformanceMonitor />
           <div className="crt-overlay" />
           <div className="vignette" />
           <div className="relative z-10">

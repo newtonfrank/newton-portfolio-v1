@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, memo } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { MapPin, Code2, Briefcase, Calendar, Cpu, Zap, Shield, Terminal } from "lucide-react";
@@ -15,7 +15,39 @@ const stats = [
     { label: "STATUS", value: "AVAILABLE", icon: Shield },
 ];
 
-export const OperatorProfile = () => {
+// Memoized Stat Item Component
+const StatItem = memo(({ stat, index }: { stat: typeof stats[0]; index: number }) => (
+    <motion.div
+        key={stat.label}
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: index * 0.1 }}
+        className="group"
+    >
+        <div className="flex items-center gap-2 mb-1">
+            <stat.icon className="w-3 h-3 text-cyan-500/70" />
+            <span className="text-[10px] md:text-xs font-mono text-neutral-500">{stat.label}</span>
+        </div>
+        <p className={`text-sm md:text-base font-mono ${stat.label === 'STATUS' ? 'text-green-400' : 'text-white'}`}>
+            {stat.value}
+        </p>
+    </motion.div>
+));
+StatItem.displayName = 'StatItem';
+
+// Memoized Tech Tag Component
+const TechTag = memo(({ tech }: { tech: string }) => (
+    <span
+        key={tech}
+        className="px-3 py-1 text-[10px] md:text-xs font-mono bg-white/5 border border-white/10 rounded-full text-neutral-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
+    >
+        {tech}
+    </span>
+));
+TechTag.displayName = 'TechTag';
+
+export const OperatorProfile = memo(() => {
     const [isGlitching, setIsGlitching] = useState(false);
 
     return (
@@ -57,6 +89,9 @@ export const OperatorProfile = () => {
                                         fill
                                         className="object-cover"
                                         priority
+                                        sizes="(max-width: 768px) 160px, (max-width: 1200px) 224px, 224px"
+                                        placeholder="blur"
+                                        blurDataURL="/newton-profile-blur.jpg"
                                     />
 
                                     {/* Glitch effect overlay */}
@@ -94,22 +129,7 @@ export const OperatorProfile = () => {
                             {/* Stats Grid */}
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 mb-8">
                                 {stats.map((stat, i) => (
-                                    <motion.div
-                                        key={stat.label}
-                                        initial={{ opacity: 0, y: 10 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: i * 0.1 }}
-                                        className="group"
-                                    >
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <stat.icon className="w-3 h-3 text-cyan-500/70" />
-                                            <span className="text-[10px] md:text-xs font-mono text-neutral-500">{stat.label}</span>
-                                        </div>
-                                        <p className={`text-sm md:text-base font-mono ${stat.label === 'STATUS' ? 'text-green-400' : 'text-white'}`}>
-                                            {stat.value}
-                                        </p>
-                                    </motion.div>
+                                    <StatItem key={stat.label} stat={stat} index={i} />
                                 ))}
                             </div>
 
@@ -125,12 +145,7 @@ export const OperatorProfile = () => {
                             {/* Tech Tags */}
                             <div className="flex flex-wrap gap-2 mt-6">
                                 {["React", "Next.js", "TypeScript", "Three.js", "Tailwind", "Node.js"].map((tech) => (
-                                    <span
-                                        key={tech}
-                                        className="px-3 py-1 text-[10px] md:text-xs font-mono bg-white/5 border border-white/10 rounded-full text-neutral-400 hover:text-cyan-400 hover:border-cyan-500/30 transition-colors"
-                                    >
-                                        {tech}
-                                    </span>
+                                    <TechTag key={tech} tech={tech} />
                                 ))}
                             </div>
                         </div>
@@ -148,4 +163,5 @@ export const OperatorProfile = () => {
             </div>
         </section>
     );
-};
+});
+OperatorProfile.displayName = 'OperatorProfile';
