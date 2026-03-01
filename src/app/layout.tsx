@@ -1,41 +1,37 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
-import { SmoothCursor } from '@/components/ui/smooth-cursor';
-import { GrainOverlay } from '@/components/ui/grain-overlay';
-import { SmoothScroll } from '@/components/ui/smooth-scroll';
-import { CommandPalette } from '@/components/ui/CommandPalette';
-import Particles from '@/components/ui/Particles';
-import { BootSequence } from '@/components/ui/BootSequence';
-import { SystemMonitor } from '@/components/ui/SystemMonitor';
-import { KonamiCode } from '@/components/ui/KonamiCode';
-import { ActiveSectorIndicator } from '@/components/ui/ActiveSectorIndicator';
+import { Inter, JetBrains_Mono, Outfit } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
 import StructuredData from '@/components/seo/StructuredData';
-import { PerformanceMonitor } from '@/components/ui/PerformanceMonitor';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono'
 });
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
 
 export const metadata: Metadata = {
   title: {
-    default: 'Newton Frank F | Frontend Developer',
-    template: '%s | Newton Frank F',
+    default: 'Newton Frank | The Nexus — Developer × Designer',
+    template: '%s | Newton Frank',
   },
-  description: 'Portfolio of Newton Frank F, a passionate Frontend Developer with expertise in React.js, Next.js, and modern web technologies.',
+  description: 'Portfolio of Newton Frank — a creative developer crafting experiences where gravity meets design. Explore projects at the intersection of code and creativity.',
   keywords: [
     'Frontend Developer',
+    'Creative Developer',
     'React Developer',
     'Next.js',
+    'Three.js',
     'TypeScript',
-    'Web Development',
     'UI/UX Design',
     'Newton Frank',
     'Portfolio',
-    'Software Engineer',
+    'The Nexus',
   ],
   authors: [{ name: 'Newton Frank F', url: 'https://github.com/newtonfrank' }],
   creator: 'Newton Frank F',
@@ -55,30 +51,24 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://newtonfrank.vercel.app',
-    title: 'Newton Frank F | Frontend Developer',
-    description: 'Portfolio of Newton Frank F, showcasing projects, skills, and experience in modern web development.',
-    siteName: 'Newton Frank Portfolio',
+    title: 'Newton Frank | The Nexus — Developer × Designer',
+    description: 'Portfolio of Newton Frank — crafting experiences where gravity meets design.',
+    siteName: 'Newton Frank — The Nexus',
     images: [
       {
-        url: '/_next/image?url=%2Fnewton-profile.jpg&w=1200&q=75', // Dynamically assumes Next.js optimization or using public path
+        url: '/newton-profile.jpg',
         width: 1200,
         height: 630,
-        alt: 'Newton Frank F - Frontend Developer',
-      },
-      {
-        url: '/newton-profile.jpg', // Fallback to raw public image
-        width: 800,
-        height: 600,
-        alt: 'Newton Frank F',
+        alt: 'Newton Frank — The Nexus Portfolio',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Newton Frank F | Frontend Developer',
-    description: 'High-performance web applications and modern UI design by Newton Frank F.',
+    title: 'Newton Frank | The Nexus',
+    description: 'Where gravity meets design — a portfolio exploring the spectrum between code and creativity.',
     images: ['/newton-profile.jpg'],
-    creator: '@newtonfrank', // Assuming handle based on others, or standard
+    creator: '@newtonfrank',
   },
   icons: {
     icon: '/favicon.png',
@@ -98,35 +88,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} font-sans bg-[#050505] text-white antialiased selection:bg-cyan-500/30 selection:text-cyan-100 cursor-none overflow-x-hidden`}>
-        <div className="fixed inset-0 z-0 pointer-events-none">
-          <Particles
-            particleColors={['#ffffff', '#ffffff']}
-            particleCount={200}
-            particleSpread={10}
-            speed={0.1}
-            particleBaseSize={100}
-            moveParticlesOnHover={true}
-            alphaParticles={false}
-            disableRotation={false}
-          />
+    <html lang="en" className="dark spectrum-nexus" suppressHydrationWarning>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased overflow-x-hidden`}>
+        {/* Subtle grain overlay */}
+        <div className="grain-overlay" />
+        <div className="vignette-overlay" />
+
+        {/* Main content */}
+        <div className="relative z-10">
+          {children}
         </div>
-        <BootSequence />
-        <KonamiCode />
-        <ActiveSectorIndicator />
-        <SmoothScroll>
-          <CommandPalette />
-          <SmoothCursor />
-          <GrainOverlay />
-          <SystemMonitor />
-          <PerformanceMonitor />
-          <div className="crt-overlay" />
-          <div className="vignette" />
-          <div className="relative z-10">
-            {children}
-          </div>
-        </SmoothScroll>
+
         <Analytics />
         <StructuredData />
       </body>

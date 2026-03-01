@@ -1,66 +1,94 @@
 "use client";
 
-import { Dock, DockIcon } from "@/components/ui/dock";
-import { Github, Linkedin, Mail, Home } from "lucide-react";
-import Link from "next/link";
 import React from "react";
-import { TransmissionForm } from "./TransmissionForm";
+import { motion } from "framer-motion";
+import { useSpectrum } from "@/store/useSpectrum";
+import { Github, Linkedin, Twitter, Mail, ArrowUp } from "lucide-react";
 
-export const Footer = () => {
+const socials = [
+    { icon: Github, href: "https://github.com/newtonfrank" },
+    { icon: Linkedin, href: "https://linkedin.com/in/newtonfrank" },
+    { icon: Twitter, href: "https://twitter.com/newtonfrank" },
+    { icon: Mail, href: "mailto:hi@newtonfrank.com" },
+];
+
+export function Footer() {
+    const mode = useSpectrum((s) => s.getMode());
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
     return (
-        <section id="contact" className="relative min-h-screen bg-black flex flex-col justify-center items-center py-20 md:py-32 px-4">
-            <div className="absolute inset-0 bg-gradient-to-t from-black to-neutral-950 z-0 pointer-events-none" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(0,255,255,0.03),transparent_50%)]" />
+        <footer className="relative py-16 border-t" style={{ borderColor: "var(--color-border)" }}>
+            <div className="section-container">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                    {/* Left: Branding */}
+                    <div className="text-center md:text-left">
+                        <h3
+                            className="text-lg font-bold mb-1"
+                            style={{
+                                color: "var(--color-accent)",
+                                fontFamily: mode === "dev" ? "var(--font-mono)" : "inherit",
+                            }}
+                        >
+                            {mode === "dev" ? "newton~$" : "Newton Frank"}
+                        </h3>
+                        <p className="text-xs" style={{ color: "var(--color-text-secondary)" }}>
+                            {mode === "dev"
+                                ? "// crafting the nexus between code & design"
+                                : "Where gravity meets design"}
+                        </p>
+                    </div>
 
-            <div className="relative z-10 w-full max-w-4xl">
-                {/* Section Header */}
-                <div className="text-center mb-12 md:mb-16">
-                    <h2 className="text-xs md:text-sm font-mono text-cyan-500 tracking-[0.3em] md:tracking-[0.5em] mb-4">COMMUNICATION_CHANNEL</h2>
-                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6">UPLINK</h1>
-                    <p className="text-neutral-400 max-w-lg mx-auto text-sm md:text-base">
-                        Have a project in mind? Initialize a transmission and let's build something extraordinary together.
+                    {/* Center: Social orbit */}
+                    <div className="flex items-center gap-4">
+                        {socials.map((social, i) => (
+                            <motion.a
+                                key={i}
+                                href={social.href}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="p-2 rounded-full transition-colors"
+                                style={{
+                                    color: "var(--color-text-secondary)",
+                                    border: "1px solid var(--color-border)",
+                                }}
+                                whileHover={{
+                                    scale: 1.1,
+                                    color: "var(--color-accent)",
+                                    borderColor: "var(--color-accent)",
+                                }}
+                            >
+                                <social.icon size={16} />
+                            </motion.a>
+                        ))}
+                    </div>
+
+                    {/* Right: Back to top */}
+                    <motion.button
+                        onClick={scrollToTop}
+                        className="flex items-center gap-2 text-xs transition-colors"
+                        style={{
+                            color: "var(--color-text-secondary)",
+                            fontFamily: mode === "dev" ? "var(--font-mono)" : "inherit",
+                        }}
+                        whileHover={{ color: "var(--color-accent)" }}
+                    >
+                        {mode === "dev" ? "scrollTo(0)" : "Back to top"}
+                        <ArrowUp size={14} />
+                    </motion.button>
+                </div>
+
+                {/* Bottom */}
+                <div className="mt-12 pt-6 border-t text-center" style={{ borderColor: "var(--color-border)" }}>
+                    <p className="text-[10px] uppercase tracking-[0.2em]" style={{ color: "var(--color-text-secondary)" }}>
+                        {mode === "dev"
+                            ? `© ${new Date().getFullYear()} // built with next.js + three.js + gravity`
+                            : `© ${new Date().getFullYear()} Newton Frank. Crafted with care.`}
                     </p>
                 </div>
-
-                {/* Contact Form */}
-                <TransmissionForm />
-
-                {/* Divider */}
-                <div className="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-16" />
-
-                {/* Social Links */}
-                <div className="flex justify-center mb-8">
-                    <Dock className="bg-neutral-900/50 border-neutral-800">
-                        <DockIcon onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                            <div className="p-3 cursor-pointer">
-                                <Home className="h-6 w-6 md:h-8 md:w-8 text-neutral-400 hover:text-white transition-colors" />
-                            </div>
-                        </DockIcon>
-                        <DockIcon>
-                            <Link href="https://github.com/newtonfrank" target="_blank" className="p-3">
-                                <Github className="h-6 w-6 md:h-8 md:w-8 text-neutral-400 hover:text-white transition-colors" />
-                            </Link>
-                        </DockIcon>
-                        <DockIcon>
-                            <Link href="https://linkedin.com/in/newtonfrank" target="_blank" className="p-3">
-                                <Linkedin className="h-6 w-6 md:h-8 md:w-8 text-neutral-400 hover:text-white transition-colors" />
-                            </Link>
-                        </DockIcon>
-                        <DockIcon>
-                            <Link href="mailto:newtonfrank@outlook.in" className="p-3">
-                                <Mail className="h-6 w-6 md:h-8 md:w-8 text-neutral-400 hover:text-white transition-colors" />
-                            </Link>
-                        </DockIcon>
-                    </Dock>
-                </div>
-
-                {/* Copyright */}
-                <div className="text-center text-neutral-600 text-xs md:text-sm font-mono">
-                    <span className="text-neutral-700">&gt;</span> © {new Date().getFullYear()} Newton Frank F.
-                    <span className="text-neutral-700 ml-2">// Built with Next.js & Motion</span>
-                </div>
             </div>
-        </section>
+        </footer>
     );
-};
-
+}

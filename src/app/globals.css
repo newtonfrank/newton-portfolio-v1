@@ -3,76 +3,66 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    cursor: none !important;
+  :root {
+    /* Spectrum-driven CSS variables (defaults = Nexus mode) */
+    --color-bg: #080808;
+    --color-bg-secondary: #0f0e0d;
+    --color-text: #f0f0f0;
+    --color-text-secondary: #a0a0a0;
+    --color-accent: #e07020;
+    --color-accent-alt: #a040e8;
+    --color-border: #2a2520;
+    --color-card-bg: #0d0d0d;
+    --color-surface: #131313;
+    --color-glow: #e07020;
+
+    --font-weight-heading: 500;
+    --letter-spacing-heading: 0.01em;
+    --border-radius: 8px;
   }
 
-  input,
-  textarea,
-  select {
-    cursor: text !important;
+  /* Font mode classes driven by useSpectrum */
+  .spectrum-dev {
+    --heading-font: var(--font-mono);
+    --body-font: var(--font-inter);
   }
 
-  /* DOOM MODE EASTER EGG */
-  html.doom-mode {
-    filter: sepia(100%) hue-rotate(-50deg) saturate(300%) contrast(1.2);
-    animation: screenshake 0.5s infinite;
+  .spectrum-design {
+    --heading-font: var(--font-outfit);
+    --body-font: var(--font-outfit);
   }
 
-  html.doom-mode .crt-overlay {
-    background: linear-gradient(rgba(255, 0, 0, 0.2) 50%, rgba(255, 0, 0, 0.1) 50%, rgba(255, 0, 0, 0.1));
-    background-size: 100% 4px;
+  .spectrum-nexus {
+    --heading-font: var(--font-inter);
+    --body-font: var(--font-inter);
   }
 
-  @keyframes screenshake {
-    0% {
-      transform: translate(0, 0) rotate(0deg);
-    }
-
-    25% {
-      transform: translate(2px, 2px) rotate(1deg);
-    }
-
-    50% {
-      transform: translate(-2px, -2px) rotate(-1deg);
-    }
-
-    75% {
-      transform: translate(0, 2px) rotate(0deg);
-    }
-
-    100% {
-      transform: translate(0, 0) rotate(0deg);
-    }
-  }
-
-  /* Custom Selection */
+  /* Selection */
   ::selection {
-    background: #06b6d4;
-    /* cyan-500 */
+    background: var(--color-accent);
     color: #000;
   }
 
-  /* Custom Scrollbar */
+  /* Scrollbar */
   ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #050505;
+    background: var(--color-bg);
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #222;
+    background: var(--color-border);
     border-radius: 3px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #06b6d4;
+    background: var(--color-accent);
   }
 
-  /* Lenis recommended styles */
+  /* Lenis */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -95,96 +85,135 @@
   }
 
   body {
-    @apply antialiased text-base leading-relaxed text-neutral-200 bg-neutral-950;
+    @apply antialiased text-base leading-relaxed;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
-  @keyframes noise {
-    0% {
-      transform: translate(0, 0);
+  /* Cursor hide on desktop */
+  @media (hover: hover) {
+    * {
+      cursor: none !important;
     }
 
-    10% {
-      transform: translate(-5%, -5%);
-    }
-
-    20% {
-      transform: translate(-10%, 5%);
-    }
-
-    30% {
-      transform: translate(5%, -10%);
-    }
-
-    40% {
-      transform: translate(-5%, 15%);
-    }
-
-    50% {
-      transform: translate(-10%, 5%);
-    }
-
-    60% {
-      transform: translate(15%, 0);
-    }
-
-    70% {
-      transform: translate(0, 10%);
-    }
-
-    80% {
-      transform: translate(-15%, 0);
-    }
-
-    90% {
-      transform: translate(10%, 5%);
-    }
-
-    100% {
-      transform: translate(5%, 0);
+    input,
+    textarea,
+    select {
+      cursor: text !important;
     }
   }
+}
 
-  .bg-noise {
+@layer components {
+
+  /* Glassmorphism card */
+  .glass-card {
+    background: color-mix(in srgb, var(--color-card-bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .glass-card:hover {
+    border-color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-card-bg) 96%, transparent);
+  }
+
+  /* Spectrum-aware heading */
+  .heading-xl {
+    font-family: var(--heading-font, var(--font-inter));
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--letter-spacing-heading);
+    line-height: 1.1;
+    transition: font-weight 0.4s ease, letter-spacing 0.4s ease;
+  }
+
+  .heading-lg {
+    font-family: var(--heading-font, var(--font-inter));
+    font-weight: var(--font-weight-heading);
+    letter-spacing: var(--letter-spacing-heading);
+    line-height: 1.15;
+    transition: font-weight 0.4s ease, letter-spacing 0.4s ease;
+  }
+
+  /* Glow effect */
+  .glow {
+    box-shadow: 0 0 20px color-mix(in srgb, var(--color-glow) 30%, transparent),
+      0 0 60px color-mix(in srgb, var(--color-glow) 10%, transparent);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px color-mix(in srgb, var(--color-glow) 40%, transparent);
+  }
+
+  /* Section container */
+  .section-container {
+    @apply relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16;
+  }
+
+  /* Spectrum divider line */
+  .spectrum-divider {
+    height: 1px;
+    background: linear-gradient(90deg,
+        transparent,
+        var(--color-accent) 20%,
+        var(--color-accent-alt) 50%,
+        var(--color-accent) 80%,
+        transparent);
+    opacity: 0.4;
+  }
+
+  /* Terminal text style */
+  .terminal-text {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  /* Tag pill */
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    background: var(--color-surface);
+    transition: all 0.3s ease;
+  }
+
+  .tag-pill:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+}
+
+@layer utilities {
+
+  /* Grain overlay - subtle */
+  .grain-overlay {
     position: fixed;
-    top: -50%;
-    left: -50%;
-    right: -50%;
-    bottom: -50%;
-    width: 200%;
-    height: 200vh;
-    background: transparent url('http://assets.iceable.com/img/noise-transparent.png') repeat 0 0;
-    background-repeat: repeat;
-    animation: noise .2s infinite;
-    opacity: .9;
-    visibility: visible;
-  }
-
-  /* CRT Overlay */
-  .crt-overlay {
-    background: linear-gradient(to bottom,
-        rgba(255, 255, 255, 0),
-        rgba(255, 255, 255, 0) 50%,
-        rgba(0, 0, 0, 0.1) 50%,
-        rgba(0, 0, 0, 0.1));
-    background-size: 100% 4px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     pointer-events: none;
     z-index: 9999;
-    opacity: 0.6;
+    opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    mix-blend-mode: overlay;
   }
 
-  .vignette {
-    background: radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+  /* Vignette */
+  .vignette-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     pointer-events: none;
     z-index: 9998;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.2) 100%);
   }
 }
