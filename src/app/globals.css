@@ -4,37 +4,25 @@
 
 @layer base {
   :root {
-    /* Spectrum-driven CSS variables (defaults = Nexus mode) */
-    --color-bg: #080808;
-    --color-bg-secondary: #0f0e0d;
-    --color-text: #f0f0f0;
-    --color-text-secondary: #a0a0a0;
-    --color-accent: #e07020;
-    --color-accent-alt: #a040e8;
-    --color-border: #2a2520;
-    --color-card-bg: #0d0d0d;
-    --color-surface: #131313;
-    --color-glow: #e07020;
+    /* Bold Dark Theme Defaults (F1 Accent) */
+    --color-bg: #050505;
+    --color-bg-secondary: #111111;
+    --color-text: #ffffff;
+    --color-text-secondary: #888888;
+    --color-accent: #e50012;
+    --color-accent-alt: #00f3ff;
+    --color-border: #222222;
+    --color-card-bg: #0a0a0a;
+    --color-surface: #1a1a1a;
+    --color-glow: #e50012;
 
-    --font-weight-heading: 500;
-    --letter-spacing-heading: 0.01em;
-    --border-radius: 8px;
-  }
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --heading-font: "Inter", system-ui, sans-serif;
+    --body-font: "Inter", system-ui, sans-serif;
 
-  /* Font mode classes driven by useSpectrum */
-  .spectrum-dev {
-    --heading-font: var(--font-mono);
-    --body-font: var(--font-inter);
-  }
-
-  .spectrum-design {
-    --heading-font: var(--font-outfit);
-    --body-font: var(--font-outfit);
-  }
-
-  .spectrum-nexus {
-    --heading-font: var(--font-inter);
-    --body-font: var(--font-inter);
+    --font-weight-heading: 800;
+    --letter-spacing-heading: -0.02em;
+    --border-radius: 12px;
   }
 
   /* Selection */
@@ -195,6 +183,23 @@
 }
 
 @layer utilities {
+
+  /* Garage Shutter Background (Like reference 1) */
+  .garage-stripes {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.02) 0px,
+      rgba(255, 255, 255, 0.02) 2px,
+      transparent 2px,
+      transparent 12px,
+      rgba(0, 0, 0, 0.4) 12px,
+      rgba(0, 0, 0, 0.4) 16px
+    );
+  }
 
   /* Grain overlay - subtle */
   .grain-overlay {

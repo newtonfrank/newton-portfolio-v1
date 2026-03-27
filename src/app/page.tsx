@@ -1,12 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Preloader } from "@/components/ui/Preloader";
-
-// Eagerly load the hero since it's above the fold
 import { Hero } from "@/components/sections/Hero";
 
-// Lazy load remaining sections
 const About = dynamic(
   () => import("@/components/sections/About").then((m) => ({ default: m.About })),
   { ssr: false }
@@ -32,16 +28,6 @@ const Footer = dynamic(
   { ssr: false }
 );
 
-const Navigation = dynamic(
-  () => import("@/components/ui/Navigation").then((m) => ({ default: m.Navigation })),
-  { ssr: false }
-);
-
-const SpectrumSlider = dynamic(
-  () => import("@/components/ui/SpectrumSlider").then((m) => ({ default: m.SpectrumSlider })),
-  { ssr: false }
-);
-
 const CustomCursor = dynamic(
   () => import("@/components/ui/custom-cursor").then((m) => ({ default: m.CustomCursor })),
   { ssr: false }
@@ -52,19 +38,12 @@ const SmoothScroll = dynamic(
   { ssr: false }
 );
 
-const KonamiTerminal = dynamic(
-  () => import("@/components/ui/KonamiTerminal").then((m) => ({ default: m.KonamiTerminal })),
-  { ssr: false }
-);
-
 export default function Home() {
   return (
     <>
-      <Preloader />
-      <Navigation />
       <CustomCursor />
       <SmoothScroll>
-        <main style={{ background: "var(--color-bg)", transition: "background-color 0.4s ease" }}>
+        <main className="bg-deep-space text-white transition-colors duration-500">
           <Hero />
           <div className="spectrum-divider mx-auto w-full max-w-5xl" />
           <About />
@@ -77,8 +56,6 @@ export default function Home() {
           <Footer />
         </main>
       </SmoothScroll>
-      <SpectrumSlider />
-      <KonamiTerminal />
     </>
   );
 }

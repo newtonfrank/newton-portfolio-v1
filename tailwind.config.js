@@ -14,10 +14,11 @@ export default {
       colors: {
         "deep-space": "#050505",
         "neon-cyan": "#00f3ff",
-        "neon-purple": "#bc13fe",
-        "warm-orange": "#e85d04",
-        "soft-purple": "#a040e8",
+        "racing-red": "#e50012",
         "glass-border": "rgba(255, 255, 255, 0.08)",
+        "surface": "var(--color-surface)",
+        "border": "var(--color-border)",
+        "text-secondary": "var(--color-text-secondary)",
       },
       animation: {
         float: "float 6s ease-in-out infinite",
