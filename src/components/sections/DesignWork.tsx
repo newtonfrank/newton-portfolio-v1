@@ -24,6 +24,15 @@ const designProjects = designFiles.map((file, index) => ({
   image: encodeURI(`/design/${file}`),
 }));
 
+const bentoPattern = [
+  "md:col-span-6 md:row-span-2",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-3 md:row-span-1",
+  "md:col-span-4 md:row-span-1",
+  "md:col-span-4 md:row-span-2",
+  "md:col-span-4 md:row-span-1",
+];
+
 export function DesignWork() {
   return (
     <section id="design" className="relative py-24 md:py-28">
@@ -42,7 +51,7 @@ export function DesignWork() {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-12 md:auto-rows-[180px]">
           {designProjects.map((project, index) => (
             <motion.article
               key={project.title}
@@ -50,18 +59,24 @@ export function DesignWork() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.55, delay: index * 0.04 }}
-              className="group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)]"
+              className={`group overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-[0_14px_32px_rgba(15,23,42,0.08)] ${
+                bentoPattern[index % bentoPattern.length]
+              }`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+              <div className="relative h-[240px] overflow-hidden bg-slate-100 md:h-full">
                 <img
                   src={project.image}
                   alt={project.title}
                   className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.06]"
                 />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/5 to-transparent opacity-90" />
+                <div className="absolute bottom-3 left-3 rounded-full bg-white/90 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-700 backdrop-blur">
+                  Design
+                </div>
               </div>
               <div className="flex items-center justify-between p-4">
                 <h3 className="text-sm font-semibold text-slate-900">{project.title}</h3>
-                <span className="text-xs uppercase tracking-[0.12em] text-slate-500">Design</span>
+                <span className="text-xs uppercase tracking-[0.12em] text-slate-500">Visual</span>
               </div>
             </motion.article>
           ))}
