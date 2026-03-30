@@ -13,6 +13,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@fontsource/londrina-outline": "^5.2.8",
+    "@fontsource/londrina-solid": "^5.2.7",
     "@react-three/drei": "^9.100.0",
     "@react-three/fiber": "^8.16.0",
     "@supabase/supabase-js": "^2.57.4",

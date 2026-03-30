@@ -1,61 +1,71 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
 
-const skills = [
-  { category: "Languages", items: ["JavaScript", "TypeScript", "HTML5", "CSS3", "Python", "Go"] },
-  { category: "Frontend", items: ["React", "Next.js", "Tailwind CSS", "Framer Motion", "Three.js"] },
-  { category: "Backend", items: ["Node.js", "Express", "NestJS", "Django", "PostgreSQL", "MongoDB"] },
-  { category: "Tools & DevOps", items: ["Git", "Docker", "AWS", "Vercel", "Figma", "Postman"] }
+const stack = [
+  "JavaScript",
+  "Python",
+  "C",
+  "C++",
+  "React.js",
+  "Next.js",
+  "Node.js",
+  "Express",
+  "REST APIs",
+  "MongoDB",
+  "MySQL",
+  "AWS (EC2, S3)",
+  "Docker",
+  "CI/CD",
+  "Ethereum",
+  "Solidity",
+  "Web3.js",
+  "Selenium",
+  "React Testing Library",
+  "Figma",
+  "Photoshop",
+  "Illustrator",
+  "Adobe XD",
 ];
 
-export function Skills() {
-    return (
-        <section id="skills" className="relative py-32 bg-deep-space">
-            <div className="section-container max-w-5xl mx-auto">
-                <motion.div
-                    className="mb-16 md:mb-24 flex flex-col items-center text-center"
-                    initial={{ opacity: 0, y: 30 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.8 }}
-                >
-                    <h2 className="text-4xl md:text-6xl font-black text-white mb-6 uppercase tracking-tight">
-                        Technical <span className="text-transparent stroke-text italic" style={{ WebkitTextStroke: '2px #e50012' }}>Arsenal</span>
-                    </h2>
-                    <p className="max-w-2xl text-text-secondary">
-                        The tools, languages, and frameworks I use to bring ideas to life.
-                    </p>
-                </motion.div>
+const marqueeItems = [...stack, ...stack, ...stack];
 
-                <div className="grid md:grid-cols-2 gap-8 md:gap-12">
-                    {skills.map((skillSet, idx) => (
-                        <motion.div
-                            key={skillSet.category}
-                            className="bg-surface/30 border border-white/5 p-8 rounded-2xl hover:border-racing-red/30 transition-colors"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                        >
-                            <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-widest text-xs border-b border-white/10 pb-4">
-                                {skillSet.category}
-                            </h3>
-                            <div className="flex flex-wrap gap-3">
-                                {skillSet.items.map((item) => (
-                                    <span 
-                                       key={item} 
-                                       className="bg-black/50 text-white/80 border border-white/10 hover:border-racing-red hover:text-racing-red transition-all px-4 py-2 rounded-full text-sm font-medium"
-                                    >
-                                        {item}
-                                    </span>
-                                ))}
-                            </div>
-                        </motion.div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
+export function Skills() {
+  return (
+    <section id="stack" className="py-24 md:py-28">
+      <div className="section-container">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-90px" }}
+          transition={{ type: "spring", stiffness: 110, damping: 18 }}
+          className="mb-10"
+        >
+          <h2 className="section-heading">Core Stack & Toolkit</h2>
+          <p className="section-copy">Languages, frameworks, cloud, blockchain, and design tools I use in production work.</p>
+        </motion.div>
+
+        <div className="relative overflow-hidden rounded-[22px] border border-slate-200 bg-white py-6 shadow-[0_16px_38px_rgba(17,24,39,0.08)]">
+          <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-white to-transparent" />
+
+          <motion.div
+            className="flex w-max items-center gap-4"
+            animate={{ x: ["0%", "-33.333%"] }}
+            transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+          >
+            {marqueeItems.map((item, index) => (
+              <div
+                key={`${item}-${index}`}
+                className="mx-2 inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-5 py-3 text-sm font-medium text-slate-700"
+              >
+                <span className="mr-2 h-2 w-2 rounded-full bg-[#2563EB]" />
+                {item}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
 }

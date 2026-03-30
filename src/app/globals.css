@@ -2,55 +2,50 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "TungstenCustom";
+  src: url("/font/Tungsten_Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
-    /* Bold Dark Theme Defaults (F1 Accent) */
-    --color-bg: #050505;
-    --color-bg-secondary: #111111;
-    --color-text: #ffffff;
-    --color-text-secondary: #888888;
-    --color-accent: #e50012;
-    --color-accent-alt: #00f3ff;
-    --color-border: #222222;
-    --color-card-bg: #0a0a0a;
-    --color-surface: #1a1a1a;
-    --color-glow: #e50012;
+    --color-bg: #f8f9fa;
+    --color-bg-secondary: #eef2f6;
+    --color-text: #111827;
+    --color-text-secondary: #4b5563;
+    --color-accent: #2563eb;
+    --color-accent-soft: #60a5fa;
+    --color-border: #dde3ea;
+    --color-card-bg: #ffffff;
+    --color-surface: #f3f6fa;
 
+    --font-heading: var(--font-poppins), var(--font-inter), system-ui, sans-serif;
+    --font-body: var(--font-inter), system-ui, sans-serif;
+    --font-hero: "TungstenCustom", "Oswald", "Arial Narrow", var(--font-poppins), sans-serif;
+    --font-hero-solid: "Londrina Solid", var(--font-poppins), sans-serif;
+    --font-hero-outline: "Londrina Outline", var(--font-poppins), sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-    --heading-font: "Inter", system-ui, sans-serif;
-    --body-font: "Inter", system-ui, sans-serif;
-
-    --font-weight-heading: 800;
-    --letter-spacing-heading: -0.02em;
-    --border-radius: 12px;
   }
 
-  /* Selection */
-  ::selection {
-    background: var(--color-accent);
-    color: #000;
+  * {
+    border-color: var(--color-border);
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  ::-webkit-scrollbar-track {
+  body {
+    @apply antialiased text-base leading-relaxed;
+    font-family: var(--font-body);
     background: var(--color-bg);
+    color: var(--color-text);
   }
 
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-border);
-    border-radius: 3px;
+  ::selection {
+    background: #1d4ed8;
+    color: #ffffff;
   }
 
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-accent);
-  }
-
-  /* Lenis */
   html.lenis,
   html.lenis body {
     height: auto;
@@ -72,153 +67,83 @@
     pointer-events: none;
   }
 
-  body {
-    @apply antialiased text-base leading-relaxed;
-    background-color: var(--color-bg);
-    color: var(--color-text);
-    transition: background-color 0.3s ease, color 0.3s ease;
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
   }
 
-  /* Cursor hide on desktop */
-  @media (hover: hover) {
-    * {
-      cursor: none !important;
-    }
+  ::-webkit-scrollbar-track {
+    background: #edf1f5;
+  }
 
-    input,
-    textarea,
-    select {
-      cursor: text !important;
-    }
+  ::-webkit-scrollbar-thumb {
+    background: #c7d0da;
+    border-radius: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a4b0bd;
   }
 }
 
 @layer components {
-
-  /* Glassmorphism card */
-  .glass-card {
-    background: color-mix(in srgb, var(--color-card-bg) 92%, transparent);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--color-border);
-    border-radius: var(--border-radius);
-    transition: border-color 0.3s ease, background 0.3s ease;
-  }
-
-  .glass-card:hover {
-    border-color: var(--color-accent);
-    background: color-mix(in srgb, var(--color-card-bg) 96%, transparent);
-  }
-
-  /* Spectrum-aware heading */
-  .heading-xl {
-    font-family: var(--heading-font, var(--font-inter));
-    font-weight: var(--font-weight-heading);
-    letter-spacing: var(--letter-spacing-heading);
-    line-height: 1.1;
-    transition: font-weight 0.4s ease, letter-spacing 0.4s ease;
-  }
-
-  .heading-lg {
-    font-family: var(--heading-font, var(--font-inter));
-    font-weight: var(--font-weight-heading);
-    letter-spacing: var(--letter-spacing-heading);
-    line-height: 1.15;
-    transition: font-weight 0.4s ease, letter-spacing 0.4s ease;
-  }
-
-  /* Glow effect */
-  .glow {
-    box-shadow: 0 0 20px color-mix(in srgb, var(--color-glow) 30%, transparent),
-      0 0 60px color-mix(in srgb, var(--color-glow) 10%, transparent);
-  }
-
-  .text-glow {
-    text-shadow: 0 0 20px color-mix(in srgb, var(--color-glow) 40%, transparent);
-  }
-
-  /* Section container */
   .section-container {
-    @apply relative w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16;
+    @apply mx-auto w-full max-w-7xl px-6 md:px-10 lg:px-14;
   }
 
-  /* Spectrum divider line */
+  .section-heading {
+    @apply text-3xl font-bold tracking-tight md:text-5xl;
+    font-family: var(--font-heading);
+    letter-spacing: -0.035em;
+    color: var(--color-text);
+  }
+
+  .section-copy {
+    @apply mt-4 max-w-2xl text-sm md:text-base;
+    color: var(--color-text-secondary);
+  }
+
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.88);
+    border: 1px solid rgba(221, 227, 234, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 18px 45px rgba(17, 24, 39, 0.08);
+    border-radius: 24px;
+  }
+
+  .blue-pill {
+    @apply inline-flex items-center justify-center rounded-full px-6 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-white transition-all;
+    background: linear-gradient(135deg, #2563eb, #007aff);
+    box-shadow: 0 10px 24px rgba(37, 99, 235, 0.35);
+  }
+
+  .blue-pill:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 28px rgba(37, 99, 235, 0.45);
+  }
+
+  .shape-float {
+    @apply absolute rounded-full border border-slate-300/80 bg-white/80;
+    box-shadow: 0 12px 24px rgba(17, 24, 39, 0.08);
+    backdrop-filter: blur(4px);
+  }
+
   .spectrum-divider {
     height: 1px;
-    background: linear-gradient(90deg,
-        transparent,
-        var(--color-accent) 20%,
-        var(--color-accent-alt) 50%,
-        var(--color-accent) 80%,
-        transparent);
-    opacity: 0.4;
-  }
-
-  /* Terminal text style */
-  .terminal-text {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: var(--color-text-secondary);
-  }
-
-  /* Tag pill */
-  .tag-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    border-radius: var(--border-radius);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-secondary);
-    background: var(--color-surface);
-    transition: all 0.3s ease;
-  }
-
-  .tag-pill:hover {
-    border-color: var(--color-accent);
-    color: var(--color-accent);
+    background: linear-gradient(90deg, transparent, #d6deea 50%, transparent);
   }
 }
 
 @layer utilities {
-
-  /* Garage Shutter Background (Like reference 1) */
-  .garage-stripes {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    background: repeating-linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0.02) 0px,
-      rgba(255, 255, 255, 0.02) 2px,
-      transparent 2px,
-      transparent 12px,
-      rgba(0, 0, 0, 0.4) 12px,
-      rgba(0, 0, 0, 0.4) 16px
-    );
-  }
-
-  /* Grain overlay - subtle */
   .grain-overlay {
     position: fixed;
     inset: 0;
     pointer-events: none;
-    z-index: 9999;
+    z-index: 100;
     opacity: 0.02;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
     background-repeat: repeat;
-    mix-blend-mode: overlay;
-  }
-
-  /* Vignette */
-  .vignette-overlay {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 9998;
-    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.2) 100%);
+    mix-blend-mode: multiply;
   }
 }

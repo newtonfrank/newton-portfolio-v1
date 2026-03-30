@@ -13,8 +13,6 @@ export default {
       },
       colors: {
         "deep-space": "#050505",
-        "neon-cyan": "#00f3ff",
-        "racing-red": "#e50012",
         "glass-border": "rgba(255, 255, 255, 0.08)",
         "surface": "var(--color-surface)",
         "border": "var(--color-border)",

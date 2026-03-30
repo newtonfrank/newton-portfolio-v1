@@ -18,12 +18,12 @@ export function SpectrumSlider() {
     const thumbGlowColor = useTransform(
         springPos,
         [0, 0.5, 1],
-        ["#00f3ff", "#a040e8", "#e85d04"]
+        ["#111111", "#4a4a4a", "#7a7a7a"]
     );
     const trackFillColor = useTransform(
         springPos,
         [0, 1],
-        ["#00f3ff", "#e85d04"]
+        ["#111111", "#7a7a7a"]
     );
     const fillWidth = useTransform(springPos, (v) => `${v * 100}%`);
     const thumbLeft = useTransform(springPos, (v) => `calc(${v * 100}% - 8px)`);
@@ -112,7 +112,7 @@ export function SpectrumSlider() {
         >
             <motion.span
                 className="text-[10px] sm:text-[11px] font-mono uppercase tracking-widest select-none whitespace-nowrap"
-                style={{ color: mode === "dev" ? "#00f3ff" : "rgba(255,255,255,0.35)" }}
+                style={{ color: mode === "dev" ? "#111111" : "rgba(255,255,255,0.35)" }}
                 animate={{ opacity: mode === "dev" ? 1 : 0.6 }}
             >
                 {"<DEV/>"}
@@ -137,7 +137,7 @@ export function SpectrumSlider() {
                 />
                 <div
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[2px] h-3 rounded-full pointer-events-none"
-                    style={{ background: "#a040e8", opacity: 0.4 }}
+                    style={{ background: "#4a4a4a", opacity: 0.4 }}
                 />
                 <motion.div
                     className="absolute top-1/2 -translate-y-1/2 rounded-full pointer-events-none"
@@ -156,7 +156,7 @@ export function SpectrumSlider() {
             <motion.span
                 className="text-[10px] sm:text-[11px] uppercase tracking-widest select-none whitespace-nowrap"
                 style={{
-                    color: mode === "design" ? "#e85d04" : "rgba(255,255,255,0.35)",
+                    color: mode === "design" ? "#7a7a7a" : "rgba(255,255,255,0.35)",
                     fontFamily: "var(--font-outfit, sans-serif)",
                 }}
                 animate={{ opacity: mode === "design" ? 1 : 0.6 }}

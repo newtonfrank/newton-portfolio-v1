@@ -8,12 +8,17 @@ const About = dynamic(
   { ssr: false }
 );
 
-const Work = dynamic(
-  () => import("@/components/sections/Work").then((m) => ({ default: m.Work })),
+const ProjectsSection = dynamic(
+  () => import("@/components/sections/TechnicalProjects").then((m) => ({ default: m.TechnicalProjects })),
   { ssr: false }
 );
 
-const Skills = dynamic(
+const DesignWork = dynamic(
+  () => import("@/components/sections/DesignWork").then((m) => ({ default: m.DesignWork })),
+  { ssr: false }
+);
+
+const StackMarquee = dynamic(
   () => import("@/components/sections/Skills").then((m) => ({ default: m.Skills })),
   { ssr: false }
 );
@@ -28,11 +33,6 @@ const Footer = dynamic(
   { ssr: false }
 );
 
-const CustomCursor = dynamic(
-  () => import("@/components/ui/custom-cursor").then((m) => ({ default: m.CustomCursor })),
-  { ssr: false }
-);
-
 const SmoothScroll = dynamic(
   () => import("@/components/ui/smooth-scroll").then((m) => ({ default: m.SmoothScroll })),
   { ssr: false }
@@ -40,22 +40,20 @@ const SmoothScroll = dynamic(
 
 export default function Home() {
   return (
-    <>
-      <CustomCursor />
-      <SmoothScroll>
-        <main className="bg-deep-space text-white transition-colors duration-500">
-          <Hero />
-          <div className="spectrum-divider mx-auto w-full max-w-5xl" />
-          <About />
-          <div className="spectrum-divider mx-auto w-full max-w-5xl" />
-          <Work />
-          <div className="spectrum-divider mx-auto w-full max-w-5xl" />
-          <Skills />
-          <div className="spectrum-divider mx-auto w-full max-w-5xl" />
-          <Contact />
-          <Footer />
-        </main>
-      </SmoothScroll>
-    </>
+    <SmoothScroll>
+      <main>
+        <Hero />
+        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
+        <About />
+        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
+        <ProjectsSection />
+        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
+        <DesignWork />
+        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
+        <StackMarquee />
+        <Contact />
+        <Footer />
+      </main>
+    </SmoothScroll>
   );
 }

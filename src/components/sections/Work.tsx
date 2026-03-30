@@ -51,7 +51,7 @@ export function Work() {
                     transition={{ duration: 0.8 }}
                 >
                     <h2 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tight">
-                        Some of the <span className="border-4 border-racing-red px-4 py-1 inline-block transform -rotate-2">projects</span> I've built
+                        Some of the <span className="border-4 border-black px-4 py-1 inline-block transform -rotate-2">projects</span> I've built
                     </h2>
                 </motion.div>
 
@@ -59,7 +59,7 @@ export function Work() {
                     {projects.map((project, i) => (
                         <motion.div
                             key={project.title}
-                            className={`group relative overflow-hidden rounded-3xl p-8 md:p-10 ${project.color} border border-border hover:border-racing-red/50 transition-colors flex flex-col h-[500px] md:h-[600px] shadow-2xl`}
+                            className={`group relative overflow-hidden rounded-3xl p-8 md:p-10 ${project.color} border border-border hover:border-black/30 transition-colors flex flex-col h-[500px] md:h-[600px] shadow-2xl`}
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -67,7 +67,7 @@ export function Work() {
                         >
                             {/* Text Content */}
                             <div className="relative z-20 mb-auto">
-                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-racing-red transition-colors uppercase tracking-wider">
+                                <h3 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight group-hover:text-black transition-colors uppercase tracking-wider">
                                     {project.title}
                                 </h3>
                                 <p className="text-text-secondary text-sm md:text-base mb-6 max-w-md">
@@ -93,7 +93,7 @@ export function Work() {
 
                             {/* Link Overlay */}
                             <a href={project.link} className="absolute inset-0 z-30 flex items-start justify-end p-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <div className="bg-racing-red text-white p-3 rounded-full transform translate-x-4 -translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300 shadow-lg glow">
+                                <div className="bg-black text-white p-3 rounded-full transform translate-x-4 -translate-y-4 group-hover:translate-x-0 group-hover:translate-y-0 transition-transform duration-300 shadow-lg glow">
                                     <ExternalLink size={20} />
                                 </div>
                             </a>

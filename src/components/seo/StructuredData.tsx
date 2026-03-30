@@ -12,7 +12,7 @@ export default function StructuredData() {
             'https://newtonfrank.vercel.app',
         ],
         jobTitle: 'Frontend Developer',
-        description: 'A passionate Frontend Developer with expertise in React.js, Next.js, and modern web technologies.',
+        description: 'Frontend developer building React interfaces, real-time dashboards, and scalable component systems.',
         workLocation: {
             '@type': 'Place',
             address: {
@@ -22,7 +22,20 @@ export default function StructuredData() {
                 addressCountry: 'India'
             }
         },
-        knowsAbout: ['React.js', 'Next.js', 'TypeScript', 'Web Development', 'UI/UX Design', 'JavaScript', 'Tailwind CSS']
+        knowsAbout: [
+            'JavaScript',
+            'React.js',
+            'Next.js',
+            'Node.js',
+            'Express',
+            'MongoDB',
+            'MySQL',
+            'AWS',
+            'Docker',
+            'Solidity',
+            'Web3.js',
+            'UI Design'
+        ]
     };
 
     return (

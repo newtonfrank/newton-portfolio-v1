@@ -73,7 +73,7 @@ export function Preloader() {
                                 style={{
                                     width: Math.random() * 3 + 1,
                                     height: Math.random() * 3 + 1,
-                                    background: i % 2 === 0 ? "#00f3ff" : "#e85d04",
+                                    background: i % 2 === 0 ? "#111111" : "#7a7a7a",
                                     left: `${Math.random() * 100}%`,
                                     top: `${Math.random() * 100}%`,
                                 }}
@@ -109,9 +109,9 @@ export function Preloader() {
                                     transition={{ duration: 0.15 }}
                                     className={
                                         line?.startsWith('>')
-                                            ? 'text-emerald-400/80'
+                                            ? 'text-white/75'
                                             : line?.startsWith('const') || line?.startsWith('  ')
-                                                ? 'text-cyan-300/90'
+                                                ? 'text-white/80'
                                                 : 'text-white/60'
                                     }
                                 >
@@ -120,7 +120,7 @@ export function Preloader() {
                             ))}
                             {phase === 'typing' && (
                                 <motion.span
-                                    className="inline-block w-2 h-4 bg-cyan-400"
+                                    className="inline-block w-2 h-4 bg-neutral-300"
                                     animate={{ opacity: [1, 0] }}
                                     transition={{ duration: 0.5, repeat: Infinity }}
                                 />
@@ -132,7 +132,7 @@ export function Preloader() {
                             <motion.div
                                 className="h-full rounded-full"
                                 style={{
-                                    background: "linear-gradient(90deg, #00f3ff, #a040e8, #e85d04)",
+                                    background: "linear-gradient(90deg, #111111, #4a4a4a, #7a7a7a)",
                                     width: `${progress}%`,
                                 }}
                                 transition={{ duration: 0.3 }}
@@ -152,7 +152,7 @@ export function Preloader() {
                             animate={{ opacity: [0, 1, 0] }}
                             transition={{ duration: 0.6 }}
                             style={{
-                                background: "radial-gradient(circle, rgba(160,64,232,0.3), transparent 70%)",
+                                background: "radial-gradient(circle, rgba(120,120,120,0.28), transparent 70%)",
                             }}
                         />
                     )}

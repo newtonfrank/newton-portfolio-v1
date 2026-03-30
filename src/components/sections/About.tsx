@@ -1,112 +1,143 @@
 "use client";
 
-import React from "react";
 import { motion } from "framer-motion";
-import { GraduationCap, Briefcase } from "lucide-react";
+import { Award, Briefcase, GraduationCap } from "lucide-react";
 
 const education = [
-  { school: "Universitas Indonesia", degree: "Computer Science", date: "Sep 2016 - May 2019", score: "GPA: 3.84/4.00" },
-  { school: "Hacktiv8 Indonesia", degree: "Full Stack Javascript", date: "Jan 2020 - Dec 2020", score: "Grade: 98/100" }
+  {
+    school: "Sri Siddhartha School of Engineering (SSSE), Tumakuru",
+    degree: "B.E. in Computer Science",
+    date: "2021 - 2025",
+    note: "CGPA: 7.75 / 10",
+  },
 ];
 
 const experience = [
-  { role: "Backend Developer", company: "Vayo", date: "Jan 2022 - Present", points: ["Refactoring backend into microservice architecture", "Setting up continuous delivery pipelines", "Daily deployment cycles to staging accounts for testing"] },
-  { role: "Backend Engineer", company: "Traveloka", date: "Jan 2020 - Dec 2021", points: ["Collaborated with cross-functional teams to build new features", "Investigated and analyzed application bugs", "Optimized database queries for multi-region product architecture"] }
+  {
+    role: "Frontend Developer Intern",
+    company: "Smartchakra Private Limited",
+    date: "Feb 2025 - Jun 2025 · Onsite",
+    points: [
+      "Built an Industrial IoT dashboard for real-time monitoring, historical analysis, and predictive maintenance.",
+      "Implemented high-frequency sensor visualization (vibration, temperature, audio) with 10-second auto-refresh.",
+      "Shipped analytics, fleet overview, and full CRUD modules for settings and alert management.",
+      "Designed intuitive data-rich interfaces for faster diagnostics and maintenance workflows.",
+    ],
+  },
+  {
+    role: "Frontend Developer Intern",
+    company: "Scyara Group Private Limited",
+    date: "May 2023 - Jul 2023 · Remote",
+    points: [
+      "Developed responsive web applications using React.js and Tailwind CSS for client projects.",
+      "Created a component-based design system that reduced future UI implementation time by 25%.",
+      "Delivered mobile-first, cross-browser compatible interfaces across multiple websites.",
+      "Improved SEO with semantic markup, optimized metadata, and XML sitemap integration.",
+    ],
+  },
+];
+
+const achievements = [
+  "Founded and led the Programming Club, increasing student hackathon participation by 50%.",
+  "Mentored 10+ juniors in web development and placement readiness.",
+  "Recognized for teamwork and adaptability during internships and collaborative projects.",
 ];
 
 export function About() {
   return (
-    <section id="about" className="relative py-32 bg-deep-space">
-      <div className="section-container relative z-10">
-        
-        {/* Title Area */}
-        <motion.div 
-           className="flex flex-col items-center text-center mb-24"
-           initial={{ opacity: 0, y: 30 }}
-           whileInView={{ opacity: 1, y: 0 }}
-           viewport={{ once: true, margin: "-100px" }}
-           transition={{ duration: 0.8 }}
+    <section id="about" className="relative py-24 md:py-28">
+      <div className="section-container">
+        <motion.div
+          className="mb-14 md:mb-16"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
         >
-            <h2 className="text-4xl md:text-6xl font-black tracking-tight text-white mb-6 uppercase">
-               Get to Know <span className="text-transparent stroke-text italic" style={{ WebkitTextStroke: '2px #e50012' }}>Me</span>
-            </h2>
-            <p className="max-w-2xl text-text-secondary text-sm md:text-base leading-relaxed">
-               I'm a Full-Stack developer with a specific focus on backend development, complemented by front-end proficiency. I excel in building robust server-side applications, designing efficient APIs, and implementing databases.
-            </p>
+          <p className="text-xs uppercase tracking-[0.2em] text-text-secondary">About</p>
+          <h2 className="section-heading mt-4">Frontend Developer Who Ships Useful Products Fast</h2>
+          <p className="section-copy mt-5">
+            I build reliable React interfaces, real-time dashboards, and scalable component systems with strong
+            focus on performance, clarity, and real user outcomes.
+          </p>
         </motion.div>
 
-        {/* Education & Bootcamp Cards */}
-        <div className="grid md:grid-cols-2 gap-8 mb-24 max-w-5xl mx-auto">
-           {/* Ed 1 */}
-           <motion.div 
-               className="glass-card p-8 flex items-start gap-6 border border-border/50 hover:border-racing-red/50 transition-colors"
-               initial={{ opacity: 0, x: -30 }}
-               whileInView={{ opacity: 1, x: 0 }}
-               viewport={{ once: true }}
-           >
-              <div className="mt-1 p-3 rounded-full bg-white/5 text-racing-red">
-                 <GraduationCap size={24} />
-              </div>
-              <div>
-                 <h3 className="text-white font-bold text-lg mb-1 uppercase tracking-wider">Education</h3>
-                 <div className="space-y-4 mt-6">
-                    {education.map((item, i) => (
-                      <div key={i} className="flex flex-col">
-                         <span className="text-white text-sm font-semibold">{item.school} <span className="text-text-secondary font-normal ml-2">{item.date}</span></span>
-                         <span className="text-racing-red text-xs mt-1 font-mono">{item.degree} • {item.score}</span>
-                      </div>
-                    ))}
-                 </div>
-              </div>
-           </motion.div>
+        <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+          <motion.article
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="rounded-[24px] border border-border bg-white p-7 shadow-[0_14px_36px_rgba(0,0,0,0.06)] md:p-8"
+          >
+            <div className="mb-5 flex items-center gap-3">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-black">
+                <GraduationCap size={18} />
+              </span>
+              <h3 className="text-lg font-semibold tracking-tight">Education</h3>
+            </div>
 
-           {/* Experience preview block */}
-           <div className="flex flex-col justify-center">
-               <motion.div 
-                  className="bg-racing-red text-white font-black uppercase italic tracking-widest text-2xl md:text-4xl p-6 md:p-10 rounded-2xl transform md:-rotate-2 inline-block shadow-[0_0_40px_rgba(229,0,18,0.3)] self-center"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  whileHover={{ scale: 1.05, rotate: 0 }}
-                  viewport={{ once: true }}
-               >
-                  Experience
-               </motion.div>
-           </div>
-        </div>
+            <div className="space-y-5">
+              {education.map((item) => (
+                <div key={item.school} className="rounded-xl border border-border bg-[#fafafa] p-4">
+                  <p className="text-sm font-semibold text-black">{item.school}</p>
+                  <p className="mt-1 text-sm text-text-secondary">{item.degree}</p>
+                  <p className="mt-2 text-xs uppercase tracking-[0.14em] text-text-secondary">
+                    {item.date} · {item.note}
+                  </p>
+                </div>
+              ))}
+            </div>
 
-        {/* Detailed Experience Cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-            {experience.map((exp, i) => (
-              <motion.div 
-                 key={i}
-                 className="bg-surface/50 border border-border p-8 rounded-2xl hover:bg-surface hover:border-racing-red/30 transition-colors"
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true }}
-                 transition={{ delay: i * 0.1 }}
+            <div className="mt-6 rounded-xl border border-border bg-[#fafafa] p-4">
+              <div className="mb-3 flex items-center gap-2">
+                <Award size={16} className="text-black" />
+                <p className="text-sm font-semibold text-black">Highlights</p>
+              </div>
+              <ul className="space-y-2">
+                {achievements.map((item) => (
+                  <li key={item} className="flex gap-2 text-sm text-text-secondary">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-black/70" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </motion.article>
+
+          <div className="space-y-6">
+            {experience.map((item, index) => (
+              <motion.article
+                key={item.company}
+                initial={{ opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.08 }}
+                className="rounded-[24px] border border-border bg-white p-7 shadow-[0_14px_36px_rgba(0,0,0,0.06)] md:p-8"
               >
-                  <div className="flex justify-between items-start mb-6">
-                     <div>
-                         <span className="text-xs font-mono text-text-secondary block mb-2">{exp.date}</span>
-                         <h4 className="text-lg font-bold text-white leading-tight uppercase tracking-wider">{exp.role}</h4>
-                         <span className="text-racing-red text-sm mt-1 block font-mono">{exp.company}</span>
-                     </div>
-                     <div className="p-3 bg-white/5 rounded-full text-white/50">
-                        <Briefcase size={20} />
-                     </div>
+                <div className="mb-5 flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.14em] text-text-secondary">{item.date}</p>
+                    <h3 className="mt-2 text-lg font-semibold tracking-tight text-black">{item.role}</h3>
+                    <p className="text-sm text-text-secondary">{item.company}</p>
                   </div>
-                  <ul className="space-y-3">
-                     {exp.points.map((pt, j) => (
-                        <li key={j} className="text-sm text-text-secondary flex gap-3 items-start">
-                           <span className="text-racing-red mt-1">▹</span>
-                           <span className="leading-relaxed">{pt}</span>
-                        </li>
-                     ))}
-                  </ul>
-              </motion.div>
-            ))}
-        </div>
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface text-black">
+                    <Briefcase size={18} />
+                  </span>
+                </div>
 
+                <ul className="space-y-3">
+                  {item.points.map((point) => (
+                    <li key={point} className="flex gap-3 text-sm text-text-secondary">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-black/70" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.article>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );

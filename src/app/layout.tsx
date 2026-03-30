@@ -1,6 +1,8 @@
 import './globals.css';
+import "@fontsource/londrina-solid/900.css";
+import "@fontsource/londrina-outline/400.css";
 import type { Metadata } from 'next';
-import { Inter, JetBrains_Mono, Outfit } from 'next/font/google';
+import { Inter, JetBrains_Mono, Poppins } from 'next/font/google';
 import { Analytics } from "@vercel/analytics/react";
 import StructuredData from '@/components/seo/StructuredData';
 
@@ -9,10 +11,10 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono'
 });
-const outfit = Outfit({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-outfit',
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  variable: '--font-poppins',
+  weight: ['400', '500', '600', '700', '800'],
 });
 
 export const metadata: Metadata = {
@@ -79,7 +81,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  themeColor: '#050505',
+  themeColor: '#f8f9fa',
 };
 
 export default function RootLayout({
@@ -88,8 +90,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark spectrum-nexus" suppressHydrationWarning>
-      <body className={`${inter.variable} ${jetbrainsMono.variable} ${outfit.variable} font-sans antialiased overflow-x-hidden`}>
+    <html lang="en" className="spectrum-nexus" suppressHydrationWarning>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} font-sans antialiased overflow-x-hidden`}>
         {/* Subtle grain overlay */}
         <div className="grain-overlay" />
         <div className="vignette-overlay" />

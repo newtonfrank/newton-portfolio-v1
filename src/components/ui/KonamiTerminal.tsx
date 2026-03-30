@@ -270,7 +270,7 @@ export function KonamiTerminal() {
                         style={{
                             background: "#0a0a0a",
                             border: "1px solid #1a1a1a",
-                            boxShadow: "0 0 60px rgba(0, 243, 255, 0.1), 0 0 120px rgba(0, 0, 0, 0.5)",
+                            boxShadow: "0 0 60px rgba(0, 0, 0, 0.15), 0 0 120px rgba(0, 0, 0, 0.5)",
                         }}
                         initial={{ scale: 0.9, y: 20 }}
                         animate={{ scale: 1, y: 0 }}
@@ -290,11 +290,11 @@ export function KonamiTerminal() {
                         {/* Title bar */}
                         <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: "#1a1a1a" }}>
                             <button
-                                className="w-3 h-3 rounded-full bg-red-500/80 hover:bg-red-500 transition-colors"
+                                className="w-3 h-3 rounded-full bg-neutral-400/90 hover:bg-neutral-300 transition-colors"
                                 onClick={() => setIsOpen(false)}
                             />
-                            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                            <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-neutral-500/80" />
+                            <div className="w-3 h-3 rounded-full bg-neutral-600/80" />
                             <span className="ml-3 font-mono text-[11px] text-white/30">
                                 nexus-terminal — {cwd}
                             </span>
@@ -310,7 +310,7 @@ export function KonamiTerminal() {
                                     key={i}
                                     className="whitespace-pre-wrap mb-1"
                                     style={{
-                                        color: entry.type === "input" ? "#00f3ff" : "#a0a0a0",
+                                        color: entry.type === "input" ? "#111111" : "#a0a0a0",
                                         fontSize: "13px",
                                         lineHeight: "1.5",
                                     }}
@@ -326,7 +326,7 @@ export function KonamiTerminal() {
                             className="flex items-center gap-2 px-4 py-3 border-t"
                             style={{ borderColor: "#1a1a1a" }}
                         >
-                            <span className="font-mono text-xs" style={{ color: "#00f3ff" }}>
+                            <span className="font-mono text-xs" style={{ color: "#111111" }}>
                                 {cwd} ~$
                             </span>
                             <input
@@ -340,7 +340,7 @@ export function KonamiTerminal() {
                                 spellCheck={false}
                             />
                             <motion.span
-                                className="inline-block w-2 h-4 bg-cyan-400"
+                                className="inline-block w-2 h-4 bg-neutral-300"
                                 animate={{ opacity: [1, 0] }}
                                 transition={{ duration: 0.5, repeat: Infinity }}
                             />

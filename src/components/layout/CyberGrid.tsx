@@ -39,7 +39,7 @@ export const CyberGrid = () => {
             </motion.div>
 
             {/* Top Glow */}
-            <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-cyan-900/10 to-transparent" />
+            <div className="absolute top-0 left-0 right-0 h-64 bg-gradient-to-b from-black/10 to-transparent" />
         </div>
     );
 };
