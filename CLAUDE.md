@@ -4,76 +4,85 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Next.js portfolio website for Newton Frank, featuring a sophisticated design system called "The Nexus" that allows users to shift between "Developer", "Nexus" (hybrid), and "Designer" modes. The portfolio showcases advanced UI/UX with 3D graphics, smooth animations, and dynamic theming.
+Next.js portfolio site for Newton Frank. A single route (`/`) composed of seven
+sections, with a light editorial aesthetic.
+
+A full rebuild — codenamed "The Nexus" — is specced under `docs/rebuild/`. That
+spec describes a **target**, not the present codebase. Read
+`docs/rebuild/BUILD_GUIDE.md` before writing new code, and
+`docs/superpowers/plans/` for in-flight plans.
+
+## Current State
+
+The M0 audit (2026-07-09) found the previous version of this file describing
+features that did not exist. What follows is verified against the source.
+
+- **No 3D.** There are zero imports of `three` or `@react-three/*`. Those
+  packages were removed.
+- **No GSAP.** Animation is `framer-motion` only.
+- **No global state.** `useSpectrum` (the "Nexus" dev↔design theme spectrum) and
+  `useTechStore` were unreachable dead code — no route ever mounted them, and no
+  CSS ever responded to the classes they set. Both were deleted.
+- **No React Server Components.** Every component is `"use client"`.
+- **Nothing on the page is server-rendered.** `page.tsx` wraps all sections in
+  `<SmoothScroll>`, which is `dynamic(..., { ssr: false })`. The prerendered HTML
+  contains only `<head>`, the grain overlay, and JSON-LD. The hero headline and
+  LCP image render after hydration.
+- Smooth scroll is `lenis`, via `src/components/ui/smooth-scroll.tsx`.
+- Styling is Tailwind CSS v3 plus CSS custom properties in `src/app/globals.css`.
 
 ## Architecture & Structure
 
-The project follows a Next.js 14 App Router architecture with:
-- `src/app/` - Contains Next.js routes and global configuration
-- `src/components/sections/` - Major page sections (Hero, About, Work, Skills, Contact, Footer)
-- `src/components/ui/` - Reusable UI components (3D cards, parallax effects, custom cursors, etc.)
-- `src/components/canvas/` - Three.js and 3D related components
-- `src/store/` - Zustand stores for global state management
-- `src/hooks/` - Custom React hooks
+- `src/app/` — routes, metadata, `globals.css`, `sitemap.ts`, `robots.ts`, `manifest.ts`
+- `src/components/sections/` — the seven rendered sections: Hero, About,
+  TechnicalProjects, DesignWork, Skills, Contact, Footer
+- `src/components/ui/` — `smooth-scroll.tsx` (Lenis provider)
+- `src/components/seo/` — `StructuredData.tsx` (JSON-LD)
+- `src/content/` — all copy and project data, typed
+- `src/types/content.ts` — content types
 
-## Key Features & Architecture
-
-1. **Dynamic Theme System**: The `useSpectrum` store manages a continuous spectrum between Developer, Nexus, and Designer modes with dynamic CSS variable updates and color transitions.
-
-2. **Performance Optimized**: Uses Next.js dynamic imports for lazy loading sections and components to optimize initial load times.
-
-3. **3D Graphics**: Heavily uses Three.js and @react-three/fiber for 3D visualizations and interactive elements.
-
-4. **Advanced Animations**: Implements Framer Motion, custom scroll effects, and smooth cursor animations.
-
-5. **Custom UI Components**: Extensive collection of reusable UI components including 3D cards, parallax effects, custom cursors, and more.
-
-## State Management
-
-- `useSpectrum` (src/store/useSpectrum.ts): Manages the theme spectrum between Dev/Design modes
-- `useTechStore` (src/store/useTechStore.ts): Manages technology stack state
-- Custom hooks in `src/hooks/` for mobile detection, physics, scroll reveal, etc.
+**Edit content in `src/content/`, not in components.** The sections are
+presentation only.
 
 ## Development Commands
 
 ```bash
-# Install dependencies
-npm install
-
-# Run development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm run start
-
-# Lint code
-npm run lint
+npm install       # install dependencies
+npm run dev       # development server
+npm run build     # production build
+npm run start     # serve the production build
+npm run lint      # next lint
+npm run typecheck # tsc --noEmit
+npm run format    # prettier --write .
 ```
 
-## Key Files & Components
+## Key Files
 
-- `src/app/page.tsx`: Main page with lazy-loaded sections
-- `src/app/layout.tsx`: Root layout with metadata and structured data
-- `src/app/globals.css`: Tailwind layers with dynamic theme variables
-- `src/components/sections/*`: Individual page sections
-- `src/components/ui/*`: Reusable UI components
-- `src/store/useSpectrum.ts`: Dynamic theme system implementation
-- `src/components/ui/SpectrumSlider.ts`: Interactive slider for theme switching
+- `src/app/page.tsx` — the single route; lazy-loads every section below the hero
+- `src/app/layout.tsx` — metadata, OpenGraph, fonts, Analytics, JSON-LD
+- `src/app/globals.css` — Tailwind layers + CSS custom properties
+- `src/content/*` — projects, design gallery, about, skills, site config
 
-## Styling Approach
+## Gotchas
 
-Uses Tailwind CSS with custom CSS variables managed by the spectrum system. Components are styled using:
-- CSS variables defined in `:root` for dynamic theming
-- Tailwind's `@layer` directives for component definitions
-- Custom CSS for advanced effects like grain overlays and vignettes
+- **`@fontsource/londrina-solid` and `@fontsource/londrina-outline` look unused
+  but are not.** `Hero.tsx` names `"Londrina Solid"` / `"Londrina Outline"` in
+  inline `fontFamily` styles rather than importing them. A dependency scan will
+  call them dead. They are not.
+- Design filenames in `public/design/` contain spaces and parentheses;
+  `src/content/design.ts` runs them through `encodeURI`.
+- `next.config.js` sets a custom `splitChunks`, which forces a ~176 kB
+  `vendor-react` chunk onto every route.
 
-## Special Considerations
+## Known Issues
 
-- The project uses dynamic imports extensively to prevent SSR issues with Three.js and browser-specific APIs
-- Custom cursor implementation that hides native cursor on desktop devices
-- Smooth scrolling implemented with lenis for enhanced UX
-- Advanced SEO with structured data, OpenGraph, and Twitter cards
-- Konami code Easter egg implementation in the KonamiTerminal component
+- **The contact form does not send anything.** `Contact.tsx` `handleSubmit`
+  calls `preventDefault()`, sets `sent = true`, and resets after 2.6s. There is
+  no fetch, no action, no provider. It reports "Message Sent" and discards the
+  message.
+- `/` ships ~226 kB First Load JS against the 180 kB budget in
+  `docs/rebuild/BUILD_GUIDE.md §8` — before any WebGL or GSAP is added.
+- `public/` is ~30 MB. `newton-profile.jpg` is 3.0 MB and is the declared
+  1200×630 OG image; `newton-profile.png` is 7.0 MB.
+- `DesignWork.tsx` and `TechnicalProjects.tsx` use raw `<img>`, not `next/image`
+  (`next lint` warns on all three call sites).

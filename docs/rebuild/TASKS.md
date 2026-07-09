@@ -33,8 +33,11 @@ Overall: `0 / 10 milestones` · `0%`
 
 ## 🏁 M0 · Foundation & Setup  (P0)
 
-- [ ] Audit existing repo; decide **migrate-in-place** vs. fresh Next app
-- [ ] Inventory & preserve existing copy, projects, and assets
+- [x] Audit existing repo; decide **migrate-in-place** vs. fresh Next app
+      → Decided: keep the repo, rewrite `src/`. See
+      `docs/superpowers/plans/2026-07-09-m0-foundation.md`.
+- [x] Inventory & preserve existing copy, projects, and assets
+      → Content extracted to typed `src/content/` modules.
 - [ ] Init **Next.js 15 (App Router) + TypeScript (strict)**
 - [ ] Configure ESLint + Prettier + Husky + lint-staged
 - [ ] Set up path aliases (`@/components`, `@/lib`, `@/webgl`, `@/content`, `@/styles`)
