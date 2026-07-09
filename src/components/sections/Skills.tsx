@@ -1,32 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-
-const stack = [
-  "JavaScript",
-  "Python",
-  "C",
-  "C++",
-  "React.js",
-  "Next.js",
-  "Node.js",
-  "Express",
-  "REST APIs",
-  "MongoDB",
-  "MySQL",
-  "AWS (EC2, S3)",
-  "Docker",
-  "CI/CD",
-  "Ethereum",
-  "Solidity",
-  "Web3.js",
-  "Selenium",
-  "React Testing Library",
-  "Figma",
-  "Photoshop",
-  "Illustrator",
-  "Adobe XD",
-];
+import { stack } from "@/content/skills";
 
 const marqueeItems = [...stack, ...stack, ...stack];
 

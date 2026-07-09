@@ -3,6 +3,9 @@
 import { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { site, socials } from "@/content/site";
+
+const linkedIn = socials.find((s) => s.label === "LinkedIn")!;
 
 export function Contact() {
   const [sent, setSent] = useState(false);
@@ -35,9 +38,9 @@ export function Contact() {
             </p>
 
             <div className="mt-8 space-y-2 text-sm text-white/70">
-              <p>Email: newtonfrank@outlook.in</p>
-              <p>Location: Tumkur, Karnataka, India</p>
-              <p>LinkedIn: linkedin.com/in/newtonfrank</p>
+              <p>Email: {site.email}</p>
+              <p>Location: {site.location}</p>
+              <p>LinkedIn: {linkedIn.href.replace(/^https?:\/\//, "")}</p>
             </div>
           </div>
 

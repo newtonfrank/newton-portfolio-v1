@@ -4,17 +4,11 @@ import Image from "next/image";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { CSSProperties, useRef, useState } from "react";
-
-const navLinks = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Technical" },
-  { href: "#design", label: "Design" },
-  { href: "#stack", label: "Skills" },
-];
+import { navLinks, site, socials } from "@/content/site";
 
 const quickLinks = [
-  { href: "https://linkedin.com/in/newtonfrank", label: "LinkedIn" },
-  { href: "https://github.com/newtonfrank", label: "GitHub" },
+  socials.find((s) => s.label === "LinkedIn")!,
+  socials.find((s) => s.label === "GitHub")!,
 ];
 
 export function Hero() {
@@ -105,10 +99,10 @@ export function Hero() {
             </div>
 
             <a
-              href="mailto:newtonfrank@outlook.in"
+              href={`mailto:${site.email}`}
               className="rounded-[10px] border border-black bg-[#111111] px-4 py-2.5 text-[clamp(0.72rem,0.9vw,1rem)] font-medium text-white shadow-[0_6px_16px_rgba(0,0,0,0.25)] transition-colors hover:bg-black md:px-6 md:py-3"
             >
-              newtonfrank@outlook.in
+              {site.email}
             </a>
           </motion.header>
 
@@ -120,7 +114,7 @@ export function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.08 }}
             >
-              Frontend developer focused on real-time dashboards, scalable UI systems, and polished user flows.
+              {site.tagline}
             </motion.p>
 
             <motion.div
@@ -144,13 +138,13 @@ export function Hero() {
                   className="invisible text-[clamp(4.2rem,13.4vw,14.9rem)] font-normal tracking-[-0.03em]"
                   style={{ fontFamily: '"Londrina Solid", "Arial Black", sans-serif', fontWeight: 900 }}
                 >
-                  Frontend Developer
+                  {site.headlineTop}
                 </span>
                 <motion.span
                   className="absolute inset-0 text-[clamp(4.2rem,13.4vw,14.9rem)] font-normal tracking-[-0.03em]"
                   style={getLineStyle(activeLine === "top")}
                 >
-                  Frontend Developer
+                  {site.headlineTop}
                 </motion.span>
               </div>
 
@@ -159,13 +153,13 @@ export function Hero() {
                   className="invisible text-[clamp(4rem,12.6vw,14.1rem)] font-normal tracking-[-0.03em]"
                   style={{ fontFamily: '"Londrina Solid", "Arial Black", sans-serif', fontWeight: 900 }}
                 >
-                  &amp; Product Designer
+                  {site.headlineBottom}
                 </span>
                 <motion.span
                   className="absolute inset-0 text-[clamp(4rem,12.6vw,14.1rem)] font-normal tracking-[-0.03em]"
                   style={getLineStyle(activeLine === "bottom")}
                 >
-                  &amp; Product Designer
+                  {site.headlineBottom}
                 </motion.span>
               </div>
 
@@ -202,14 +196,13 @@ export function Hero() {
                 className="max-w-[400px] text-[clamp(1.25rem,2.1vw,2.7rem)] leading-[1.2] text-[#2d323a]"
                 style={{ fontFamily: "var(--font-poppins)" }}
               >
-                based in Tumkur, Karnataka, India.
+                based in {site.location}.
               </p>
 
               <div className="hidden items-center gap-7 text-sm text-[#8a8f97] md:flex" style={{ fontFamily: "var(--font-poppins)" }}>
-                <span>React.js</span>
-                <span>Next.js</span>
-                <span>AWS</span>
-                <span>Solidity</span>
+                {site.heroTech.map((tech) => (
+                  <span key={tech}>{tech}</span>
+                ))}
               </div>
             </motion.div>
           </div>
