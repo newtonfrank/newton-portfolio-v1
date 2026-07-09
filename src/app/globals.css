@@ -2,14 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "TungstenCustom";
-  src: url("/font/Tungsten_Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 @layer base {
   :root {
     --color-bg: #f8f9fa;
@@ -24,9 +16,6 @@
 
     --font-heading: var(--font-poppins), var(--font-inter), system-ui, sans-serif;
     --font-body: var(--font-inter), system-ui, sans-serif;
-    --font-hero: "TungstenCustom", "Oswald", "Arial Narrow", var(--font-poppins), sans-serif;
-    --font-hero-solid: "Londrina Solid", var(--font-poppins), sans-serif;
-    --font-hero-outline: "Londrina Outline", var(--font-poppins), sans-serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   }
 

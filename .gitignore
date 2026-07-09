@@ -47,3 +47,9 @@ junit.xml
 .yarn/raw
 .yarn/metadata.json
 .yarn/ci-things
+
+# TS incremental build info
+tsconfig.tsbuildinfo
+
+# Redundant archive of docs/rebuild/*.md
+docs/rebuild/*.zip

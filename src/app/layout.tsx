@@ -94,7 +94,6 @@ export default function RootLayout({
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} font-sans antialiased overflow-x-hidden`}>
         {/* Subtle grain overlay */}
         <div className="grain-overlay" />
-        <div className="vignette-overlay" />
 
         {/* Main content */}
         <div className="relative z-10">

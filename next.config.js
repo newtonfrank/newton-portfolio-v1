@@ -1,9 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    // Enable SWC transforms
-    swcPlugins: [],
-  },
   // Optimize webpack configuration
   webpack: (config, { isServer, dev }) => {
     // Add bundle analyzer in development
@@ -28,12 +24,6 @@ const nextConfig = {
             chunks: 'all',
             priority: 10,
           },
-          three: {
-            test: /[\\/]node_modules[\\/](three|@react-three)[\\/]/,
-            name: 'vendor-three',
-            chunks: 'all',
-            priority: 10,
-          },
           lucide: {
             test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
             name: 'vendor-lucide',
@@ -52,9 +42,7 @@ const nextConfig = {
 
     return config;
   },
-  // Optimize images
   images: {
-    unoptimized: true, // Disable optimization for export mode
     formats: ['image/webp', 'image/avif'],
   },
   // Enable compression
