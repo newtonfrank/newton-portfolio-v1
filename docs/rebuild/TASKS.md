@@ -13,8 +13,8 @@ Priorities: **P0** critical path · **P1** important · **P2** polish/optional.
 
 | Milestone | Status | Target |
 |---|---|---|
-| M0 · Foundation & deploy skeleton | ⬜ Not started | Week 1 |
-| M1 · Design system & primitives | ⬜ Not started | Week 1–2 |
+| M0 · Foundation & deploy skeleton | 🟡 In progress | Week 1 |
+| M1 · Design system & primitives | 🟡 In progress | Week 1–2 |
 | M2 · Layout shell (nav/menu/cursor/scroll/transitions) | ⬜ Not started | Week 2 |
 | M3 · Loader + WebGL hero | ⬜ Not started | Week 3 |
 | M4 · Home sections | ⬜ Not started | Week 3–4 |
@@ -38,11 +38,18 @@ Overall: `0 / 10 milestones` · `0%`
       `docs/superpowers/plans/2026-07-09-m0-foundation.md`.
 - [x] Inventory & preserve existing copy, projects, and assets
       → Content extracted to typed `src/content/` modules.
-- [ ] Init **Next.js 15 (App Router) + TypeScript (strict)**
-- [ ] Configure ESLint + Prettier + Husky + lint-staged
-- [ ] Set up path aliases (`@/components`, `@/lib`, `@/webgl`, `@/content`, `@/styles`)
+- [x] Init **Next.js 15 (App Router) + TypeScript (strict)**
+      → Upgraded in place: next 15.5, react 19.2. `strict: true` already set.
+- [x] Configure ESLint + Prettier + Husky + lint-staged
+      → `.husky/pre-commit` runs lint-staged. `next lint` was broken and is fixed.
+- [x] Set up path aliases (`@/components`, `@/lib`, `@/webgl`, `@/content`, `@/styles`)
+      → A single `@/*` → `./src/*` alias covers all of these.
 - [ ] Install stack: `three @react-three/fiber @react-three/drei @react-three/postprocessing gsap lenis motion zustand`
+      → **Deliberately deferred.** These were removed in M0 as unused. Install each
+      at the milestone that first uses it (gsap → M1 motion primitives; three/R3F →
+      M3), at React-19-compatible versions. `lenis` is already installed and in use.
 - [ ] Add GLSL import support (e.g. `vite-plugin-glsl` equivalent / webpack loader)
+      → Deferred to M3, with the WebGL work it serves.
 - [ ] Connect repo to **Vercel**; verify preview + production deploys
 - [ ] Commit baseline; protect `main`; set up PR previews
 
@@ -52,19 +59,29 @@ Overall: `0 / 10 milestones` · `0%`
 
 ## 🎨 M1 · Design System & Primitives  (P0)
 
+**Paradigm:** CSS Modules (chosen 2026-07-09, per `BUILD_GUIDE.md §6`). Tailwind v3
+is still installed and still styles the seven legacy sections; it comes out when
+those are restyled in M2. Do not add new Tailwind classes.
+
 **Tokens & foundations**
-- [ ] `styles/tokens.css` — color (ink/bone/signal/ember/semantic), spacing, radii, z, shadows
-- [ ] `styles/tokens.css` — fluid type scale + line-heights + tracking + breakpoints
+- [x] `styles/tokens.css` — color (ink/bone/signal/ember/semantic), spacing, radii, z, shadows
+- [x] `styles/tokens.css` — fluid type scale + line-heights + tracking + breakpoints
 - [ ] `styles/reset.css` — modern reset
+      → Blocked: Tailwind's preflight is still active. Two resets would conflict.
+      Land this with the Tailwind removal.
 - [ ] `styles/typography.css` — type role classes (display-xl…mono)
+      → Blocked on fonts.
 - [ ] Self-host fonts (Clash Display, General Sans, JetBrains Mono) via `next/font/local`, subset weights
-- [ ] `lib/motion.ts` — ease / duration / stagger / lerp tokens
-- [ ] `lib/breakpoints.ts` — TS mirror of CSS breakpoints
-- [ ] `lib/utils.ts` — `cn`, `lerp`, `clamp`, `mapRange`
-- [ ] Reduced-motion provider + `useReducedMotion` hook
+      → **Blocked: font files needed.** Drop them in `public/fonts/`. `tokens.css`
+      declares `--font-display` / `--font-sans` with system fallbacks meanwhile.
+- [x] `lib/motion.ts` — ease / duration / stagger / lerp tokens
+- [x] `lib/breakpoints.ts` — TS mirror of CSS breakpoints
+- [x] `lib/utils.ts` — `cn`, `lerp`, `clamp`, `mapRange`
+- [x] Reduced-motion provider + `useReducedMotion` hook
+      → Hook done. No provider needed; the hook is self-contained.
 
 **UI primitives (`components/ui`)**
-- [ ] Button (primary/secondary/ghost/icon · sm/md/lg · all states)
+- [x] Button (primary/secondary/ghost/icon · sm/md/lg · all states)
 - [ ] Link (inline underline-sweep · nav variant with mono index)
 - [ ] Badge / status pill (availability, year)
 - [ ] Chip (skills; axis-tinted; interactive)
@@ -79,7 +96,8 @@ Overall: `0 / 10 milestones` · `0%`
 - [ ] `ScrollProgress` (bar + section label)
 - [ ] `ParallaxLayer` (transform-based, capped, mobile-reduced)
 
-- [ ] (P1) `/styleguide` route rendering every token + component
+- [x] (P1) `/styleguide` route rendering every token + component
+      → Live at `/styleguide`, noindex. Extend it as primitives land.
 
 **Exit criteria:** all primitives themeable, typed, reduced-motion-safe; tokens are the single source of truth.
 
