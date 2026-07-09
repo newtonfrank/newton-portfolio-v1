@@ -46,6 +46,9 @@
    */
   --font-display: var(--font-clash-display), "PP Neue Montreal", system-ui, sans-serif;
   --font-sans: var(--font-general-sans), "Inter", system-ui, sans-serif;
+  /* Ultra-condensed, all-caps. Anton (OFL) stands in for Tungsten, which is a
+     commercial Hoefler&Co face and cannot be self-hosted without a licence. */
+  --font-display-condensed: var(--font-anton), "Oswald", "Arial Narrow", sans-serif;
   /* JetBrains Mono arrives via next/font, which sets --font-mono on <body>;
      that scoped value wins over this :root fallback. */
   --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, monospace;

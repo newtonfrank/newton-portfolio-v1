@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import StructuredData from "@/components/seo/StructuredData";
-import { clashDisplay, generalSans } from "@/lib/fonts";
+import { anton, clashDisplay, generalSans } from "@/lib/fonts";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = JetBrains_Mono({
@@ -92,7 +92,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} ${clashDisplay.variable} ${generalSans.variable} font-sans antialiased overflow-x-hidden`}
+        className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} ${clashDisplay.variable} ${generalSans.variable} ${anton.variable} font-sans antialiased overflow-x-hidden`}
       >
         {/* Subtle grain overlay */}
         <div className="grain-overlay" />

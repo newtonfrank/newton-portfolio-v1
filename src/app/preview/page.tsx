@@ -5,6 +5,8 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/hero/Hero";
+import { Showcase } from "@/components/sections/showcase/Showcase";
+import { projects } from "@/content/projects";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -25,6 +27,7 @@ export default function PreviewPage() {
         <Header />
         <main id="main">
           <Hero />
+          <Showcase projects={projects} />
         </main>
       </div>
     </SmoothScroll>

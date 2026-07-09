@@ -1,4 +1,20 @@
 import localFont from "next/font/local";
+import { Anton } from "next/font/google";
+
+/**
+ * Condensed display face for the carousel headlines.
+ *
+ * The reference (docs/ref/) uses Tungsten — a commercial Hoefler&Co face that
+ * cannot legally be self-hosted without a webfont licence. Anton is the closest
+ * free equivalent (SIL Open Font License): same ultra-condensed, high-contrast,
+ * all-caps grotesque, one weight only.
+ */
+export const anton = Anton({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-anton",
+  display: "swap",
+});
 
 /**
  * Self-hosted display + body faces, converted from the Fontshare OTFs to woff2

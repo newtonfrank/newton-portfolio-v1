@@ -6,6 +6,21 @@ export interface Project {
   tags: string[];
   /** Live URL, when the project is publicly deployed. */
   href?: string;
+
+  /**
+   * 1–2 short lines for the condensed display headline. `title` is far too long
+   * to set at --fs-display-xl in an ultra-condensed face.
+   */
+  displayTitle: string[];
+  /** One-line subtitle beneath the headline. */
+  tagline: string;
+  /** Ambient scene colour while this project is the active slide. */
+  ambient: string;
+  /**
+   * Web-sized texture for the WebGL plane. Swap for an .mp4 screen recording
+   * when one exists — `ProjectPlane` accepts either.
+   */
+  texture: string;
 }
 
 /** A raw file in /public/design. `file` is unencoded; encode at the usage site. */
