@@ -56,4 +56,8 @@ export interface SiteConfig {
   headlineTop: string;
   headlineBottom: string;
   heroTech: string[];
+  /** Mono eyebrow above the hero headline. */
+  heroEyebrow: string;
+  /** Shown in the hero availability pill. */
+  availability: string;
 }
