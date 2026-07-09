@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "@/styles/reset.css";
 import "@/styles/typography.css";
+import { Reveal } from "@/components/motion/Reveal";
+import { SplitText } from "@/components/motion/SplitText";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -16,7 +18,10 @@ export const metadata: Metadata = {
 export default function PreviewPage() {
   return (
     <div className={styles.page}>
-      <p className="mono">Preview — new sections mount here</p>
+      <SplitText as="h1" text="Design and engineering, one hand" className="displayL" />
+      <Reveal>
+        <p className="bodyL prose">Revealed on scroll.</p>
+      </Reveal>
     </div>
   );
 }
