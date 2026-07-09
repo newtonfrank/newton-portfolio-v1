@@ -7,6 +7,7 @@ import type { Project } from "@/types/content";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { cn } from "@/lib/utils";
+import { ScrollWaveform } from "./ScrollWaveform";
 import styles from "./Showcase.module.css";
 
 const Scene = dynamic(() => import("@/webgl/Scene").then((m) => m.Scene), { ssr: false });
@@ -105,19 +106,11 @@ export function Showcase({ projects }: ShowcaseProps) {
         </div>
       </div>
 
-      <div className={cn(styles.counter, "mono")}>
-        <span>
-          {String(activeIndex + 1).padStart(2, "0")} / {String(projects.length).padStart(2, "0")}
-        </span>
-        <span className={styles.ticks}>
-          {projects.map((project, i) => (
-            <span
-              key={project.title}
-              className={cn(styles.tick, i === activeIndex && styles.tickActive)}
-            />
-          ))}
-        </span>
-      </div>
+      <ScrollWaveform
+        slideCount={projects.length}
+        progressRef={progressRef}
+        sectionRef={sectionRef}
+      />
     </section>
   );
 }

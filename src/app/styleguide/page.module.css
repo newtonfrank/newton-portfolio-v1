@@ -124,6 +124,46 @@
   border-radius: var(--radius-sm);
 }
 
+/* ─── Condensed display candidates ─── */
+
+.specimen {
+  padding-block: var(--space-5);
+  border-block-end: 1px solid var(--line);
+}
+
+.specimenMeta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-2);
+}
+
+.specimenName {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  letter-spacing: var(--ls-mono);
+  color: var(--bone);
+}
+
+.specimenNote {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--bone-subtle);
+  text-align: end;
+}
+
+.specimenSample {
+  text-transform: uppercase;
+  font-size: clamp(2.5rem, 7vw, 6rem);
+  line-height: 0.82;
+  color: var(--bone);
+}
+
+.specimenLine {
+  display: block;
+}
+
 /* ─── Buttons ─── */
 
 .row {

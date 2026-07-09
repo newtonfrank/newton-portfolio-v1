@@ -1,5 +1,5 @@
 import localFont from "next/font/local";
-import { Anton } from "next/font/google";
+import { Anton, Bebas_Neue, Oswald, Saira_Condensed } from "next/font/google";
 
 /**
  * Condensed display face for the carousel headlines.
@@ -14,6 +14,36 @@ export const anton = Anton({
   weight: "400",
   variable: "--font-anton",
   display: "swap",
+});
+
+/**
+ * Candidates for the condensed display face, rendered side by side on
+ * /styleguide so the choice can be made by eye rather than by description.
+ * `preload: false` — /styleguide is noindex and nothing else loads these.
+ * Delete the losers once a face is chosen.
+ */
+export const bebasNeue = Bebas_Neue({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-bebas",
+  display: "swap",
+  preload: false,
+});
+
+export const oswald = Oswald({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-oswald",
+  display: "swap",
+  preload: false,
+});
+
+export const saira = Saira_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-saira",
+  display: "swap",
+  preload: false,
 });
 
 /**

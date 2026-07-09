@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { anton, bebasNeue, oswald, saira } from "@/lib/fonts";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -39,6 +40,38 @@ const typeScale = [
 const spaces = Array.from({ length: 11 }, (_, i) => `--space-${i + 1}`);
 
 /**
+ * The reference uses Tungsten (Hoefler&Co, commercial — cannot be self-hosted).
+ * These are the free condensed faces closest to it. Set at real display size in
+ * the actual carousel headline so the comparison means something.
+ */
+const displayCandidates = [
+  {
+    name: "Anton",
+    note: "current · heaviest, narrowest, most Tungsten-Bold",
+    className: anton.className,
+    weight: 400,
+  },
+  {
+    name: "Bebas Neue",
+    note: "lighter strokes, caps-only, more open",
+    className: bebasNeue.className,
+    weight: 400,
+  },
+  {
+    name: "Oswald 600",
+    note: "less condensed, more neutral, huge language coverage",
+    className: oswald.className,
+    weight: 600,
+  },
+  {
+    name: "Saira Condensed 700",
+    note: "squarer terminals, slightly technical",
+    className: saira.className,
+    weight: 700,
+  },
+];
+
+/**
  * Living reference for every token and primitive. Not linked from the site and
  * marked noindex — it exists so token drift is visible, not for visitors.
  */
@@ -75,6 +108,25 @@ export default function StyleguidePage() {
               <span className={styles.typeSample} style={{ fontSize: `var(${row.token})` }}>
                 {row.sample}
               </span>
+            </div>
+          ))}
+        </section>
+
+        <section className={styles.section}>
+          <h2 className={styles.sectionTitle}>Condensed display — pick one</h2>
+          {displayCandidates.map((face) => (
+            <div key={face.name} className={styles.specimen}>
+              <div className={styles.specimenMeta}>
+                <span className={styles.specimenName}>{face.name}</span>
+                <span className={styles.specimenNote}>{face.note}</span>
+              </div>
+              <div
+                className={`${face.className} ${styles.specimenSample}`}
+                style={{ fontWeight: face.weight }}
+              >
+                <span className={styles.specimenLine}>Industrial</span>
+                <span className={styles.specimenLine}>Telemetry</span>
+              </div>
             </div>
           ))}
         </section>
