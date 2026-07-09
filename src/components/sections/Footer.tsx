@@ -1,9 +1,10 @@
 "use client";
 
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
+import { Github, Linkedin } from "@/components/ui/BrandIcons";
 import { site, socials } from "@/content/site";
 
-const iconFor: Record<string, typeof Github> = {
+const iconFor: Record<string, React.ComponentType<{ size?: number }>> = {
   GitHub: Github,
   LinkedIn: Linkedin,
   Email: Mail,
