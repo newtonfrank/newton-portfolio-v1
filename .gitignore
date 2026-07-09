@@ -53,3 +53,6 @@ tsconfig.tsbuildinfo
 
 # Redundant archive of docs/rebuild/*.md
 docs/rebuild/*.zip
+
+# Font sources — the woff2 build outputs live in src/fonts/ and are committed
+public/fonts/

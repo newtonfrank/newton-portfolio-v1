@@ -40,12 +40,14 @@
   --focus-offset: 2px;
 
   /* ─── Typography ─────────────────────────────────────────────────────────
-   * Clash Display and General Sans are not yet self-hosted; the fallbacks
-   * carry the design until the Fontshare files land in public/fonts/ and
-   * next/font/local is wired up. See TASKS.md M1.
+   * The var() references are injected by next/font (see lib/fonts.ts), which
+   * also supplies size-adjusted fallback metrics. The literal names after them
+   * only matter if the font module is ever removed.
    */
-  --font-display: "Clash Display", "PP Neue Montreal", system-ui, sans-serif;
-  --font-sans: "General Sans", "Inter", system-ui, sans-serif;
+  --font-display: var(--font-clash-display), "PP Neue Montreal", system-ui, sans-serif;
+  --font-sans: var(--font-general-sans), "Inter", system-ui, sans-serif;
+  /* JetBrains Mono arrives via next/font, which sets --font-mono on <body>;
+     that scoped value wins over this :root fallback. */
   --font-mono: "JetBrains Mono", "Geist Mono", ui-monospace, monospace;
 
   --fs-display-xl: clamp(3.25rem, 8.5vw, 9rem);
