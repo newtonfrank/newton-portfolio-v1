@@ -1,0 +1,135 @@
+.page {
+  min-height: 100vh;
+  background-color: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  padding: var(--space-8) var(--container-pad);
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-mono);
+  color: var(--bone-subtle);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-l);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+  margin-block: var(--space-3) var(--space-9);
+}
+
+.section {
+  margin-block-end: var(--space-9);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--line);
+}
+
+.sectionTitle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-mono);
+  color: var(--bone-muted);
+  margin-block-end: var(--space-6);
+}
+
+/* ─── Swatches ─── */
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--gutter);
+}
+
+.swatch {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.swatchChip {
+  height: 5rem;
+}
+
+.swatchMeta {
+  padding: var(--space-3);
+  background-color: var(--ink-elevated);
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+}
+
+.swatchName {
+  color: var(--bone);
+}
+
+.swatchValue {
+  color: var(--bone-subtle);
+  margin-block-start: var(--space-1);
+}
+
+/* ─── Type ─── */
+
+.typeRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-5);
+  padding-block: var(--space-4);
+  border-block-end: 1px solid var(--line);
+}
+
+.typeLabel {
+  flex: 0 0 9rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--bone-subtle);
+  letter-spacing: var(--ls-mono);
+}
+
+.typeSample {
+  font-family: var(--font-display);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-snug);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ─── Spacing ─── */
+
+.spaceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-end: var(--space-3);
+}
+
+.spaceLabel {
+  flex: 0 0 6rem;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--bone-subtle);
+}
+
+.spaceBar {
+  height: var(--space-3);
+  background-color: var(--signal);
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Buttons ─── */
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-end: var(--space-5);
+}
