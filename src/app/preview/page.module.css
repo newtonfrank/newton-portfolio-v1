@@ -1,0 +1,6 @@
+.page {
+  min-height: 100dvh;
+  background-color: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-sans);
+}
