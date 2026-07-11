@@ -43,7 +43,7 @@ export function Scene({ projects, progressRef }: SceneProps) {
 
       {!reduced && !degraded && (
         <EffectComposer>
-          <Bloom intensity={0.42} luminanceThreshold={0.55} luminanceSmoothing={0.3} mipmapBlur />
+          <Bloom intensity={0.6} luminanceThreshold={0.48} luminanceSmoothing={0.35} mipmapBlur />
           <Noise opacity={0.035} blendFunction={BlendFunction.OVERLAY} />
           <Vignette offset={0.28} darkness={0.72} />
         </EffectComposer>

@@ -56,10 +56,18 @@ export const planeFragmentShader = /* glsl */ `
     float scan = 0.94 + 0.06 * sin(vUv.y * 1400.0 + uTime * 0.4);
     color *= scan;
 
-    // Inactive slides recede: darker and desaturated toward luminance.
+    // A glossy diagonal light band travelling across the panel, so a still
+    // screenshot reads as a live, lit screen. Only on the active slide.
+    float sweepPhase = fract(uTime * 0.12);
+    float diag = (vUv.x + (1.0 - vUv.y)) * 0.5;
+    float sweep = smoothstep(0.06, 0.0, abs(diag - sweepPhase));
+    color += sweep * 0.12 * uActive;
+
+    // Inactive slides recede: darker and desaturated toward luminance. The
+    // active slide gets a slight lift so dark screenshots still read clearly.
     float luma = dot(color, vec3(0.299, 0.587, 0.114));
-    color = mix(vec3(luma) * 0.35, color, mix(0.25, 1.0, uActive));
-    color *= mix(0.45, 1.0, uActive);
+    color = mix(vec3(luma) * 0.4, color, mix(0.35, 1.0, uActive));
+    color *= mix(0.55, 1.12, uActive);
 
     // Rounded-corner mask, antialiased against the derivative.
     float d = roundedRectSdf(vUv, uPlaneSize, uRadius);

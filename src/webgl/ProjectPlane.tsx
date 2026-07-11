@@ -42,23 +42,39 @@ export function ProjectPlane({ texture, index, progressRef }: ProjectPlaneProps)
     [map]
   );
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!mesh.current) return;
 
+    const t = state.clock.elapsedTime;
     const offset = index - (progressRef.current ?? 0);
     const distance = Math.abs(offset);
 
+    // Idle life: a slow breathing float, phase-offset per slide, so the scene
+    // is never fully static even when the user is not scrolling.
+    const floatY = Math.sin(t * 0.6 + index * 1.7) * 0.12;
+    const floatX = Math.cos(t * 0.4 + index * 2.1) * 0.08;
+
+    // Cursor parallax: the active plane leans toward the pointer. state.pointer
+    // is normalised to [-1, 1]; the pull fades out on inactive slides.
+    const pull = Math.max(0, 1 - distance);
+    const px = state.pointer.x * pull;
+    const py = state.pointer.y * pull;
+
     // Stack the slides vertically, receding and tilting away from the centre.
-    mesh.current.position.y = -offset * SLIDE_GAP;
+    mesh.current.position.y = -offset * SLIDE_GAP + floatY;
+    mesh.current.position.x = floatX + px * 0.35;
     mesh.current.position.z = -distance * 2.6;
-    mesh.current.rotation.x = offset * 0.22;
+    mesh.current.rotation.x = offset * 0.22 - py * 0.12 + Math.sin(t * 0.5 + index) * 0.01;
+    mesh.current.rotation.y = px * 0.16;
     mesh.current.rotation.z = -0.045;
 
     const scale = 1 - Math.min(distance, 3) * 0.05;
     mesh.current.scale.setScalar(scale);
 
     // Active-ness drives colour, brightness, and the rim light in the shader.
-    const active = Math.max(0, 1 - distance * 1.15);
+    // Falls off gently so a plane stays vivid through the transition rather than
+    // dimming into the valley between two slides.
+    const active = Math.max(0, 1 - distance * 0.8);
     uniforms.uActive.value = lerp(uniforms.uActive.value, active, Math.min(1, delta * 8));
 
     // Cull far slides rather than paying to blend them.
