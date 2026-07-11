@@ -7,10 +7,13 @@ import type { Project } from "@/types/content";
 import { clamp } from "@/lib/utils";
 import { ProjectPlane } from "./ProjectPlane";
 import { Backdrop } from "./Backdrop";
+import { Particles } from "./Particles";
 
 interface CarouselProps {
   projects: Project[];
   progressRef: React.RefObject<number>;
+  /** Particle count; the caller drops it on weak GPUs. */
+  particleCount: number;
 }
 
 /**
@@ -25,7 +28,7 @@ interface CarouselProps {
  * themselves), which is most of what makes the scene feel alive rather than a
  * slideshow.
  */
-export function Carousel({ projects, progressRef }: CarouselProps) {
+export function Carousel({ projects, progressRef, particleCount }: CarouselProps) {
   const scene = useThree((state) => state.scene);
   const camera = useThree((state) => state.camera);
 
@@ -65,6 +68,7 @@ export function Carousel({ projects, progressRef }: CarouselProps) {
   return (
     <group>
       <Backdrop colorRef={colorRef} />
+      {particleCount > 0 && <Particles count={particleCount} />}
       {projects.map((project, index) => (
         <ProjectPlane
           key={project.title}

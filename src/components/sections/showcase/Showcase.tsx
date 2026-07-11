@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import type { Project } from "@/types/content";
 import { useScrollProgress } from "@/hooks/useScrollProgress";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { gsap, useGSAP, registerGsap } from "@/lib/gsap";
+import { duration, gsapEase, stagger } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { ScrollWaveform } from "./ScrollWaveform";
 import styles from "./Showcase.module.css";
@@ -43,6 +45,31 @@ export function Showcase({ projects }: ShowcaseProps) {
   useEffect(() => {
     setSupported(detectWebgl());
   }, []);
+
+  // Reveal the headline + tagline whenever the active slide changes. GSAP is
+  // already loaded on this route (SmoothScroll, Reveal), so this adds no bundle
+  // weight — using framer-motion here pushed First Load over the 180 kB budget.
+  // Declared before any early return so hook order stays stable; the effect
+  // no-ops on the fallback path, where overlayRef never attaches.
+  const overlayRef = useRef<HTMLDivElement>(null);
+  useGSAP(
+    () => {
+      if (reduced || !overlayRef.current) return;
+      registerGsap();
+      const lines = overlayRef.current.querySelectorAll(`.${styles.line}`);
+      gsap.fromTo(
+        lines,
+        { yPercent: 110 },
+        { yPercent: 0, duration: duration.base, ease: gsapEase.out, stagger: stagger.tight }
+      );
+      gsap.fromTo(
+        overlayRef.current.querySelector(`.${styles.tagline}`),
+        { opacity: 0, y: 12 },
+        { opacity: 1, y: 0, duration: duration.base, ease: gsapEase.out, delay: 0.08 }
+      );
+    },
+    { dependencies: [activeIndex, reduced], scope: overlayRef }
+  );
 
   // `null` means we have not probed yet — render nothing 3D during that frame
   // rather than mounting a canvas we may immediately tear down.
@@ -83,11 +110,11 @@ export function Showcase({ projects }: ShowcaseProps) {
       <div className={styles.sticky}>
         {useCanvas && <Scene projects={projects} progressRef={progressRef} />}
 
-        <div className={styles.overlay}>
+        <div className={styles.overlay} ref={overlayRef}>
           <h2 className={styles.headline}>
             {active.displayTitle.map((line) => (
-              <span key={line} className={styles.line}>
-                {line}
+              <span key={line} className={styles.lineMask}>
+                <span className={styles.line}>{line}</span>
               </span>
             ))}
           </h2>

@@ -38,7 +38,11 @@ export function Scene({ projects, progressRef }: SceneProps) {
       <AdaptiveDpr pixelated />
 
       <Suspense fallback={null}>
-        <Carousel projects={projects} progressRef={progressRef} />
+        <Carousel
+          projects={projects}
+          progressRef={progressRef}
+          particleCount={degraded ? 120 : 340}
+        />
       </Suspense>
 
       {!reduced && !degraded && (

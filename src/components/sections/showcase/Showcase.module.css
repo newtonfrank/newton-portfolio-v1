@@ -45,8 +45,15 @@
   text-shadow: 0 0.06em 0.5em rgba(0, 0, 0, 0.45);
 }
 
+/* Mask each headline line so it can translate in/out behind a clip edge. */
+.lineMask {
+  display: block;
+  overflow: hidden;
+}
+
 .line {
   display: block;
+  will-change: transform;
 }
 
 .tagline {

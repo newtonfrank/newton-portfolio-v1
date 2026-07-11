@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/styles/reset.css";
 import "@/styles/typography.css";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { CustomCursor } from "@/components/layout/CustomCursor";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/hero/Hero";
@@ -22,6 +23,7 @@ export const metadata: Metadata = {
 export default function PreviewPage() {
   return (
     <SmoothScroll>
+      <CustomCursor />
       <div className={styles.page}>
         <SkipLink />
         <Header />
