@@ -1,5 +1,5 @@
 .waveform {
-  position: fixed;
+  position: absolute;
   inset-block-end: var(--space-6);
   inset-inline: 0;
   z-index: 3;

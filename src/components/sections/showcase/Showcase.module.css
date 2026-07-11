@@ -1,23 +1,27 @@
+/* Tall enough to scrub through every slide. The sticky child below pins to the
+   viewport while this section passes, then releases — so the Hero above and any
+   section below are never covered by the canvas. */
 .section {
   position: relative;
-}
-
-/* The canvas is fixed; this tall block is what the user actually scrolls. */
-.scroller {
   height: calc(var(--slide-count) * 100vh);
 }
 
-.overlay {
-  position: fixed;
+.sticky {
+  position: sticky;
   inset-block-start: 0;
-  inset-inline-start: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
   z-index: 2;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  height: 100dvh;
   padding-inline-start: var(--container-pad);
   padding-block: var(--space-8);
 

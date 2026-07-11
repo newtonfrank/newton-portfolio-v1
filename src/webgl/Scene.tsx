@@ -31,7 +31,7 @@ export function Scene({ projects, progressRef }: SceneProps) {
       camera={{ position: [0, 0, 9], fov: 42 }}
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
-      style={{ position: "fixed", inset: 0, pointerEvents: "none" }}
+      style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
       frameloop={reduced ? "demand" : "always"}
     >
       <PerformanceMonitor onDecline={() => setDegraded(true)} />

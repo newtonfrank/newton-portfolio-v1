@@ -90,10 +90,12 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} ${clashDisplay.variable} ${generalSans.variable} ${anton.variable} font-sans antialiased overflow-x-hidden`}
-      >
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${jetbrainsMono.variable} ${poppins.variable} ${clashDisplay.variable} ${generalSans.variable} ${anton.variable}`}
+    >
+      <body className="font-sans antialiased overflow-x-hidden">
         {/* Subtle grain overlay */}
         <div className="grain-overlay" />
 

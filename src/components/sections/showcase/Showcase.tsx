@@ -80,37 +80,37 @@ export function Showcase({ projects }: ShowcaseProps) {
       className={styles.section}
       style={{ ["--slide-count" as string]: projects.length }}
     >
-      {useCanvas && <Scene projects={projects} progressRef={progressRef} />}
+      <div className={styles.sticky}>
+        {useCanvas && <Scene projects={projects} progressRef={progressRef} />}
 
-      <div className={styles.scroller} aria-hidden="true" />
+        <div className={styles.overlay}>
+          <h2 className={styles.headline}>
+            {active.displayTitle.map((line) => (
+              <span key={line} className={styles.line}>
+                {line}
+              </span>
+            ))}
+          </h2>
 
-      <div className={styles.overlay}>
-        <h2 className={styles.headline}>
-          {active.displayTitle.map((line) => (
-            <span key={line} className={styles.line}>
-              {line}
-            </span>
-          ))}
-        </h2>
+          <p className={cn(styles.tagline, "bodyL")}>{active.tagline}</p>
 
-        <p className={cn(styles.tagline, "bodyL")}>{active.tagline}</p>
-
-        <div className={styles.actions}>
-          {active.href ? (
-            <a href={active.href} target="_blank" rel="noreferrer" className={styles.pill}>
-              Open
-            </a>
-          ) : (
-            <span className={styles.pill}>Case study soon</span>
-          )}
+          <div className={styles.actions}>
+            {active.href ? (
+              <a href={active.href} target="_blank" rel="noreferrer" className={styles.pill}>
+                Open
+              </a>
+            ) : (
+              <span className={styles.pill}>Case study soon</span>
+            )}
+          </div>
         </div>
-      </div>
 
-      <ScrollWaveform
-        slideCount={projects.length}
-        progressRef={progressRef}
-        sectionRef={sectionRef}
-      />
+        <ScrollWaveform
+          slideCount={projects.length}
+          progressRef={progressRef}
+          sectionRef={sectionRef}
+        />
+      </div>
     </section>
   );
 }
