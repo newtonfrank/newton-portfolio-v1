@@ -19,6 +19,13 @@ body {
   min-height: 100dvh;
   line-height: var(--lh-normal);
   -webkit-font-smoothing: antialiased;
+  /* Base surface behind the page. Stays on the :root (ink) tokens so the
+     overscroll gutters match the dark Contact close; the page itself flips to
+     the light surface via `data-theme="light"` on its wrapper. */
+  background-color: var(--ink);
+  color: var(--bone);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
 img,

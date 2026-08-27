@@ -827,7 +827,7 @@ These were found during the M0 audit. They are real and should be tracked, but e
 |---|---|---|
 | **Contact form is non-functional** | `Contact.tsx:10-14` — `handleSubmit` sets `sent = true` and never sends. No fetch, no action, no provider. It reports "Message Sent" and discards the message. | M4 (`TASKS.md` → "Contact form (working + spam-guarded)") |
 | `/` ships **225 kB** First Load JS vs. the 180 kB budget — before any WebGL or GSAP | `next build` output; `vendor-react` chunk alone is 176 kB, forced onto every route by the custom `splitChunks` in `next.config.js` | M9 (Performance) |
-| `public/` is **30 MB**. `newton-profile.jpg` is **3.0 MB** and is the declared 1200×630 OG image; `newton-profile.png` is 7.0 MB | `du -sh public` | M9 (Performance) |
+| `public/` is **30 MB**. `newton-profile.png` is **3.0 MB** and is the declared 1200×630 OG image; `newton-profile.png` is 7.0 MB | `du -sh public` | M9 (Performance) |
 | Every one of the 22 components is `"use client"`; zero RSC | `grep -rl '"use client"' src` returns 22 of 22 `.tsx` | M1–M2 (rewrite) |
 | `DesignWork` uses raw `<img>`, not `next/image` | `DesignWork.tsx:111,164` | M5 |
 | Design filenames contain spaces and `WhatsApp Image ...` timestamps | `public/design/` | M5 (rename on migration) |

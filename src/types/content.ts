@@ -14,6 +14,11 @@ export interface Project {
   displayTitle: string[];
   /** One-line subtitle beneath the headline. */
   tagline: string;
+  /**
+   * Short right-aligned discipline label for the editorial project list, e.g.
+   * "Frontend · API". Mirrors the reference's "Design & Development" column.
+   */
+  category: string;
   /** Ambient scene colour while this project is the active slide. */
   ambient: string;
   /**

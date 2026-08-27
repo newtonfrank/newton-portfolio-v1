@@ -1,59 +1,43 @@
-"use client";
+import { SmoothScroll } from "@/components/layout/SmoothScroll";
+import { CustomCursor } from "@/components/layout/CustomCursor";
+import { SkipLink } from "@/components/layout/SkipLink";
+import { Header } from "@/components/layout/Header";
+import { Hero } from "@/components/sections/hero/Hero";
+import { Intro } from "@/components/sections/intro/Intro";
+import { ProjectList } from "@/components/sections/work/ProjectList";
+import { WorkGrid } from "@/components/sections/work/WorkGrid";
+import { Capabilities } from "@/components/sections/capabilities/Capabilities";
+import { Experience } from "@/components/sections/experience/Experience";
+import { Contact } from "@/components/sections/contact/Contact";
+import { projects } from "@/content/projects";
+import styles from "./page.module.css";
 
-import dynamic from "next/dynamic";
-import { Hero } from "@/components/sections/Hero";
-
-const About = dynamic(
-  () => import("@/components/sections/About").then((m) => ({ default: m.About })),
-  { ssr: false }
-);
-
-const ProjectsSection = dynamic(
-  () => import("@/components/sections/TechnicalProjects").then((m) => ({ default: m.TechnicalProjects })),
-  { ssr: false }
-);
-
-const DesignWork = dynamic(
-  () => import("@/components/sections/DesignWork").then((m) => ({ default: m.DesignWork })),
-  { ssr: false }
-);
-
-const StackMarquee = dynamic(
-  () => import("@/components/sections/Skills").then((m) => ({ default: m.Skills })),
-  { ssr: false }
-);
-
-const Contact = dynamic(
-  () => import("@/components/sections/Contact").then((m) => ({ default: m.Contact })),
-  { ssr: false }
-);
-
-const Footer = dynamic(
-  () => import("@/components/sections/Footer").then((m) => ({ default: m.Footer })),
-  { ssr: false }
-);
-
-const SmoothScroll = dynamic(
-  () => import("@/components/ui/smooth-scroll").then((m) => ({ default: m.SmoothScroll })),
-  { ssr: false }
-);
-
+/**
+ * The editorial home. Runs on the light token surface (`data-theme="light"`);
+ * the Contact section flips itself back to ink locally. This composition was
+ * validated on the /preview route and promoted here as the production homepage.
+ *
+ * A server component: the sections are client islands that still SSR to static
+ * HTML, so the hero portrait (the LCP element) is in the initial paint rather
+ * than gated behind a client-only dynamic import.
+ */
 export default function Home() {
   return (
     <SmoothScroll>
-      <main>
-        <Hero />
-        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
-        <About />
-        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
-        <ProjectsSection />
-        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
-        <DesignWork />
-        <div className="spectrum-divider mx-auto w-full max-w-6xl" />
-        <StackMarquee />
-        <Contact />
-        <Footer />
-      </main>
+      <CustomCursor />
+      <div className={styles.page} data-theme="light">
+        <SkipLink />
+        <Header />
+        <main id="main">
+          <Hero />
+          <Intro />
+          <ProjectList projects={projects} />
+          <WorkGrid />
+          <Capabilities />
+          <Experience />
+          <Contact />
+        </main>
+      </div>
     </SmoothScroll>
   );
 }

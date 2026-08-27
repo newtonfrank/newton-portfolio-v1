@@ -43,7 +43,7 @@ A modern, responsive portfolio website showcasing the work, skills, and experien
 newton-portfolio-v1/
 ├── public/                 # Static assets (images, resume, favicon)
 │   ├── favicon.png         # Website favicon
-│   ├── newton-profile.jpg  # Profile image
+│   ├── newton-profile.png  # Profile image
 │   ├── Newton_Resume.pdf   # Professional resume
 │   ├── *.png              # Project screenshots
 │   └── *.txt              # Resume text file

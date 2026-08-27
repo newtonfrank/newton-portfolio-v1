@@ -3,41 +3,64 @@
 import { useEffect, useState } from "react";
 import { primaryNav, site } from "@/content/site";
 import { cn } from "@/lib/utils";
+import { MenuOverlay } from "./MenuOverlay";
 import styles from "./Header.module.css";
 
 /**
- * Transparent over the hero, gaining a frosted --glass background once past it.
- *
- * The scroll listener is passive so it never blocks the compositor, and it
- * toggles a class rather than writing inline styles, keeping the transition
- * declarative in CSS.
- *
- * The overlay menu (03-DESIGN-SYSTEM.md D.4) is not built yet; nav links point
- * at the Home section ids.
+ * Sits transparent at the top of the page and scrolls away with the content —
+ * no pinned bar and no scroll-reactive background. The right-hand circular
+ * toggle opens the full-screen overlay menu — the reference's signature nav
+ * gesture — and doubles as the only nav on mobile, where the inline links are
+ * hidden.
  */
 export function Header() {
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
 
+  // Close on Escape while the overlay is open.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <header className={cn(styles.header, scrolled && styles.scrolled)}>
-      <a href="#hero" className={styles.wordmark}>
-        {site.name}
-      </a>
+    <>
+      <header className={cn(styles.header, open && styles.overlayOpen)}>
+        <a href="#hero" className={styles.wordmark}>
+          <span className={styles.mark}>{site.name}</span>
+          <span className={cn(styles.markMeta, "mono")}>
+            <span className={styles.dot} aria-hidden="true" />
+            Portfolio ’26
+          </span>
+        </a>
 
-      <nav className={styles.nav} aria-label="Primary">
-        {primaryNav.map((link) => (
-          <a key={link.label} href={link.href} className={cn(styles.navLink, "mono")}>
-            {link.label}
-          </a>
-        ))}
-      </nav>
-    </header>
+        <nav className={styles.nav} aria-label="Primary">
+          {primaryNav.map((link) => (
+            <a key={link.label} href={link.href} className={cn(styles.navLink, "mono")}>
+              <span className={styles.navInner}>
+                <span>{link.label}</span>
+                <span aria-hidden="true">{link.label}</span>
+              </span>
+            </a>
+          ))}
+        </nav>
+
+        <button
+          type="button"
+          className={cn(styles.toggle, open && styles.toggleOpen)}
+          aria-expanded={open}
+          aria-controls="menu-overlay"
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen((v) => !v)}
+          data-cursor="hover"
+        >
+          <span className={styles.bar} />
+          <span className={styles.bar} />
+        </button>
+      </header>
+
+      <MenuOverlay open={open} onClose={() => setOpen(false)} />
+    </>
   );
 }

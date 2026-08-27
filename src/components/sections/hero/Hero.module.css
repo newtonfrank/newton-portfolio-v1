@@ -1,62 +1,181 @@
-/* Spec: docs/rebuild/02-STRATEGY.md C.2
- * The WebGL Nexus object lands in M3; this ships without it. */
-
 .hero {
   position: relative;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--space-6);
-  padding: var(--space-10) var(--container-pad) var(--space-8);
-  max-width: var(--container-max);
-  margin-inline: auto;
+  overflow: hidden;
+  isolation: isolate;
+  /* Flat neutral field. The cut-out portrait sits on this uniform ground so the
+     name reads in a single colour across the whole width. Kept a light warm grey
+     (not near-white) so it sits with the portrait's warm studio light while still
+     holding tone against the subject's white shirt. */
+  background-color: #d0d0d0;
 }
 
-.eyebrow {
-  color: var(--bone-subtle);
+/* Accessible name/role; the visible name is a decorative marquee. */
+.srName {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
-.headline {
-  color: var(--bone);
-  max-width: 18ch;
+.portrait {
+  position: absolute;
+  /* Headroom below the header; subject stands on the base of the viewport. */
+  inset: clamp(4.5rem, 11vh, 8rem) 0 0 0;
+  z-index: 0;
 }
 
-.tagline {
-  color: var(--bone-muted);
-  max-width: 52ch;
+.image {
+  object-fit: contain;
+  object-position: 50% 100%;
 }
 
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-4);
-  margin-block-start: var(--space-4);
+/* Quiet UI layer over the portrait. */
+.chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
 }
 
-.pill {
+.locate,
+.role {
+  position: absolute;
+  pointer-events: auto;
+}
+
+/* Dark location pill, lower-left. */
+.locate {
+  left: var(--container-pad);
+  top: 56%;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-2) var(--space-4);
-  border: 1px solid var(--line-strong);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
   border-radius: var(--radius-full);
-  color: var(--bone-muted);
+  /* Hard-coded: the hero field is a fixed literal, so the chrome must not flip
+     with the page theme tokens (which invert under data-theme="light"). */
+  background: #131318;
+  color: #f4f3ee;
+  /* Honour the explicit newline in the status so "Available —" and the city sit
+     on two lines; the pill's rounded field wraps the block snugly. */
+  white-space: pre-line;
+  line-height: 1.3;
 }
 
-.dot {
-  width: var(--space-2);
-  height: var(--space-2);
-  border-radius: var(--radius-full);
-  background-color: var(--success);
+.globe {
   flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  inline-size: 2.4rem;
+  block-size: 2.4rem;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.14);
 }
 
-.meta {
-  margin-block-start: auto;
+.globe svg {
+  inline-size: 1.35rem;
+  block-size: 1.35rem;
+  /* Slow ambient turn — reads as a spinning world/web mark without the busyness
+     of a loader. Flat 2D rotation works because the meridian arcs are symmetric.
+     transform-box: fill-box pins the pivot to the glyph's own box. */
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: globe-spin 14s linear infinite;
+}
+
+@keyframes globe-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Honour the site's motion discipline: no ambient loop under reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  .globe svg {
+    animation: none;
+  }
+}
+
+/* Role + scroll cue, right of centre. */
+.role {
+  right: var(--container-pad);
+  top: 42%;
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-5);
-  color: var(--bone-subtle);
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-4);
+  text-align: end;
+  color: #131318;
+}
+
+.arrow svg {
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+}
+
+.roleText {
+  font-size: var(--fs-body);
+  line-height: 1.4;
+  max-inline-size: 16ch;
+}
+
+/* Right-to-left name marquee across the base, overlapping the lower torso. */
+.marquee {
+  position: absolute;
+  inset-inline: 0;
+  bottom: clamp(0.25rem, 2vh, 1.5rem);
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.track {
+  display: inline-flex;
+  inline-size: max-content;
+  white-space: nowrap;
+  /* Position is driven by scroll (see Hero.tsx): scroll down → right-to-left,
+     scroll up → left-to-right. */
+  will-change: transform;
+}
+
+.word {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: clamp(4.5rem, 17vw, 20rem);
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  /* Soft charcoal, not pure black — a quiet name across the base that reads on
+     the light field without competing with the portrait. */
+  color: #33363d;
+}
+
+.sep {
+  color: rgba(51, 54, 61, 0.5);
+}
+
+@media (max-width: 48rem) {
+  /* Contain leaves a tall gap on narrow viewports; fill instead (shoulders
+     crop, face intact). */
+  .image {
+    object-fit: cover;
+    object-position: 50% 35%;
+  }
+
+  .role {
+    top: 28%;
+  }
+
+  .locate {
+    top: 62%;
+  }
+
+  .word {
+    font-size: clamp(3.5rem, 22vw, 9rem);
+  }
 }

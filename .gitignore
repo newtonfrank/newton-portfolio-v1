@@ -56,3 +56,7 @@ docs/rebuild/*.zip
 
 # Font sources — the woff2 build outputs live in src/fonts/ and are committed
 public/fonts/
+
+# Reference captures — large local-only media, not build inputs
+docs/ref/**/*.mp4
+docs/results/

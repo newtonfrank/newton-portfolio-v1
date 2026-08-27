@@ -40,3 +40,8 @@
   margin-inline-start: -29px;
   background-color: rgba(255, 255, 255, 0.12);
 }
+
+/* Suppressed while another surface supplies its own cursor (project preview). */
+.hidden {
+  opacity: 0;
+}

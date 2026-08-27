@@ -1,0 +1,39 @@
+.intro {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--container-pad);
+  display: grid;
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* Lead + CTA grouped as one unit. */
+.pitch {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-7);
+}
+
+.lead {
+  font-family: var(--font-sans);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  color: var(--bone);
+  max-inline-size: 24ch;
+}
+
+.secondary {
+  color: var(--bone-muted);
+  max-inline-size: 44ch;
+}
+
+@media (min-width: 64rem) {
+  .intro {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-9);
+    align-items: start;
+  }
+}

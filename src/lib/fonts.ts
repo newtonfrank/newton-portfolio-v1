@@ -1,47 +1,19 @@
 import localFont from "next/font/local";
-import { Anton, Bebas_Neue, Oswald, Saira_Condensed } from "next/font/google";
+import { Anton } from "next/font/google";
 
 /**
- * Condensed display face for the carousel headlines.
+ * Condensed display face for the overlay menu's large links.
  *
- * The reference (docs/ref/) uses Tungsten — a commercial Hoefler&Co face that
- * cannot legally be self-hosted without a webfont licence. Anton is the closest
- * free equivalent (SIL Open Font License): same ultra-condensed, high-contrast,
- * all-caps grotesque, one weight only.
+ * The reference uses Tungsten — a commercial Hoefler&Co face that cannot legally
+ * be self-hosted without a webfont licence. Anton is the closest free equivalent
+ * (SIL Open Font License): same ultra-condensed, high-contrast, all-caps
+ * grotesque, one weight only. It only appears inside the (below-the-fold,
+ * on-demand) menu, so it is not preloaded.
  */
 export const anton = Anton({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-anton",
-  display: "swap",
-});
-
-/**
- * Candidates for the condensed display face, rendered side by side on
- * /styleguide so the choice can be made by eye rather than by description.
- * `preload: false` — /styleguide is noindex and nothing else loads these.
- * Delete the losers once a face is chosen.
- */
-export const bebasNeue = Bebas_Neue({
-  subsets: ["latin"],
-  weight: "400",
-  variable: "--font-bebas",
-  display: "swap",
-  preload: false,
-});
-
-export const oswald = Oswald({
-  subsets: ["latin"],
-  weight: ["500", "600"],
-  variable: "--font-oswald",
-  display: "swap",
-  preload: false,
-});
-
-export const saira = Saira_Condensed({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-saira",
   display: "swap",
   preload: false,
 });
@@ -53,10 +25,9 @@ export const saira = Saira_Condensed({
  *
  * next/font hashes and serves these from /_next/static/media, injects
  * `size-adjust` fallback metrics to prevent layout shift, and preloads them.
- * The original OTFs stay in public/fonts as the source of truth but are
- * gitignored, so they never reach the deploy.
+ * These are the homepage's critical faces (the hero name is Clash Display, body
+ * is General Sans), so both are preloaded.
  */
-
 export const clashDisplay = localFont({
   src: [
     { path: "../fonts/ClashDisplay-Regular.woff2", weight: "400", style: "normal" },
@@ -66,11 +37,7 @@ export const clashDisplay = localFont({
   variable: "--font-clash-display",
   display: "swap",
   fallback: ["system-ui", "sans-serif"],
-  // Only /styleguide uses these today; the legacy homepage still runs on
-  // Inter/Poppins. Preloading here would add render-blocking font requests to
-  // every page for nothing. Flip back to `true` in M2, once the legacy faces
-  // are gone and the hero actually renders in Clash Display.
-  preload: false,
+  preload: true,
 });
 
 export const generalSans = localFont({
@@ -81,5 +48,5 @@ export const generalSans = localFont({
   variable: "--font-general-sans",
   display: "swap",
   fallback: ["system-ui", "sans-serif"],
-  preload: false,
+  preload: true,
 });

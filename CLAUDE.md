@@ -4,45 +4,61 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Next.js portfolio site for Newton Frank. A single route (`/`) composed of seven
-sections, with a light editorial aesthetic.
+Next.js portfolio site for Newton Frank — a **fullstack developer & product
+designer** (early-career; 2025 grad, two internships). A single route (`/`) with
+a **light editorial aesthetic** (Snellenberg-style), on a dark-first token system.
 
-A full rebuild — codenamed "The Nexus" — is specced under `docs/rebuild/`. That
-spec describes a **target**, not the present codebase. Read
-`docs/rebuild/BUILD_GUIDE.md` before writing new code, and
-`docs/superpowers/plans/` for in-flight plans.
+The engineering handbook is `docs/rebuild/BUILD_GUIDE.md` — **read it before
+writing code.** Its golden rule: *tokens are law* (never hard-code a colour,
+space, type size, or duration). `docs/superpowers/specs/` holds a dated design
+spec per change.
 
 ## Current State
 
-The M0 audit (2026-07-09) found the previous version of this file describing
-features that did not exist. What follows is verified against the source.
+This repo was **consolidated on 2026-07-13** (see the design audit and the
+`portfolio-consolidation` memory). Until then it carried two parallel worlds — a
+legacy homepage and an editorial `/preview`. The editorial build was **promoted
+to `/`** and the legacy world deleted. What follows is verified against source.
 
-- **No 3D.** There are zero imports of `three` or `@react-three/*`. Those
-  packages were removed.
-- **No GSAP.** Animation is `framer-motion` only.
-- **No global state.** `useSpectrum` (the "Nexus" dev↔design theme spectrum) and
-  `useTechStore` were unreachable dead code — no route ever mounted them, and no
-  CSS ever responded to the classes they set. Both were deleted.
-- **No React Server Components.** Every component is `"use client"`.
-- **Nothing on the page is server-rendered.** `page.tsx` wraps all sections in
-  `<SmoothScroll>`, which is `dynamic(..., { ssr: false })`. The prerendered HTML
-  contains only `<head>`, the grain overlay, and JSON-LD. The hero headline and
-  LCP image render after hydration.
-- Smooth scroll is `lenis`, via `src/components/ui/smooth-scroll.tsx`.
-- Styling is Tailwind CSS v3 plus CSS custom properties in `src/app/globals.css`.
+- **The home is the editorial composition:** Hero → Intro → ProjectList →
+  WorkGrid → Capabilities → Experience → Contact.
+- **`page.tsx` is a server component.** Sections are `"use client"` islands that
+  still SSR to static HTML, so the hero portrait (the LCP element) is in the
+  initial paint — not gated behind a client-only dynamic import.
+- **Theme:** light editorial. The page wrapper is `data-theme="light"`; the
+  Contact section and the MenuOverlay flip to `data-theme="dark"` locally. The
+  `<body>` stays on the `:root` (ink) tokens so overscroll gutters match the dark
+  Contact close.
+- **Stack:** Next 15 (App Router) · React 19 · TypeScript strict · CSS Modules +
+  custom-property tokens · Framer Motion + GSAP/ScrollTrigger + Lenis smooth
+  scroll. **No three.js** — the R3F carousel was orphaned and removed.
+- **Design system:** `styles/tokens.css` (Ink/Bone surfaces + the Signal/Ember
+  duality), `lib/motion.ts` (durations, eases, stagger, lerp — mirrors the CSS).
+  Fonts: self-hosted **Clash Display** (display) + **General Sans** (body) via
+  `lib/fonts.ts`, plus **Anton** (condensed, menu only) and **JetBrains Mono**.
 
 ## Architecture & Structure
 
-- `src/app/` — routes, metadata, `globals.css`, `sitemap.ts`, `robots.ts`, `manifest.ts`
-- `src/components/sections/` — the seven rendered sections: Hero, About,
-  TechnicalProjects, DesignWork, Skills, Contact, Footer
-- `src/components/ui/` — `smooth-scroll.tsx` (Lenis provider)
-- `src/components/seo/` — `StructuredData.tsx` (JSON-LD)
-- `src/content/` — all copy and project data, typed
-- `src/types/content.ts` — content types
+- `src/app/` — `layout.tsx` (metadata/OG/fonts/JSON-LD), `page.tsx` +
+  `page.module.css` (the home composition), `sitemap.ts`, `robots.ts`,
+  `manifest.ts`, `preview/` (transitional noindex mirror — see Known Issues)
+- `src/components/layout/` — `Header`, `MenuOverlay`, `CustomCursor`,
+  `SmoothScroll` (Lenis+GSAP), `SkipLink`
+- `src/components/sections/<name>/` — `hero`, `intro`, `work`
+  (`ProjectList`/`ProjectRow`/`WorkGrid`), `capabilities`, `experience`,
+  `contact`. One folder + `.module.css` per section.
+- `src/components/ui/` — `MagneticButton`
+- `src/components/motion/` — `Reveal`, `SplitText` (GSAP primitives; **available
+  but not yet wired into the sections**)
+- `src/components/seo/` — `StructuredData.tsx` (Person JSON-LD)
+- `src/hooks/` — `useReducedMotion`, `useFinePointer`, `useScrollProgress`
+- `src/lib/` — `motion.ts`, `gsap.ts`, `fonts.ts`, `breakpoints.ts`,
+  `localTime.ts`, `utils.ts`
+- `src/content/` — `site`, `projects`, `about`, `capabilities`, `design` (+
+  `src/types/content.ts`)
+- `src/styles/` — `tokens.css`, `reset.css`, `typography.css`
 
-**Edit content in `src/content/`, not in components.** The sections are
-presentation only.
+**Edit content in `src/content/`, not in components.** Sections are presentation.
 
 ## Development Commands
 
@@ -56,33 +72,34 @@ npm run typecheck # tsc --noEmit
 npm run format    # prettier --write .
 ```
 
-## Key Files
-
-- `src/app/page.tsx` — the single route; lazy-loads every section below the hero
-- `src/app/layout.tsx` — metadata, OpenGraph, fonts, Analytics, JSON-LD
-- `src/app/globals.css` — Tailwind layers + CSS custom properties
-- `src/content/*` — projects, design gallery, about, skills, site config
-
 ## Gotchas
 
-- **`@fontsource/londrina-solid` and `@fontsource/londrina-outline` look unused
-  but are not.** `Hero.tsx` names `"Londrina Solid"` / `"Londrina Outline"` in
-  inline `fontFamily` styles rather than importing them. A dependency scan will
-  call them dead. They are not.
-- Design filenames in `public/design/` contain spaces and parentheses;
-  `src/content/design.ts` runs them through `encodeURI`.
-- `next.config.js` sets a custom `splitChunks`, which forces a ~176 kB
-  `vendor-react` chunk onto every route.
+- **The duality is structural.** Signal (blue) = the engineering/build axis;
+  Ember (orange) = the design/craft axis. Use one accent moment per viewport, but
+  both across the page (e.g. the Capabilities section). BUILD_GUIDE §6.
+- **Cursor-driven flourishes are gated behind `useFinePointer`.** The custom
+  cursor, magnetic buttons, and the project-list preview follower all fall back
+  to plain static UI on touch and under reduced motion.
+- Design filenames in `public/design/` contain spaces/parens; `content/design.ts`
+  runs them through `encodeURI`.
+- Fonts are self-hosted via `next/font/local`; the woff2 in `src/fonts/` are the
+  source. Clash Display + General Sans are preloaded (hero-critical).
+- `next/font` sets `--font-mono` on `<body>`; that scoped value wins over the
+  `:root` fallback in `tokens.css`.
 
-## Known Issues
+## Known Issues / Follow-ups
 
-- **The contact form does not send anything.** `Contact.tsx` `handleSubmit`
-  calls `preventDefault()`, sets `sent = true`, and resets after 2.6s. There is
-  no fetch, no action, no provider. It reports "Message Sent" and discards the
-  message.
-- `/` ships ~226 kB First Load JS against the 180 kB budget in
-  `docs/rebuild/BUILD_GUIDE.md §8` — before any WebGL or GSAP is added.
-- `public/` is ~30 MB. `newton-profile.jpg` is 3.0 MB and is the declared
-  1200×630 OG image; `newton-profile.png` is 7.0 MB.
-- `DesignWork.tsx` and `TechnicalProjects.tsx` use raw `<img>`, not `next/image`
-  (`next lint` warns on all three call sites).
+Tracked in the design-audit roadmap (see the `portfolio-consolidation` memory):
+
+- **`/preview` still exists** as a transitional noindex mirror of the homepage.
+  Delete it once `/` is confirmed.
+- **Large unreferenced assets:** `public/newton-profile.png` (7 MB) and `.jpg`
+  (3 MB) were the legacy hero source and are now unused — safe to delete. The OG
+  image is a composed `public/og.jpg` (1200×630, ~29 KB).
+- **Three cursor systems** (`CustomCursor`, the `data-cursor` attributes, and the
+  ProjectList preview follower) are not yet unified into one context-aware
+  cursor — planned P1.
+- **Projects show title + category only.** Metrics, live/repo links, and 1–2 case
+  studies are planned; some proof data already sits in `content/about.ts`.
+- `motion/Reveal` + `SplitText` are built but **not yet wired** into section
+  reveals.

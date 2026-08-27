@@ -18,6 +18,9 @@ export function CustomCursor() {
   const reduced = useReducedMotion();
   const [enabled, setEnabled] = useState(false);
   const [hovering, setHovering] = useState(false);
+  // Hidden entirely while over a surface that supplies its own cursor visual —
+  // e.g. the project list's floating "View" preview.
+  const [suppressed, setSuppressed] = useState(false);
 
   const dot = useRef<HTMLDivElement>(null);
   const ring = useRef<HTMLDivElement>(null);
@@ -49,6 +52,7 @@ export function CustomCursor() {
     // Delegate hover state to any interactive ancestor.
     const onOver = (e: PointerEvent) => {
       const el = e.target as Element | null;
+      setSuppressed(Boolean(el?.closest('[data-cursor="none"]')));
       setHovering(Boolean(el?.closest('a, button, [data-cursor="hover"]')));
     };
 
@@ -77,8 +81,11 @@ export function CustomCursor() {
 
   return (
     <div aria-hidden="true">
-      <div ref={dot} className={styles.dot} />
-      <div ref={ring} className={cn(styles.ring, hovering && styles.ringHover)} />
+      <div ref={dot} className={cn(styles.dot, suppressed && styles.hidden)} />
+      <div
+        ref={ring}
+        className={cn(styles.ring, hovering && styles.ringHover, suppressed && styles.hidden)}
+      />
     </div>
   );
 }
