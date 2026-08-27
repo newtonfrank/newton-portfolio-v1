@@ -13,17 +13,6 @@ export const site: SiteConfig = {
   availability: "Available for work",
 };
 
-/**
- * Legacy nav, consumed by the old Hero on `/`. Its anchors (#projects, #stack)
- * only exist in the sections being replaced. Delete this with them.
- */
-export const navLinks: NavLink[] = [
-  { href: "#about", label: "About" },
-  { href: "#projects", label: "Technical" },
-  { href: "#design", label: "Design" },
-  { href: "#stack", label: "Skills" },
-];
-
 /** Nav for the new Home. Anchors match the sections in the M2 rebuild. */
 export const primaryNav: NavLink[] = [
   { href: "#work", label: "Work" },

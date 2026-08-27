@@ -124,12 +124,56 @@
   transform: scale(1);
 }
 
-/* Each frame fills the clipped frame and stacks; AnimatePresence slides the
- * incoming one in and the outgoing one out (see `slide` in ProjectList.tsx). */
+/* Each frame fills the clipped frame and stacks. Travelling *down* the list
+ * sends the incoming frame up from below while the outgoing one leaves through
+ * the top; travelling up reverses it — so the reveal tracks the pointer's own
+ * direction instead of cross-fading. The first reveal has nothing to slide
+ * past, so it just appears. Under reduced motion the global floor in reset.css
+ * collapses these to an instant swap. */
 .previewSlide {
   position: absolute;
   inset: 0;
   will-change: transform;
+}
+
+.previewSlide[data-enter="up"] {
+  animation: preview-in-up var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-enter="down"] {
+  animation: preview-in-down var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-exit="up"] {
+  animation: preview-out-up var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-exit="down"] {
+  animation: preview-out-down var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes preview-in-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes preview-in-down {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes preview-out-up {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes preview-out-down {
+  to {
+    transform: translateY(100%);
+  }
 }
 
 .previewImg {

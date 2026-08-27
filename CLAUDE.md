@@ -30,8 +30,11 @@ to `/`** and the legacy world deleted. What follows is verified against source.
   `<body>` stays on the `:root` (ink) tokens so overscroll gutters match the dark
   Contact close.
 - **Stack:** Next 15 (App Router) · React 19 · TypeScript strict · CSS Modules +
-  custom-property tokens · Framer Motion + GSAP/ScrollTrigger + Lenis smooth
-  scroll. **No three.js** — the R3F carousel was orphaned and removed.
+  custom-property tokens · GSAP/ScrollTrigger + Lenis smooth scroll.
+  **No three.js** — the R3F carousel was orphaned and removed. **No Tailwind**
+  and **no Framer Motion** — Tailwind was never actually loaded (the only file
+  using it, `not-found.tsx`, rendered unstyled), and Framer Motion had one
+  caller, now plain CSS keyframes. PostCSS went with Tailwind.
 - **Design system:** `styles/tokens.css` (Ink/Bone surfaces + the Signal/Ember
   duality), `lib/motion.ts` (durations, eases, stagger, lerp — mirrors the CSS).
   Fonts: self-hosted **Clash Display** (display) + **General Sans** (body) via
@@ -41,7 +44,7 @@ to `/`** and the legacy world deleted. What follows is verified against source.
 
 - `src/app/` — `layout.tsx` (metadata/OG/fonts/JSON-LD), `page.tsx` +
   `page.module.css` (the home composition), `sitemap.ts`, `robots.ts`,
-  `manifest.ts`, `preview/` (transitional noindex mirror — see Known Issues)
+  `manifest.ts`, `not-found.tsx`
 - `src/components/layout/` — `Header`, `MenuOverlay`, `CustomCursor`,
   `SmoothScroll` (Lenis+GSAP), `SkipLink`
 - `src/components/sections/<name>/` — `hero`, `intro`, `work`
@@ -91,15 +94,32 @@ npm run format    # prettier --write .
 
 Tracked in the design-audit roadmap (see the `portfolio-consolidation` memory):
 
-- **`/preview` still exists** as a transitional noindex mirror of the homepage.
-  Delete it once `/` is confirmed.
-- **Large unreferenced assets:** `public/newton-profile.png` (7 MB) and `.jpg`
-  (3 MB) were the legacy hero source and are now unused — safe to delete. The OG
-  image is a composed `public/og.jpg` (1200×630, ~29 KB).
+- **GSAP ships for a rAF loop.** `SmoothScroll` is its only caller
+  (`gsap.ticker` + `ScrollTrigger.update`), and the components that justify it —
+  `motion/Reveal`, `motion/SplitText` — are imported by nothing. Either wire
+  them into the section reveals or drop GSAP for a plain rAF.
+- **Project rows promise links they don't have.** Only Unipix has an `href`; the
+  other three render as a `<span>` that still shows the `↗`, and are not
+  keyboard-reachable.
+- **Carousel ghosts in `content/projects.ts`:** `displayTitle`, `tagline`,
+  `texture`, `ambient` and `public/showcase/*.jpg` served the deleted R3F
+  scene. `ProjectRow` renders `displayTitle`, so the list shows carousel
+  shorthand ("Healthcare On-Chain") and the canonical `title` never appears.
+- **`MenuOverlay` has no scroll lock or focus return** — Lenis keeps scrolling
+  the page behind the open menu, and closing drops focus rather than returning
+  it to the toggle. Lenis also isn't wired to hash anchors (`anchors: true`).
+- **Copy drift on the title:** `site.tagline` / `headlineTop` say "Frontend
+  developer"; metadata, JSON-LD, and the hero say "Fullstack Developer &
+  Product Designer".
+- **16 hard-coded colours in CSS modules**, against the golden rule — worst in
+  `Header.module.css` (hardcoded ink/bone, so the header can't respond to the
+  theme flip it sits on) and `Hero.module.css`.
+- **No tests**, though Playwright is installed and `content/capabilities.ts`
+  advertises RTL/Selenium.
 - **Three cursor systems** (`CustomCursor`, the `data-cursor` attributes, and the
   ProjectList preview follower) are not yet unified into one context-aware
   cursor — planned P1.
 - **Projects show title + category only.** Metrics, live/repo links, and 1–2 case
   studies are planned; some proof data already sits in `content/about.ts`.
 - `motion/Reveal` + `SplitText` are built but **not yet wired** into section
-  reveals.
+  reveals (see the GSAP note above).

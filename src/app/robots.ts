@@ -7,9 +7,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      // /preview mirrors the homepage while it stays as a transitional
-      // safety net; keep it out of the index.
-      disallow: "/preview",
     },
     sitemap: `${baseUrl}/sitemap.xml`,
   };

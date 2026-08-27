@@ -1,35 +1,42 @@
-"use client";
-
+import type { Metadata } from "next";
 import Link from "next/link";
+import { site } from "@/content/site";
+import { cn } from "@/lib/utils";
+import styles from "./not-found.module.css";
 
+export const metadata: Metadata = {
+  title: "Not found",
+  robots: { index: false, follow: false },
+};
+
+/**
+ * A server component on the ink surface. Deliberately not a card floating on
+ * white — a dead URL should still look like this site, so it borrows the same
+ * condensed display face the menu uses and the ember hover from the close.
+ */
 export default function NotFound() {
   return (
-    <div className="relative z-[9999] flex min-h-screen items-center justify-center bg-[#f2f2f2] p-8 font-mono text-black selection:bg-black selection:text-white">
-      <div className="w-full max-w-3xl space-y-7 rounded-2xl border border-[#cfcfcf] bg-white p-8 shadow-[0_20px_50px_rgba(0,0,0,0.08)]">
-        <h1 className="inline-block border border-black bg-black px-3 py-1 text-lg font-bold text-white">ERROR 404</h1>
+    <main className={styles.page}>
+      <p className={cn(styles.eyebrow, "mono")}>Error 404</p>
 
-        <p className="text-base leading-relaxed text-[#232323]">
-          The requested page could not be found. The route may have changed or the link is no longer active.
-        </p>
+      <p className={styles.code}>Lost</p>
 
-        <div className="space-y-2 text-sm text-[#505050]">
-          <p>Suggested actions:</p>
-          <ul className="list-disc space-y-1 pl-5">
-            <li>Verify the URL spelling and path structure.</li>
-            <li>Return to the homepage and navigate from the main sections.</li>
-            <li>Contact me if you reached this page from an external reference.</li>
-          </ul>
-        </div>
+      <p className={cn(styles.body, "body")}>
+        This page doesn&apos;t exist — or it did, before the site was rebuilt. Everything worth
+        seeing lives on one page now.
+      </p>
 
-        <div className="pt-4">
-          <Link
-            href="/"
-            className="inline-flex items-center rounded-lg bg-black px-4 py-2 text-sm uppercase tracking-[0.14em] text-white transition-colors hover:bg-neutral-800"
-          >
-            Return Home
-          </Link>
-        </div>
+      <div className={styles.actions}>
+        <Link href="/" className={cn(styles.home, "mono")}>
+          Back to the work
+          <span className={styles.arrow} aria-hidden="true">
+            →
+          </span>
+        </Link>
+        <a href={`mailto:${site.email}`} className={cn(styles.email, "mono")}>
+          Or just email me
+        </a>
       </div>
-    </div>
+    </main>
   );
 }

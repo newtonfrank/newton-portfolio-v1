@@ -92,10 +92,10 @@
   --container-pad: clamp(1.25rem, 5vw, 5rem);
   --gutter: clamp(1rem, 2vw, 1.5rem);
 
-  /* ─── Breakpoints (min-widths; mirrored in lib/breakpoints.ts) ───
-   * Custom properties cannot be used in media queries. These exist for
+  /* ─── Breakpoints (min-widths) ───
+   * Custom properties cannot be used in media queries, so these exist for
    * documentation and for JS that reads them; media queries hard-code the
-   * same values, and lib/breakpoints.ts is the TS mirror.
+   * same values.
    */
   --bp-sm: 30rem;
   --bp-md: 48rem;
