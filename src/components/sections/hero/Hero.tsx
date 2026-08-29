@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { hero } from "@/content/site";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+import { useSiteReady } from "@/hooks/useSiteReady";
 import { cn } from "@/lib/utils";
 import styles from "./Hero.module.css";
 
@@ -20,6 +21,7 @@ import styles from "./Hero.module.css";
 export function Hero() {
   const reduced = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
+  const { ready, markAssetReady } = useSiteReady();
 
   // Drive the marquee offset from scroll delta. The strip is duplicated, so the
   // offset wraps within one half-width — and since the two halves are identical,
@@ -72,7 +74,7 @@ export function Hero() {
   const strip = Array.from({ length: 4 }, () => unit);
 
   return (
-    <section id="hero" className={styles.hero}>
+    <section id="hero" className={styles.hero} data-ready={ready ? "true" : "false"}>
       <h1 className={styles.srName}>
         {hero.name.join(" ")} — {hero.role}
       </h1>
@@ -85,6 +87,7 @@ export function Hero() {
           priority
           sizes="100vw"
           className={styles.image}
+          onLoad={markAssetReady}
         />
       </div>
 

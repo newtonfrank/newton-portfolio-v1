@@ -40,3 +40,10 @@ test("the portrait resolves to an unblurred state", async ({ page }) => {
     )
     .toBe(true);
 });
+
+test("the hero reports readiness within the loader cap", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('#hero[data-ready="true"]')).toBeAttached({
+    timeout: 4000,
+  });
+});
