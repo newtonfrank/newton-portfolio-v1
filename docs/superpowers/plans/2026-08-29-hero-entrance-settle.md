@@ -167,24 +167,32 @@ test.describe("reduced motion", () => {
   });
 });
 
-test("the portrait resolves to an unfiltered state", async ({ page }) => {
+// `animation-fill-mode: both` holds the final keyframe, so a filter is always
+// computed once the animation exists — asserting literal "none" here would be
+// unreachable. Assert *unblurred* instead.
+test("the portrait resolves to an unblurred state", async ({ page }) => {
   await page.goto("/");
   await expect
     .poll(
-      () =>
-        page
+      async () => {
+        const filter = await page
           .locator(PORTRAIT)
-          .evaluate((img) => getComputedStyle(img.parentElement!).filter),
+          .evaluate((img) => getComputedStyle(img.parentElement!).filter);
+        return filter === "none" || /blur\(0px\)/.test(filter);
+      },
       { timeout: 5000 },
     )
-    .toBe("none");
+    .toBe(true);
 });
 ```
 
 - [ ] **Step 2: Run them to verify the reduced-motion one passes vacuously and both are meaningful**
 
 Run: `npm run test:e2e`
-Expected: both PASS (there is no filter yet — this is the baseline that must survive Step 3, which is the point).
+Expected: both PASS. There is no filter yet, so these are a baseline that must
+*survive* the feature rather than precede it — which is the right shape for a
+reduced-motion guard. If either fails now, something else is wrong; stop and
+report it.
 
 - [ ] **Step 3: Add the entrance tokens**
 
@@ -467,10 +475,13 @@ Append to `tests/hero-entrance.spec.ts`:
 test("scrolling down carries the marquee left", async ({ page }) => {
   await page.goto("/");
   await page.waitForTimeout(2500);
+  // An untransformed element computes to "none", which the DOMMatrix
+  // constructor rejects — guard before parsing.
   const read = () =>
-    page
-      .locator('[data-track="main"]')
-      .evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+    page.locator('[data-track="main"]').evaluate((el) => {
+      const t = getComputedStyle(el).transform;
+      return t === "none" ? 0 : new DOMMatrixReadOnly(t).m41;
+    });
   const before = await read();
   await page.mouse.wheel(0, 600);
   await page.waitForTimeout(400);
@@ -669,9 +680,8 @@ test("the marquee comes to rest on a whole-unit boundary", async ({ page }) => {
   });
   const drift = await page.locator('[data-track="main"]').evaluate((track) => {
     const unit = (track.firstElementChild as HTMLElement).offsetWidth;
-    const x = Math.abs(
-      new DOMMatrixReadOnly(getComputedStyle(track).transform).m41,
-    );
+    const t = getComputedStyle(track).transform;
+    const x = Math.abs(t === "none" ? 0 : new DOMMatrixReadOnly(t).m41);
     const phase = ((x % unit) + unit) % unit;
     return Math.min(phase, unit - phase);
   });
