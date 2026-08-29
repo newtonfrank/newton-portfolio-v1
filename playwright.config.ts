@@ -11,6 +11,8 @@ export default defineConfig({
   use: {
     baseURL: "http://127.0.0.1:3000",
     ...devices["Desktop Chrome"],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    reducedMotion: "no-preference" as any,
   },
   webServer: {
     command: "npm run build && npm run start",
