@@ -47,3 +47,19 @@ test("the hero reports readiness within the loader cap", async ({ page }) => {
     timeout: 4000,
   });
 });
+
+test("scrolling down carries the marquee left", async ({ page }) => {
+  await page.goto("/");
+  await page.waitForTimeout(2500);
+  // An untransformed element computes to "none", which the DOMMatrix
+  // constructor rejects — guard before parsing.
+  const read = () =>
+    page.locator('[data-track="main"]').evaluate((el) => {
+      const t = getComputedStyle(el).transform;
+      return t === "none" ? 0 : new DOMMatrixReadOnly(t).m41;
+    });
+  const before = await read();
+  await page.mouse.wheel(0, 600);
+  await page.waitForTimeout(400);
+  expect(await read()).not.toBe(before);
+});

@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { hero } from "@/content/site";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useSiteReady } from "@/hooks/useSiteReady";
 import { cn } from "@/lib/utils";
+import { useHeroEntrance } from "./useHeroEntrance";
 import styles from "./Hero.module.css";
 
 /**
@@ -15,58 +15,14 @@ import styles from "./Hero.module.css";
  * scrolling up reverses it. Chrome is deliberately quiet: a location pill on
  * the left, the role with a scroll cue on the right.
  *
- * The portrait is `priority` — it's the LCP element. The marquee is decorative
- * (`aria-hidden`); the accessible name/role live in a visually-hidden `h1`.
+ * The portrait is `priority` — it's the LCP element. The marquee's offset is
+ * owned entirely by `useHeroEntrance`; this component only supplies the
+ * markup and the container ref.
  */
 export function Hero() {
-  const reduced = useReducedMotion();
-  const trackRef = useRef<HTMLDivElement>(null);
+  const marqueeRef = useRef<HTMLDivElement>(null);
   const { ready, markAssetReady } = useSiteReady();
-
-  // Drive the marquee offset from scroll delta. The strip is duplicated, so the
-  // offset wraps within one half-width — and since the two halves are identical,
-  // the wrap is seamless. Down → offset grows → moves left; up → shrinks → right.
-  useEffect(() => {
-    if (reduced) return;
-    const track = trackRef.current;
-    if (!track) return;
-
-    const speed = 0.85; // marquee px per scrolled px
-    let half = 0;
-    let pos = 0;
-    let last = window.scrollY;
-    let frame = 0;
-
-    const measure = () => {
-      half = track.scrollWidth / 2;
-    };
-    const render = () => {
-      frame = 0;
-      if (half <= 0) measure();
-      const y = window.scrollY;
-      const delta = y - last;
-      last = y;
-      if (half > 0) {
-        pos = (pos + delta * speed) % half;
-        if (pos < 0) pos += half;
-        track.style.transform = `translate3d(${-pos}px, 0, 0)`;
-      }
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(render);
-    };
-
-    measure();
-    const settle = setTimeout(measure, 400); // re-measure once web fonts land
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", measure);
-    return () => {
-      if (frame) cancelAnimationFrame(frame);
-      clearTimeout(settle);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", measure);
-    };
-  }, [reduced]);
+  useHeroEntrance(marqueeRef);
 
   // One marquee unit; rendered enough times to overflow, then the whole strip
   // is duplicated so the scroll-driven wrap loops seamlessly.
@@ -120,8 +76,8 @@ export function Hero() {
         </span>
       </div>
 
-      <div className={styles.marquee} aria-hidden="true">
-        <div className={styles.track} ref={trackRef}>
+      <div className={styles.marquee} ref={marqueeRef} aria-hidden="true">
+        <div className={styles.track} data-track="main">
           {strip.map((text, i) => (
             <span key={`a${i}`} className={styles.word}>
               {text}
