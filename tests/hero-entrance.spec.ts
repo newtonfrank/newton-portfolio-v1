@@ -10,8 +10,9 @@ test("the hero portrait is present in the initial paint", async ({ page }) => {
 });
 
 test.describe("reduced motion", () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  test.use({ reducedMotion: "reduce" } as any);
+  // `reducedMotion` is not a top-level test option in @playwright/test 1.62.1;
+  // it lives on the browser context.
+  test.use({ contextOptions: { reducedMotion: "reduce" } });
 
   test("the portrait carries no filter", async ({ page }) => {
     await page.goto("/");
