@@ -51,10 +51,12 @@ Beats:
 |---|---|---|---|
 | `0 → tDecel` | marquee | cruise, constant velocity | — |
 | `tDecel` | marquee | decelerate to register-locked rest | `--duration-scene`, `--ease-out` |
-| `tDecel + 0.12s` | portrait | `blur(12px)→0`, `saturate(0.4)→1`, `translateY(2.5%)→0` | `--duration-scene`, `--ease-out` |
-| `tDecel + 1.1s` | chrome (pill, role, arrow) | fade + 8px rise | `--duration-base`, `--ease-out` |
+| `t0 + 0.12s` | portrait | `blur(12px)→0`, `saturate(0.4)→1`, `translateY(2.5%)→0` | `--duration-scene`, `--ease-out` |
+| `t0 + 1.0s` | chrome (pill, role, arrow) | fade + 8px rise | `--duration-base`, `--ease-out` |
 
-Type leads; the portrait follows; chrome lands last.
+The portrait and chrome run on `t0`, not `tDecel` — see below. The marquee is the
+only element gated on real readiness, and it is the last to settle, so the beat
+still reads as type coming to rest over an already-arrived subject.
 
 ### The portrait resolves — it is never masked
 
@@ -68,8 +70,18 @@ Instead it is painted whole at first frame and resolves in place via `filter` an
 small `translateY`. A blurred image still counts as painted, so LCP fires on the
 first frame. Same gesture, no cost.
 
-Implemented as **CSS transitions keyed off a `data-state` attribute** on the
-section (`"settling"` → `"rest"`). No JS animates the portrait or the chrome.
+**Implemented as autonomous CSS `@keyframes` with `animation-fill-mode: both` —
+no JS involvement at all.** Three reasons, all of which rule out the obvious
+alternative of a JS-set `data-state` attribute driving transitions:
+
+- **No flash.** The initial blurred state ships in the stylesheet, so it is
+  correct at first paint. A JS-set attribute lands only after hydration, which on
+  a slow connection means a visible sharp → blurred → sharp flicker.
+- **No dependency on JS surviving.** If the bundle fails, the portrait still
+  resolves. A JS-gated blur would strand it blurred forever.
+- **Honest division of labour.** The develop is an aesthetic beat, not a progress
+  report. The marquee — which needs JS regardless, and which sits at rest without
+  it — is what carries the real readiness signal.
 
 ### Register lock
 
@@ -83,6 +95,22 @@ Unit width is measured from a single `.word` span, not derived from
 half-strip, so `% unitW` is equally seamless and keeps the numbers an order of
 magnitude smaller.
 
+**Velocity must be continuous across the hand-off**, or the marquee visibly
+*speeds up* the moment it is supposed to start slowing. An ease's initial velocity
+is a fixed multiple of `distance / duration` — for `easeOutExpo` (the JS twin of
+`--ease-out`) that multiple is ~6.9, which would demand an absurd cruise speed to
+match one unit of travel. The settle therefore uses **`easeOutCubic`** (multiple
+of exactly 3), and cruise velocity is *derived* from it rather than tuned
+independently:
+
+```
+CRUISE_UNITS_PER_SEC = 3 × SETTLE_UNITS / duration.scene
+```
+
+So the two can never drift apart, and the marquee only ever decelerates. This is
+the one place the JS deliberately departs from `--ease-out`; the CSS beats still
+use it.
+
 Handoff is free: the scroll handler is relative (`pos += delta`), so it resumes
 from wherever the settle stopped. No jump, and one loop rather than two.
 
@@ -94,7 +122,7 @@ and the entrance needs it regardless.
 
 A blur on 20rem type is expensive and reads foggy rather than fast. Instead: **two
 ghost copies of the track**, offset opposite to travel, with offset and opacity
-both scaled by current velocity, and removed from the DOM entirely at rest. Pure
+both scaled by current velocity, and `display: none` at rest. Pure
 transform + opacity — compositor-only, no filter cost — and they fill the gap
 between frames so a fast sweep reads as a smear rather than a strobe.
 
@@ -120,8 +148,17 @@ is transient it does not spend the "one accent moment per viewport" rule
 
 ### Reduced motion
 
-`useReducedMotion` → rest state at `t0`: no transform, no filters, no ghosts,
-chrome visible. Mirrors the early return already at `Hero.tsx:28`.
+Handled in **CSS**, extending the `@media (prefers-reduced-motion: reduce)` block
+already in `Hero.module.css`: `animation: none` on the portrait and chrome, so the
+resolved state is correct at first paint with no JS in the loop.
+
+The marquee's JS guard reads `matchMedia` **synchronously inside the effect**
+rather than taking `useReducedMotion`'s value. That hook returns `false` on the
+first render and corrects after mount (documented at `useReducedMotion.ts:11-14`),
+so a reduced-motion visitor would otherwise get one frame of the entrance before
+it was cancelled. The existing effect at `Hero.tsx:28` has this same latent flaw;
+moving the loop into `useHeroEntrance` fixes it. `Hero.tsx` stops importing
+`useReducedMotion` entirely.
 
 ## Structure
 
