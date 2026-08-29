@@ -63,3 +63,6 @@ docs/results/
 
 # SDD scratch (subagent-driven development workspaces)
 .superpowers/
+
+/test-results/
+/playwright-report/
