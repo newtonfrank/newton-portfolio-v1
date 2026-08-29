@@ -60,3 +60,6 @@ public/fonts/
 # Reference captures — large local-only media, not build inputs
 docs/ref/**/*.mp4
 docs/results/
+
+# SDD scratch (subagent-driven development workspaces)
+.superpowers/
