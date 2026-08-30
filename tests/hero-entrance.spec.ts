@@ -78,3 +78,25 @@ test("the marquee comes to rest on a whole-unit boundary", async ({ page }) => {
   });
   expect(drift).toBeLessThan(1);
 });
+
+test("the plates are hidden once the marquee is at rest", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('[data-marquee="rest"]')).toBeAttached({
+    timeout: 6000,
+  });
+  const displays = await page
+    .locator('[data-track="ghost"]')
+    .evaluateAll((els) => els.map((el) => getComputedStyle(el).display));
+  expect(displays).toHaveLength(2);
+  expect(displays.every((d) => d === "none")).toBe(true);
+});
+
+test("nothing overlays the portrait", async ({ page }) => {
+  await page.goto("/");
+  const box = await page.locator(PORTRAIT).boundingBox();
+  const inHero = await page.evaluate(
+    ([x, y]) => Boolean(document.elementFromPoint(x, y)?.closest("#hero")),
+    [box!.x + box!.width / 2, box!.y + box!.height / 3] as const
+  );
+  expect(inHero).toBe(true);
+});

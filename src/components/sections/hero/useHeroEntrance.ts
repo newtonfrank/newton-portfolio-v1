@@ -58,6 +58,8 @@ export function useHeroEntrance(
     const main = container.querySelector<HTMLElement>('[data-track="main"]');
     if (!main) return;
 
+    const ghosts = Array.from(container.querySelectorAll<HTMLElement>('[data-track="ghost"]'));
+
     // Width of one repeated unit. The strip is identical units end to end, so
     // wrapping on this is seamless — and keeps the offset small.
     let unit = 0;
@@ -78,13 +80,26 @@ export function useHeroEntrance(
       unit = first?.offsetWidth ?? 0;
     };
 
-    const paint = () => {
+    const paint = (travel: number) => {
       // Before the strip has been measured there is no meaningful wrap, and
       // painting the raw offset would show an unbounded slide. Skip entirely.
       if (unit <= 0) return;
       const total = entrancePos + scrollPos;
       const pos = ((total % unit) + unit) % unit;
       main.style.transform = `translate3d(${-pos}px, 0, 0)`;
+
+      if (phase === "rest") return;
+
+      // Normalised against cruise speed, so the smear reads the same at any
+      // viewport width: full strength while cruising, fading as it settles.
+      const cruisePerFrame = (unit * CRUISE_UNITS_PER_SEC) / 60;
+      const smear = cruisePerFrame > 0 ? Math.min(1, Math.abs(travel) / cruisePerFrame) : 0;
+      container.style.setProperty("--smear", smear.toFixed(3));
+
+      ghosts.forEach((ghost, i) => {
+        const trail = travel * (i + 1) * 0.5;
+        ghost.style.transform = `translate3d(${-pos + trail}px, 0, 0)`;
+      });
     };
 
     const step = () => {
@@ -101,6 +116,8 @@ export function useHeroEntrance(
       const y = window.scrollY;
       scrollPos += (y - lastScrollY) * SCROLL_SPEED;
       lastScrollY = y;
+
+      const before = entrancePos;
 
       if (phase === "cruise") {
         const was = entrancePos;
@@ -132,7 +149,7 @@ export function useHeroEntrance(
         }
       }
 
-      paint();
+      paint(entrancePos - before);
       // Free-running only during the entrance; at rest the scroll listener
       // schedules single frames, exactly as before.
       if (phase !== "rest") frame = requestAnimationFrame(step);

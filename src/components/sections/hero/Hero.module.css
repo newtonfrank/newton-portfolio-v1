@@ -174,6 +174,43 @@
   will-change: transform;
 }
 
+/* Offset-print misregistration. Two plates trail the main track while it moves
+   and come into register as it stops, so the Signal/Ember duality appears for
+   the length of the settle and then resolves into a single charcoal name.
+   Transform and opacity only — never a blur, which on 20rem type is both
+   expensive and reads foggy rather than fast. */
+.ghost {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: inline-flex;
+  inline-size: max-content;
+  white-space: nowrap;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.ghost[data-plate="signal"] {
+  color: var(--signal);
+  opacity: calc(var(--smear, 0) * var(--smear-opacity-signal));
+}
+
+.ghost[data-plate="ember"] {
+  color: var(--ember);
+  opacity: calc(var(--smear, 0) * var(--smear-opacity-ember));
+}
+
+/* The plates inherit the tint rather than `.word`'s charcoal. */
+.ghost .word,
+.ghost .sep {
+  color: inherit;
+}
+
+/* Once in register the plates have no job. */
+[data-marquee="rest"] .ghost {
+  display: none;
+}
+
 .word {
   font-family: var(--font-sans);
   font-weight: 500;

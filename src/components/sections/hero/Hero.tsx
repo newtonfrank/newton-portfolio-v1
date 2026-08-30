@@ -25,9 +25,16 @@ export function Hero() {
   useHeroEntrance(marqueeRef, { ready });
 
   // One marquee unit; rendered enough times to overflow, then the whole strip
-  // is duplicated so the scroll-driven wrap loops seamlessly.
+  // is duplicated so the wrap loops seamlessly.
   const unit = hero.name.join(" — ");
   const strip = Array.from({ length: 4 }, () => unit);
+  const renderStrip = (key: string) =>
+    [...strip, ...strip].map((text, i) => (
+      <span key={`${key}${i}`} className={styles.word}>
+        {text}
+        <span className={styles.sep}> — </span>
+      </span>
+    ));
 
   return (
     <section id="hero" className={styles.hero} data-ready={ready ? "true" : "false"}>
@@ -77,19 +84,14 @@ export function Hero() {
       </div>
 
       <div className={styles.marquee} ref={marqueeRef} aria-hidden="true">
+        <div className={styles.ghost} data-track="ghost" data-plate="signal">
+          {renderStrip("s")}
+        </div>
+        <div className={styles.ghost} data-track="ghost" data-plate="ember">
+          {renderStrip("e")}
+        </div>
         <div className={styles.track} data-track="main">
-          {strip.map((text, i) => (
-            <span key={`a${i}`} className={styles.word}>
-              {text}
-              <span className={styles.sep}> — </span>
-            </span>
-          ))}
-          {strip.map((text, i) => (
-            <span key={`b${i}`} className={styles.word}>
-              {text}
-              <span className={styles.sep}> — </span>
-            </span>
-          ))}
+          {renderStrip("m")}
         </div>
       </div>
     </section>
