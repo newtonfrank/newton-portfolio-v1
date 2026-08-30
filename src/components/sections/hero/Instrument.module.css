@@ -50,7 +50,7 @@
 
 /* VIEWPORT has no series; it gets the hairline the others' traces stand in for. */
 .rule {
-  block-size: 1px;
+  block-size: var(--hairline);
   background: var(--line);
 }
 
