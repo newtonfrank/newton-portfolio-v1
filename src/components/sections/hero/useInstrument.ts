@@ -37,6 +37,7 @@ const TRACES: TraceId[] = ["frame", "cursor", "scroll"];
 interface Series {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
+  row: HTMLElement | null;
   samples: Float32Array;
   /** Fixed ceiling (frame), or autoscaled running max (velocities). */
   fixedMax: number | null;
@@ -67,6 +68,7 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
       series.set(id, {
         canvas,
         ctx,
+        row: root.querySelector<HTMLElement>(`[data-channel="${id}"]`),
         samples: new Float32Array(WINDOW),
         fixedMax: id === "frame" ? ALARM_MS * 1.65 : null,
       });
@@ -83,6 +85,7 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     // token ever resolves empty — an empty strokeStyle draws silently in
     // black rather than erroring, which would be worse than this fallback.
     const signal = styles.getPropertyValue("--signal").trim() || "currentColor";
+    const ember = styles.getPropertyValue("--ember").trim() || "currentColor";
 
     let head = 0;
     let cursorV = 0;
@@ -149,6 +152,28 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
         else ctx.lineTo(x, yOf(v));
       }
       ctx.stroke();
+
+      if (s.fixedMax === null) return;
+
+      // The frame channel is the only one with a budget to blow. Redraw just the
+      // segments that exceeded it in the alarm colour, and flag the row so the
+      // condition is observable without reading pixels.
+      let alarming = false;
+      ctx.strokeStyle = ember;
+      for (let i = 1; i < WINDOW; i++) {
+        const a = samples[(head + i - 1) % WINDOW];
+        const b = samples[(head + i) % WINDOW];
+        if (a < ALARM_MS && b < ALARM_MS) continue;
+        alarming = true;
+        ctx.beginPath();
+        ctx.moveTo((i - 1) * stepX, yOf(a));
+        ctx.lineTo(i * stepX, yOf(b));
+        ctx.stroke();
+      }
+      if (s.row) {
+        if (alarming) s.row.dataset.alarm = "true";
+        else delete s.row.dataset.alarm;
+      }
     };
 
     const writeReadouts = () => {

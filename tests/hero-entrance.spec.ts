@@ -167,3 +167,28 @@ test("the instrument reports the real viewport", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('[data-value="viewport"]')).toHaveText("1200×800");
 });
+
+test("the frame channel raises an alarm on real jank, then clears", async ({ page }) => {
+  test.setTimeout(30_000);
+  await page.goto("/");
+  const row = page.locator('[data-channel="frame"]');
+  await expect
+    .poll(() => page.locator('[data-value="frame"]').innerText(), {
+      timeout: 3000,
+    })
+    .not.toBe("—");
+
+  // Block the main thread long enough to guarantee a dropped frame.
+  await page.evaluate(() => {
+    const until = performance.now() + 120;
+    while (performance.now() < until) {
+      /* deliberate jank */
+    }
+  });
+
+  await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 3000 }).toBe("true");
+
+  // Once the ring buffer has advanced past the jank the alarm must clear on its
+  // own — proving it tracks a moving window rather than latching forever.
+  await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 12_000 }).toBe(null);
+});
