@@ -1,23 +1,25 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { hero } from "@/content/site";
 import { useSiteReady } from "@/hooks/useSiteReady";
 import { cn } from "@/lib/utils";
+import { Instrument } from "./Instrument";
 import { useHeroEntrance } from "./useHeroEntrance";
 import styles from "./Hero.module.css";
 
 /**
- * Immersive minimal hero (Snellenberg-style). A full-bleed cut-out portrait
- * stands on a flat neutral field; the name runs across the base as a marquee
- * whose position tracks scroll — scrolling down carries it right-to-left,
- * scrolling up reverses it. Chrome is deliberately quiet: a location pill on
- * the left, the role with a scroll cue on the right.
+ * Immersive minimal hero (Snellenberg-style). A live instrument — a readout
+ * of the page it is running on — stands on a flat neutral field; the name
+ * runs across the base as a marquee whose position tracks scroll — scrolling
+ * down carries it right-to-left, scrolling up reverses it. Chrome is
+ * deliberately quiet: a location pill on the left, the role with a scroll
+ * cue on the right.
  *
- * The portrait is `priority` — it's the LCP element. The marquee's offset is
- * owned entirely by `useHeroEntrance`; this component only supplies the
- * markup and the container ref.
+ * The instrument's first painted frame is the hero's readiness signal (see
+ * `Instrument`'s `onFirstFrame`). The marquee's offset is owned entirely by
+ * `useHeroEntrance`; this component only supplies the markup and the
+ * container ref.
  */
 export function Hero() {
   const marqueeRef = useRef<HTMLDivElement>(null);
@@ -42,17 +44,7 @@ export function Hero() {
         {hero.name.join(" ")} — {hero.role}
       </h1>
 
-      <div className={styles.portrait}>
-        <Image
-          src="/newton-cutout-v2.webp"
-          alt="Newton Frank"
-          fill
-          priority
-          sizes="100vw"
-          className={styles.image}
-          onLoad={markAssetReady}
-        />
-      </div>
+      <Instrument onFirstFrame={markAssetReady} />
 
       <div className={styles.chrome}>
         <span className={cn(styles.locate, "mono")}>

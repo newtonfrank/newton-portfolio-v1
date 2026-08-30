@@ -1,26 +1,9 @@
 import { expect, test } from "@playwright/test";
 
-const PORTRAIT = "#hero img";
-
-test("the hero portrait is present in the initial paint", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.locator(PORTRAIT)).toBeVisible();
-  const box = await page.locator(PORTRAIT).boundingBox();
-  expect(box!.height).toBeGreaterThan(200);
-});
-
 test.describe("reduced motion", () => {
   // `reducedMotion` is not a top-level test option in @playwright/test 1.62.1;
   // it lives on the browser context.
   test.use({ contextOptions: { reducedMotion: "reduce" } });
-
-  test("the portrait carries no filter", async ({ page }) => {
-    await page.goto("/");
-    const filter = await page
-      .locator(PORTRAIT)
-      .evaluate((img) => getComputedStyle(img.parentElement!).filter);
-    expect(filter).toBe("none");
-  });
 
   test("the marquee track carries no transform", async ({ page }) => {
     await page.goto("/");
@@ -29,24 +12,6 @@ test.describe("reduced motion", () => {
       .evaluate((track) => getComputedStyle(track).transform);
     expect(transform).toBe("none");
   });
-});
-
-// `animation-fill-mode: both` holds the final keyframe, so a filter is always
-// computed once the animation exists — asserting literal "none" here would be
-// unreachable. Assert *unblurred* instead.
-test("the portrait resolves to an unblurred state", async ({ page }) => {
-  await page.goto("/");
-  await expect
-    .poll(
-      async () => {
-        const filter = await page
-          .locator(PORTRAIT)
-          .evaluate((img) => getComputedStyle(img.parentElement!).filter);
-        return filter === "none" || /blur\(0px\)/.test(filter);
-      },
-      { timeout: 5000 }
-    )
-    .toBe(true);
 });
 
 test("the hero reports readiness within the loader cap", async ({ page }) => {
@@ -104,16 +69,37 @@ test("the plates are hidden once the marquee is at rest", async ({ page }) => {
   expect(displays.every((d) => d === "none")).toBe(true);
 });
 
-test("nothing overlays the portrait", async ({ page }) => {
+// Sample the marquee's clipped WRAPPER, not the track: the track is
+// `max-content` wide and overflows the viewport by roughly an order of
+// magnitude, so a point derived from its own box lands off-screen and
+// `elementFromPoint` returns null there.
+test("nothing overlays the marquee", async ({ page }) => {
   await page.goto("/");
-  const box = await page.locator(PORTRAIT).boundingBox();
-  // Sample the upper third: the marquee legitimately overlaps the lower part
-  // of the portrait, but nothing should cover the LCP element up here.
-  const point = [box!.x + box!.width / 2, box!.y + box!.height / 3] as const;
-  const unobstructed = await page.locator(PORTRAIT).evaluate((img, [x, y]) => {
-    const el = document.elementFromPoint(x, y);
-    if (!el) return false;
-    return el === img || img.contains(el) || el.contains(img);
-  }, point);
-  expect(unobstructed).toBe(true);
+  const covered = await page.evaluate(() => {
+    const track = document.querySelector('[data-track="main"]');
+    const wrapper = track?.parentElement;
+    if (!wrapper) return true;
+    const box = wrapper.getBoundingClientRect();
+    const el = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+    return !(el && (wrapper.contains(el) || el.contains(wrapper)));
+  });
+  expect(covered).toBe(false);
+});
+
+test("the instrument renders every channel", async ({ page }) => {
+  await page.goto("/");
+  const rows = page.locator("[data-channel]");
+  await expect(rows).toHaveCount(4);
+  const labels = await page.locator("[data-channel] [data-label]").allInnerTexts();
+  expect(labels).toEqual(["FRAME", "CURSOR", "SCROLL", "VIEWPORT"]);
+  // Three traces; VIEWPORT is a value with no trace.
+  await expect(page.locator("[data-trace]")).toHaveCount(3);
+});
+
+test("the instrument is hidden from the accessibility tree", async ({ page }) => {
+  await page.goto("/");
+  const hidden = await page
+    .locator("[data-instrument]")
+    .evaluate((el) => el.getAttribute("aria-hidden"));
+  expect(hidden).toBe("true");
 });

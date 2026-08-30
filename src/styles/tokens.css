@@ -133,14 +133,18 @@
   --ease-back: cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* ─── Hero entrance ("Settle") ─── */
-  --entrance-blur: 12px;
-  --entrance-saturate: 0.4;
-  --entrance-rise: 2.5%;
   --entrance-chrome-rise: 8px;
-  --entrance-portrait-delay: 120ms;
   --entrance-chrome-delay: 1000ms;
   --smear-opacity-signal: 0.22;
   --smear-opacity-ember: 0.18;
+
+  /* ─── Hero instrument ─── */
+  --instrument-row-gap: clamp(1.25rem, 3vh, 2.5rem);
+  --instrument-trace-h: 1.75rem;
+  --instrument-label-w: 7ch;
+  --instrument-value-w: 9ch;
+  --instrument-gap: var(--space-5);
+  --entrance-row-stagger: 90ms;
 }
 
 /* Explicit dark surface. `:root` is dark by default, but a section nested

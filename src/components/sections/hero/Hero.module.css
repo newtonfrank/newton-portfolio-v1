@@ -23,33 +23,6 @@
   white-space: nowrap;
 }
 
-.portrait {
-  position: absolute;
-  /* Headroom below the header; subject stands on the base of the viewport. */
-  inset: clamp(4.5rem, 11vh, 8rem) 0 0 0;
-  z-index: 0;
-  animation: hero-develop var(--duration-scene) var(--ease-out) var(--entrance-portrait-delay) both;
-}
-
-.image {
-  object-fit: contain;
-  object-position: 50% 100%;
-}
-
-/* The subject resolves in place. Never masked or faded — the portrait is the
-   LCP element and must be painted whole from the first frame. `filter` and
-   `transform` do not remove it from paint; `opacity` and `clip-path` would. */
-@keyframes hero-develop {
-  from {
-    filter: blur(var(--entrance-blur)) saturate(var(--entrance-saturate));
-    transform: translateY(var(--entrance-rise));
-  }
-  to {
-    filter: blur(0) saturate(1);
-    transform: translateY(0);
-  }
-}
-
 @keyframes hero-chrome {
   from {
     opacity: 0;
@@ -125,7 +98,6 @@
 /* Honour the site's motion discipline: no ambient loop under reduced motion. */
 @media (prefers-reduced-motion: reduce) {
   .globe svg,
-  .portrait,
   .locate,
   .role {
     animation: none;
@@ -230,13 +202,6 @@
 }
 
 @media (max-width: 48rem) {
-  /* Contain leaves a tall gap on narrow viewports; fill instead (shoulders
-     crop, face intact). */
-  .image {
-    object-fit: cover;
-    object-position: 50% 35%;
-  }
-
   .role {
     top: 28%;
   }
