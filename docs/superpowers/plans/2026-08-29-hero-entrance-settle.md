@@ -766,12 +766,26 @@ Change the hook signature and body. Replace the whole `useEffect` contents from 
       lastScrollY = y;
 
       if (phase === "cruise") {
+        const was = entrancePos;
         entrancePos += unit * CRUISE_UNITS_PER_SEC * dt;
-        if (unit > 0 && readyRef.current && now - t0 >= MIN_SPIN_MS) {
+        // Hand off only on the frame the strip CROSSES a unit boundary, and
+        // aim at the next boundary. Easing to `entrancePos + unit` would not
+        // lock the register: `paint()` wraps on `% unit`, so a target one whole
+        // unit away has the SAME phase as wherever cruise happened to be — i.e.
+        // an arbitrary resting frame per load, which is the exact thing this
+        // mechanism exists to prevent. An exact multiple of `unit` wraps to 0.
+        // The settle then covers one unit MINUS the sub-frame overshoot, so its
+        // initial velocity is marginally below cruise — still only slowing.
+        if (
+          unit > 0 &&
+          readyRef.current &&
+          now - t0 >= MIN_SPIN_MS &&
+          Math.floor(entrancePos / unit) > Math.floor(was / unit)
+        ) {
           phase = "decel";
           decelStart = now;
           startPos = entrancePos;
-          targetPos = entrancePos + unit * SETTLE_UNITS;
+          targetPos = Math.floor(entrancePos / unit) * unit + unit * SETTLE_UNITS;
         }
       } else if (phase === "decel") {
         const t = Math.min((now - decelStart) / (duration.scene * 1000), 1);
