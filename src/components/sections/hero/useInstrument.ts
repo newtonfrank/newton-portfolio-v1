@@ -79,7 +79,10 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
 
     // Stroke colours come from the tokens, never from a literal in JS.
     const styles = getComputedStyle(root);
-    const signal = styles.getPropertyValue("--signal").trim();
+    // Falls back to `currentColor` (a CSS keyword, not a literal) if the
+    // token ever resolves empty — an empty strokeStyle draws silently in
+    // black rather than erroring, which would be worse than this fallback.
+    const signal = styles.getPropertyValue("--signal").trim() || "currentColor";
 
     let head = 0;
     let cursorV = 0;
@@ -162,25 +165,38 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     };
 
     const sample = (dt: number) => {
+      // Decay runs before the recompute below, not after. Applying it to a
+      // frame's own fresh measurement would show every live reading ~10%
+      // low; decaying only the carried-over value, then overwriting with
+      // whatever this frame actually measured, means a frame that measured
+      // something displays exactly what it measured — only idle frames
+      // (nothing new this tick) fade toward zero.
+      const decay = Math.pow(DECAY_PER_MS, dt);
+      cursorV *= decay;
+      scrollV *= decay;
+
       const y = window.scrollY;
       // Only recompute from a real position change. Recomputing every frame
       // from the instantaneous frame-to-frame delta means a single discrete
       // jump (a wheel tick outside Lenis, a programmatic `scrollTo`) shows
       // exactly one non-zero frame, then the very next frame's zero delta
-      // overwrites it before the decay below gets a chance to act — a hard
-      // snap to zero, not the fade the other velocity channel gets. Gating
-      // on an actual change makes scroll decay the same way cursor does:
-      // set on new motion, faded by DECAY_PER_MS otherwise.
+      // overwrites it before decay gets a chance to act — a hard snap to
+      // zero, not the fade the other velocity channel gets. Gating on an
+      // actual change makes scroll decay the same way cursor does: set on
+      // new motion, faded by DECAY_PER_MS otherwise.
       if (dt > 0 && y !== lastY) scrollV = (Math.abs(y - lastY) / dt) * 1000;
       lastY = y;
 
-      const decay = Math.pow(DECAY_PER_MS, dt);
-      cursorV *= decay;
-      scrollV *= decay;
-
-      series.get("frame")!.samples[head] = dt;
-      series.get("cursor")!.samples[head] = cursorV;
-      series.get("scroll")!.samples[head] = scrollV;
+      // Guarded lookups, not `!` assertions: `getContext` can return null in
+      // setup, in which case a channel is deliberately absent from the map
+      // (see the `continue` above) — asserting non-null here would then
+      // throw on every frame instead of just quietly having one fewer trace.
+      const frameSeries = series.get("frame");
+      const cursorSeries = series.get("cursor");
+      const scrollSeries = series.get("scroll");
+      if (frameSeries) frameSeries.samples[head] = dt;
+      if (cursorSeries) cursorSeries.samples[head] = cursorV;
+      if (scrollSeries) scrollSeries.samples[head] = scrollV;
       head = (head + 1) % WINDOW;
     };
 
@@ -206,11 +222,20 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     window.addEventListener("resize", resize);
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      // One honest frame, then nothing. No loop, no pointer listener.
-      sample(1000 / 60);
-      for (const s of series.values()) drawTrace(s);
-      writeReadouts();
+      // One honest frame, then nothing. The elapsed time is measured inside
+      // a real requestAnimationFrame callback, not assumed — a canned figure
+      // here would be the only invented number on the page, and it would sit
+      // in the one place a visitor cannot watch it update to notice. No
+      // loop (the callback never reschedules itself), no pointer listener.
+      frame = requestAnimationFrame(() => {
+        if (!alive) return;
+        sample(Math.min(performance.now() - prev, 100));
+        for (const s of series.values()) drawTrace(s);
+        writeReadouts();
+      });
       return () => {
+        alive = false;
+        cancelAnimationFrame(frame);
         observer.disconnect();
         window.removeEventListener("resize", resize);
       };
