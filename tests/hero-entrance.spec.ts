@@ -21,6 +21,14 @@ test.describe("reduced motion", () => {
       .evaluate((img) => getComputedStyle(img.parentElement!).filter);
     expect(filter).toBe("none");
   });
+
+  test("the marquee track carries no transform", async ({ page }) => {
+    await page.goto("/");
+    const transform = await page
+      .locator('[data-track="main"]')
+      .evaluate((track) => getComputedStyle(track).transform);
+    expect(transform).toBe("none");
+  });
 });
 
 // `animation-fill-mode: both` holds the final keyframe, so a filter is always
@@ -50,7 +58,12 @@ test("the hero reports readiness within the loader cap", async ({ page }) => {
 
 test("scrolling down carries the marquee left", async ({ page }) => {
   await page.goto("/");
-  await page.waitForTimeout(2500);
+  // Wait for the entrance to finish before measuring scroll-driven movement;
+  // otherwise the transform could still be changing from the settle itself,
+  // and the assertion below would prove nothing.
+  await expect(page.locator('[data-marquee="rest"]')).toBeAttached({
+    timeout: 6000,
+  });
   // An untransformed element computes to "none", which the DOMMatrix
   // constructor rejects — guard before parsing.
   const read = () =>
@@ -94,9 +107,13 @@ test("the plates are hidden once the marquee is at rest", async ({ page }) => {
 test("nothing overlays the portrait", async ({ page }) => {
   await page.goto("/");
   const box = await page.locator(PORTRAIT).boundingBox();
-  const inHero = await page.evaluate(
-    ([x, y]) => Boolean(document.elementFromPoint(x, y)?.closest("#hero")),
-    [box!.x + box!.width / 2, box!.y + box!.height / 3] as const
-  );
-  expect(inHero).toBe(true);
+  // Sample the upper third: the marquee legitimately overlaps the lower part
+  // of the portrait, but nothing should cover the LCP element up here.
+  const point = [box!.x + box!.width / 2, box!.y + box!.height / 3] as const;
+  const unobstructed = await page.locator(PORTRAIT).evaluate((img, [x, y]) => {
+    const el = document.elementFromPoint(x, y);
+    if (!el) return false;
+    return el === img || img.contains(el) || el.contains(img);
+  }, point);
+  expect(unobstructed).toBe(true);
 });

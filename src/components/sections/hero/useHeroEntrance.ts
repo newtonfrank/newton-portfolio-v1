@@ -78,6 +78,15 @@ export function useHeroEntrance(
     const measure = () => {
       const first = main.firstElementChild as HTMLElement | null;
       unit = first?.offsetWidth ?? 0;
+      // A resize changes `unit`, so the old `entrancePos` (a multiple of the
+      // *previous* unit) is no longer on-register. 0 is a multiple of every
+      // unit, so resetting to it re-quantizes without a visible jump, and the
+      // frame loop is no longer free-running at rest — schedule one frame so
+      // the corrected position actually paints.
+      if (phase === "rest") {
+        entrancePos = 0;
+        if (!frame) frame = requestAnimationFrame(step);
+      }
     };
 
     const paint = (travel: number) => {

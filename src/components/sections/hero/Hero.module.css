@@ -188,6 +188,9 @@
   white-space: nowrap;
   pointer-events: none;
   will-change: transform, opacity;
+  /* Hidden from the a11y tree already; this keeps a manual text selection
+     over the hero from picking up duplicated copies of the name. */
+  user-select: none;
 }
 
 .ghost[data-plate="signal"] {
