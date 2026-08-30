@@ -12,6 +12,18 @@ test.describe("reduced motion", () => {
       .evaluate((track) => getComputedStyle(track).transform);
     expect(transform).toBe("none");
   });
+
+  test("the instrument draws once and does not animate", async ({ page }) => {
+    await page.goto("/");
+    await expect
+      .poll(() => page.locator('[data-value="frame"]').innerText(), {
+        timeout: 3000,
+      })
+      .not.toBe("—");
+    const first = await page.locator('[data-value="frame"]').innerText();
+    await page.waitForTimeout(1000);
+    expect(await page.locator('[data-value="frame"]').innerText()).toBe(first);
+  });
 });
 
 test("the hero reports readiness within the loader cap", async ({ page }) => {
@@ -112,4 +124,46 @@ test("the hero shares the page surface rather than its own field", async ({ page
     return [getComputedStyle(hero).backgroundColor, getComputedStyle(wrapper).backgroundColor];
   });
   expect(hero).toBe(page_);
+});
+
+// FRAME gets a FORMAT assertion only. At a steady 60fps `dt.toFixed(1)` is
+// "16.7ms" frame after frame, so "the readout changed" is not a property this
+// channel reliably has — asserting it would be flaky by construction.
+test("the instrument reports real frame times", async ({ page }) => {
+  await page.goto("/");
+  const read = () => page.locator('[data-value="frame"]').innerText();
+  await expect.poll(read, { timeout: 3000 }).not.toBe("—");
+  expect(await read()).toMatch(/^\d+\.\d+ms$/);
+});
+
+// Liveness lives here instead: scrolling drives a deterministic 0 → hundreds
+// transition, and all three readouts are written by the same loop, so a dead
+// loop fails this too.
+test("the instrument tracks scroll velocity", async ({ page }) => {
+  await page.goto("/");
+  const read = () => page.locator('[data-value="scroll"]').innerText();
+  await expect.poll(read, { timeout: 3000 }).toBe("0px/s");
+  await page.evaluate(() => window.scrollBy(0, 400));
+  await expect.poll(read, { timeout: 2000 }).not.toBe("0px/s");
+});
+
+test("the instrument responds to the pointer", async ({ page }) => {
+  await page.goto("/");
+  await expect
+    .poll(() => page.locator('[data-value="cursor"]').innerText(), {
+      timeout: 3000,
+    })
+    .not.toBe("—");
+  await page.mouse.move(200, 300);
+  await page.mouse.move(900, 500);
+  await page.mouse.move(300, 700);
+  await expect
+    .poll(() => page.locator('[data-value="cursor"]').innerText(), { timeout: 3000 })
+    .not.toBe("0px/s");
+});
+
+test("the instrument reports the real viewport", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 800 });
+  await page.goto("/");
+  await expect(page.locator('[data-value="viewport"]')).toHaveText("1200×800");
 });

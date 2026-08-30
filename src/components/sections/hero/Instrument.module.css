@@ -36,10 +36,16 @@
   letter-spacing: var(--ls-mono);
 }
 
-.value {
+/* The global `mono` utility uppercases text (right, for the FRAME/CURSOR/
+   SCROLL/VIEWPORT labels) — but this row prints a real reading like
+   "16.7ms" or "412px/s", and uppercasing the unit reads as a typo, not an
+   instrument. The attribute selector outranks `.mono`'s class specificity
+   so the override holds regardless of stylesheet order. */
+.value[data-value] {
   color: var(--bone);
   text-align: end;
   font-variant-numeric: tabular-nums;
+  text-transform: none;
 }
 
 .trace {

@@ -169,6 +169,8 @@
 
 /* Light surface. Accents stay identical — they anchor the brand across themes. */
 [data-theme="light"] {
+  /* Also hard-coded as `viewport.themeColor` in app/layout.tsx, which cannot
+     reference a custom property — change both together. */
   --ink: #f4f3ee;
   --ink-elevated: #ffffff;
   --ink-raised: #ffffff;
