@@ -77,9 +77,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport = {
-  // Matches the hero's flat field so mobile browser chrome blends into the
-  // first paint rather than banding against it.
-  themeColor: "#d0d0d0",
+  // Matches the light editorial surface the hero now shares, so mobile browser
+  // chrome blends into the first paint rather than banding against it.
+  themeColor: "#f4f3ee",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

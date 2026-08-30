@@ -3,11 +3,11 @@
   min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
-  /* Flat neutral field. The cut-out portrait sits on this uniform ground so the
-     name reads in a single colour across the whole width. Kept a light warm grey
-     (not near-white) so it sits with the portrait's warm studio light while still
-     holding tone against the subject's white shirt. */
-  background-color: #d0d0d0;
+  /* The hero sits on the page's own surface. It had a flat grey field of its own
+     while it held a studio portrait; without one, that field only made the hero
+     an island above a bone page — and it was the reason the chrome below had to
+     hard-code its colours to resist the theme. */
+  background-color: var(--ink);
 }
 
 /* Accessible name/role; the visible name is a decorative marquee. */
@@ -58,10 +58,8 @@
   gap: var(--space-3);
   padding: var(--space-3) var(--space-3) var(--space-3) var(--space-5);
   border-radius: var(--radius-full);
-  /* Hard-coded: the hero field is a fixed literal, so the chrome must not flip
-     with the page theme tokens (which invert under data-theme="light"). */
-  background: #131318;
-  color: #f4f3ee;
+  background: var(--bone);
+  color: var(--ink);
   /* Honour the explicit newline in the status so "Available —" and the city sit
      on two lines; the pill's rounded field wraps the block snugly. */
   white-space: pre-line;
@@ -113,7 +111,7 @@
   align-items: flex-end;
   gap: var(--space-4);
   text-align: end;
-  color: #131318;
+  color: var(--bone);
 }
 
 .arrow svg {

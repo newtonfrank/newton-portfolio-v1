@@ -103,3 +103,13 @@ test("the instrument is hidden from the accessibility tree", async ({ page }) =>
     .evaluate((el) => el.getAttribute("aria-hidden"));
   expect(hidden).toBe("true");
 });
+
+test("the hero shares the page surface rather than its own field", async ({ page }) => {
+  await page.goto("/");
+  const [hero, page_] = await page.evaluate(() => {
+    const hero = document.querySelector("#hero")!;
+    const wrapper = hero.closest('[data-theme="light"]')!;
+    return [getComputedStyle(hero).backgroundColor, getComputedStyle(wrapper).backgroundColor];
+  });
+  expect(hero).toBe(page_);
+});
