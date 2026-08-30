@@ -238,7 +238,7 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
         writeReadouts();
         lastReadout = now;
       }
-      frame = requestAnimationFrame(step);
+      frame = wanted() ? requestAnimationFrame(step) : 0;
     };
 
     resize();
@@ -267,12 +267,42 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     }
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
-    frame = requestAnimationFrame(step);
+
+    // A permanent 60fps loop on a page people leave open is a battery cost with
+    // no upside once nobody can see it.
+    let onScreen = true;
+    const wanted = () => onScreen && document.visibilityState === "visible";
+
+    const sync = () => {
+      if (!alive) return;
+      if (wanted() && !frame) {
+        // Reset the clock, or the first frame back reports the whole gap.
+        prev = performance.now();
+        frame = requestAnimationFrame(step);
+      } else if (!wanted() && frame) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+      }
+    };
+
+    const visible = new IntersectionObserver(
+      ([entry]) => {
+        onScreen = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0 }
+    );
+    visible.observe(root);
+    document.addEventListener("visibilitychange", sync);
+
+    sync();
 
     return () => {
       alive = false;
       if (frame) cancelAnimationFrame(frame);
       observer.disconnect();
+      visible.disconnect();
+      document.removeEventListener("visibilitychange", sync);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointerMove);
     };

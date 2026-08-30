@@ -192,3 +192,20 @@ test("the frame channel raises an alarm on real jank, then clears", async ({ pag
   // own — proving it tracks a moving window rather than latching forever.
   await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 12_000 }).toBe(null);
 });
+
+test("the instrument suspends when the hero scrolls away", async ({ page }) => {
+  await page.goto("/");
+  await expect
+    .poll(() => page.locator('[data-value="frame"]').innerText(), {
+      timeout: 3000,
+    })
+    .not.toBe("—");
+
+  // Well past the hero, so the IntersectionObserver has certainly fired.
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3));
+  await page.waitForTimeout(600);
+
+  const first = await page.locator('[data-value="frame"]').innerText();
+  await page.waitForTimeout(800);
+  expect(await page.locator('[data-value="frame"]').innerText()).toBe(first);
+});
