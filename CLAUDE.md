@@ -23,8 +23,8 @@ to `/`** and the legacy world deleted. What follows is verified against source.
 - **The home is the editorial composition:** Hero → Intro → ProjectList →
   WorkGrid → Capabilities → Experience → Contact.
 - **`page.tsx` is a server component.** Sections are `"use client"` islands that
-  still SSR to static HTML, so the hero portrait (the LCP element) is in the
-  initial paint — not gated behind a client-only dynamic import.
+  still SSR to static HTML, so the hero's name marquee (the LCP element) is in
+  the initial paint — not gated behind a client-only dynamic import.
 - **Theme:** light editorial. The page wrapper is `data-theme="light"`; the
   Contact section and the MenuOverlay flip to `data-theme="dark"` locally. The
   `<body>` stays on the `:root` (ink) tokens so overscroll gutters match the dark

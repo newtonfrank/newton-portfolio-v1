@@ -205,7 +205,13 @@ test("the instrument suspends when the hero scrolls away", async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, window.innerHeight * 3));
   await page.waitForTimeout(600);
 
-  const first = await page.locator('[data-value="frame"]').innerText();
+  // FRAME is unusable here: at a steady 60fps `dt.toFixed(1)` prints "16.7ms"
+  // frame after frame, so an unchanged FRAME readout is not proof the loop
+  // stopped — a still-running loop would pass just as easily. SCROLL doesn't
+  // have that problem: scrolling again after suspension has settled drives a
+  // real, measurable delta that only a running loop can report.
+  const first = await page.locator('[data-value="scroll"]').innerText();
+  await page.evaluate(() => window.scrollBy(0, 400));
   await page.waitForTimeout(800);
-  expect(await page.locator('[data-value="frame"]').innerText()).toBe(first);
+  expect(await page.locator('[data-value="scroll"]').innerText()).toBe(first);
 });

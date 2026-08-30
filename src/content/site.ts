@@ -27,7 +27,7 @@ export const primaryNav: NavLink[] = [
  * without churning the type on every section.
  */
 export const hero = {
-  /** Ultra-condensed name that sweeps over the portrait. Split for two lines. */
+  /** Ultra-condensed name that sweeps across the hero as a marquee. Split for two lines. */
   name: ["Newton", "Frank"],
   role: "Fullstack Developer & Product Designer",
   status: `Available —\n${site.location.split(",")[0]}, IN`,

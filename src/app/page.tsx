@@ -18,8 +18,8 @@ import styles from "./page.module.css";
  * validated on the /preview route and promoted here as the production homepage.
  *
  * A server component: the sections are client islands that still SSR to static
- * HTML, so the hero portrait (the LCP element) is in the initial paint rather
- * than gated behind a client-only dynamic import.
+ * HTML, so the hero's name marquee (the LCP element) is in the initial paint
+ * rather than gated behind a client-only dynamic import.
  */
 export default function Home() {
   return (

@@ -96,6 +96,17 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     let lastReadout = 0;
     let frame = 0;
     let alive = true;
+    // Set once `sample()` has run at least once. `resize()` fires synchronously
+    // during setup, before the first sample exists — without this guard, that
+    // initial call would redraw from all-zero buffers and stamp real-looking
+    // readouts ("0.0ms", "0px/s") over the honest "—" placeholders before any
+    // measurement has actually happened.
+    let hasSampled = false;
+    // Computed once and reused everywhere a readout is written (the initial
+    // reduced-motion frame and any later resize-triggered repaint): reduced
+    // motion never registers `onPointerMove`, so CURSOR must stay on "—"
+    // consistently, not just on the first draw.
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
@@ -106,6 +117,17 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
       }
       const viewport = values.get("viewport");
       if (viewport) viewport.textContent = `${window.innerWidth}×${window.innerHeight}`;
+      // Reassigning canvas.width/height clears its bitmap. When the loop is
+      // running, its next frame repaints for free. When it isn't — suspended
+      // (tab hidden / hero off screen), or the reduced-motion path once its
+      // single frame has already fired — nothing will ever repaint on its
+      // own, so do it here from the samples already collected. This must not
+      // start the loop: a resize mid-suspension should still repaint, not
+      // resume sampling.
+      if (frame === 0 && hasSampled) {
+        for (const s of series.values()) drawTrace(s);
+        writeReadouts(!reducedMotion);
+      }
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -176,7 +198,12 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
       }
     };
 
-    const writeReadouts = () => {
+    // Reduced motion never registers `onPointerMove` (see below), so CURSOR
+    // never receives a real sample there. `includeCursor: false` on that path
+    // leaves the element on its initial "—" instead of printing a fabricated
+    // "0px/s" for a channel with no data — matching Instrument.tsx's own rule
+    // that an empty channel reads "—", not a plausible-looking number.
+    const writeReadouts = (includeCursor = true) => {
       const frameEl = values.get("frame");
       const cursorEl = values.get("cursor");
       const scrollEl = values.get("scroll");
@@ -185,11 +212,12 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
         const latest = frameSeries.samples[(head - 1 + WINDOW) % WINDOW];
         frameEl.textContent = `${latest.toFixed(1)}ms`;
       }
-      if (cursorEl) cursorEl.textContent = `${Math.round(cursorV)}px/s`;
+      if (includeCursor && cursorEl) cursorEl.textContent = `${Math.round(cursorV)}px/s`;
       if (scrollEl) scrollEl.textContent = `${Math.round(scrollV)}px/s`;
     };
 
     const sample = (dt: number) => {
+      hasSampled = true;
       // Decay runs before the recompute below, not after. Applying it to a
       // frame's own fresh measurement would show every live reading ~10%
       // low; decaying only the carried-over value, then overwriting with
@@ -246,17 +274,24 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
     observer.observe(root);
     window.addEventListener("resize", resize);
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reducedMotion) {
       // One honest frame, then nothing. The elapsed time is measured inside
       // a real requestAnimationFrame callback, not assumed — a canned figure
       // here would be the only invented number on the page, and it would sit
       // in the one place a visitor cannot watch it update to notice. No
-      // loop (the callback never reschedules itself), no pointer listener.
+      // loop (the callback never reschedules itself), no pointer listener —
+      // which is also why CURSOR is excluded from the readout below: with no
+      // listener there is no data, and a channel with no data reads "—", not
+      // a plausible-looking "0px/s".
       frame = requestAnimationFrame(() => {
         if (!alive) return;
         sample(Math.min(performance.now() - prev, 100));
         for (const s of series.values()) drawTrace(s);
-        writeReadouts();
+        writeReadouts(false);
+        // The one shot is spent. Clear the handle so a later resize's
+        // `frame === 0` check knows there is no loop to repaint for it and
+        // repaints itself instead of leaving the canvases blank.
+        frame = 0;
       });
       return () => {
         alive = false;
@@ -278,6 +313,16 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
       if (wanted() && !frame) {
         // Reset the clock, or the first frame back reports the whole gap.
         prev = performance.now();
+        // The page usually scrolled while the loop was suspended. Without
+        // this, the first frame back divides that entire gap's scroll delta
+        // by a single ~16ms dt and reports tens of thousands of px/s — a
+        // number nothing on screen ever moved at. The gap is not motion, so
+        // it must not be reported as motion; reseed from the real position
+        // instead of the stale one. Same for the pointer: a stale
+        // `lastPointer.t` would compute a velocity across the suspended
+        // interval on the next real move.
+        lastY = window.scrollY;
+        lastPointer = null;
         frame = requestAnimationFrame(step);
       } else if (!wanted() && frame) {
         cancelAnimationFrame(frame);

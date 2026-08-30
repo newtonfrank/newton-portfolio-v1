@@ -34,7 +34,7 @@
   }
 }
 
-/* Quiet UI layer over the portrait. */
+/* Quiet UI layer over the hero. */
 .chrome {
   position: absolute;
   inset: 0;
@@ -191,7 +191,7 @@
   line-height: 0.9;
   letter-spacing: -0.02em;
   /* Soft charcoal, not pure black — a quiet name across the base that reads on
-     the light field without competing with the portrait. */
+     the light field without competing with the rest of the hero chrome. */
   color: #33363d;
 }
 
