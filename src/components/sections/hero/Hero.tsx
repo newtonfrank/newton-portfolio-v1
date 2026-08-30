@@ -22,7 +22,7 @@ import styles from "./Hero.module.css";
 export function Hero() {
   const marqueeRef = useRef<HTMLDivElement>(null);
   const { ready, markAssetReady } = useSiteReady();
-  useHeroEntrance(marqueeRef);
+  useHeroEntrance(marqueeRef, { ready });
 
   // One marquee unit; rendered enough times to overflow, then the whole strip
   // is duplicated so the scroll-driven wrap loops seamlessly.

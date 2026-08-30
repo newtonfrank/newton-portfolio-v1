@@ -63,3 +63,18 @@ test("scrolling down carries the marquee left", async ({ page }) => {
   await page.waitForTimeout(400);
   expect(await read()).not.toBe(before);
 });
+
+test("the marquee comes to rest on a whole-unit boundary", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator('[data-marquee="rest"]')).toBeAttached({
+    timeout: 6000,
+  });
+  const drift = await page.locator('[data-track="main"]').evaluate((track) => {
+    const unit = (track.firstElementChild as HTMLElement).offsetWidth;
+    const t = getComputedStyle(track).transform;
+    const x = Math.abs(t === "none" ? 0 : new DOMMatrixReadOnly(t).m41);
+    const phase = ((x % unit) + unit) % unit;
+    return Math.min(phase, unit - phase);
+  });
+  expect(drift).toBeLessThan(1);
+});
