@@ -70,18 +70,23 @@ Keep `"the marquee track carries no transform"` inside the `reduced motion` desc
 Replace `"nothing overlays the portrait"` with this, and add the new instrument test:
 
 ```ts
+// Sample the marquee's clipped WRAPPER, not the track: the track is
+// `max-content` wide and overflows the viewport by roughly an order of
+// magnitude, so a point derived from its own box lands off-screen and
+// `elementFromPoint` returns null there.
 test("nothing overlays the marquee", async ({ page }) => {
   await page.goto("/");
-  const track = page.locator('[data-track="main"]');
-  const box = await track.boundingBox();
-  const covered = await page.evaluate(
-    ([x, y]) => {
-      const el = document.elementFromPoint(x, y);
-      const track = document.querySelector('[data-track="main"]');
-      return !(el && track && (track.contains(el) || el.contains(track)));
-    },
-    [box!.x + box!.width / 4, box!.y + box!.height / 2] as const,
-  );
+  const covered = await page.evaluate(() => {
+    const track = document.querySelector('[data-track="main"]');
+    const wrapper = track?.parentElement;
+    if (!wrapper) return true;
+    const box = wrapper.getBoundingClientRect();
+    const el = document.elementFromPoint(
+      box.left + box.width / 2,
+      box.top + box.height / 2,
+    );
+    return !(el && (wrapper.contains(el) || el.contains(wrapper)));
+  });
   expect(covered).toBe(false);
 });
 
@@ -543,13 +548,27 @@ Note: `.globe`'s `rgba(255, 255, 255, 0.14)` is a fifth hard-coded value in this
 Append to `tests/hero-entrance.spec.ts`:
 
 ```ts
+// FRAME gets a FORMAT assertion only. At a steady 60fps `dt.toFixed(1)` is
+// "16.7ms" frame after frame, so "the readout changed" is not a property this
+// channel reliably has — asserting it would be flaky by construction.
 test("the instrument reports real frame times", async ({ page }) => {
   await page.goto("/");
   const read = () => page.locator('[data-value="frame"]').innerText();
   await expect.poll(read, { timeout: 3000 }).not.toBe("—");
-  const first = await read();
-  await expect.poll(read, { timeout: 3000 }).not.toBe(first);
   expect(await read()).toMatch(/^\d+\.\d+ms$/);
+});
+
+// Liveness lives here instead: scrolling drives a deterministic 0 → hundreds
+// transition, and all three readouts are written by the same loop, so a dead
+// loop fails this too.
+test("the instrument tracks scroll velocity", async ({ page }) => {
+  await page.goto("/");
+  const read = () => page.locator('[data-value="scroll"]').innerText();
+  await expect.poll(read, { timeout: 3000 }).toBe("0px/s");
+  await page.evaluate(() => window.scrollBy(0, 400));
+  await expect
+    .poll(read, { timeout: 2000 })
+    .not.toBe("0px/s");
 });
 
 test("the instrument responds to the pointer", async ({ page }) => {
@@ -867,10 +886,17 @@ The one Ember moment: the frame trace reports the page's own jank, in the brand'
 Append to `tests/hero-entrance.spec.ts`:
 
 ```ts
-test("the frame channel raises an alarm on real jank", async ({ page }) => {
+// Deliberately does NOT assert the alarm starts clear: hydration routinely
+// drops a frame, which legitimately raises it and holds it for the whole
+// ~3s window. Asserting BOTH edges around a forced jank proves the mechanism
+// without depending on load-time luck.
+test("the frame channel raises an alarm on real jank, then clears", async ({ page }) => {
+  test.setTimeout(30_000);
   await page.goto("/");
   const row = page.locator('[data-channel="frame"]');
-  await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 3000 }).toBe(null);
+  await expect.poll(() => page.locator('[data-value="frame"]').innerText(), {
+    timeout: 3000,
+  }).not.toBe("—");
 
   // Block the main thread long enough to guarantee a dropped frame.
   await page.evaluate(() => {
@@ -881,6 +907,10 @@ test("the frame channel raises an alarm on real jank", async ({ page }) => {
   });
 
   await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 3000 }).toBe("true");
+
+  // Once the ring buffer has advanced past the jank the alarm must clear on its
+  // own — proving it tracks a moving window rather than latching forever.
+  await expect.poll(() => row.getAttribute("data-alarm"), { timeout: 12_000 }).toBe(null);
 });
 ```
 
