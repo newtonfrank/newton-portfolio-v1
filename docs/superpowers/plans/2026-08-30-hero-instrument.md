@@ -589,6 +589,7 @@ test("the instrument reports the real viewport", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator('[data-value="viewport"]')).toHaveText("1200×800");
 });
+```
 
 Add this one **inside the existing `test.describe("reduced motion", …)` block**
 alongside `"the marquee track carries no transform"` — do not open a second
