@@ -292,7 +292,12 @@ export function useInstrument(rootRef: RefObject<HTMLElement | null>): void {
       },
       { threshold: 0 }
     );
-    visible.observe(root);
+    // Observe the hero section, not `root` (the instrument itself): the
+    // instrument is small and sits high in the section, so it clears the
+    // viewport on scroll long before the hero does — observing it directly
+    // would suspend the loop while the instrument is still visibly on screen.
+    const watched = root.closest("#hero") ?? root;
+    visible.observe(watched);
     document.addEventListener("visibilitychange", sync);
 
     sync();
