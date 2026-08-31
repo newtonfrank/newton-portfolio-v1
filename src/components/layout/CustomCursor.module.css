@@ -1,0 +1,47 @@
+.dot,
+.ring {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: var(--z-cursor);
+  pointer-events: none;
+  border-radius: var(--radius-full);
+  /* Difference blend keeps it visible over both the dark scene and light pills. */
+  mix-blend-mode: difference;
+  will-change: transform;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  margin-block-start: -3px;
+  margin-inline-start: -3px;
+  background-color: #ffffff;
+}
+
+.ring {
+  width: 34px;
+  height: 34px;
+  margin-block-start: -17px;
+  margin-inline-start: -17px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  transition:
+    width var(--duration-fast) var(--ease-out),
+    height var(--duration-fast) var(--ease-out),
+    margin var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out);
+}
+
+.ringHover {
+  width: 58px;
+  height: 58px;
+  margin-block-start: -29px;
+  margin-inline-start: -29px;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Suppressed while another surface supplies its own cursor (project preview). */
+.hidden {
+  opacity: 0;
+}

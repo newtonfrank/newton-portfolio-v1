@@ -1,0 +1,20 @@
+.link {
+  position: absolute;
+  inset-inline-start: var(--space-4);
+  inset-block-start: calc(-1 * var(--space-10));
+  z-index: var(--z-cursor);
+
+  padding: var(--space-3) var(--space-5);
+  background-color: var(--ink-raised);
+  color: var(--bone);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.link:focus-visible {
+  transform: translateY(calc(100% + var(--space-10)));
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

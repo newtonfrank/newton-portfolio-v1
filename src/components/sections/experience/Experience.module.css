@@ -1,0 +1,179 @@
+.section {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--container-pad);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-end: var(--space-8);
+}
+
+.eyebrow {
+  color: var(--bone-subtle);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  color: var(--bone);
+  margin: 0;
+  max-inline-size: 20ch;
+  text-wrap: balance;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .layout {
+    grid-template-columns: 1.5fr 0.9fr;
+    gap: var(--space-9);
+    align-items: start;
+  }
+}
+
+/* ── Experience (main column) ── */
+.jobs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.job {
+  padding-block: var(--space-6);
+  border-block-start: 1px solid var(--line-strong);
+}
+
+.job:first-child {
+  border-block-start: 0;
+  padding-block-start: 0;
+}
+
+.jobHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-block-end: var(--space-5);
+}
+
+.role {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-h3);
+  letter-spacing: var(--ls-tight);
+  color: var(--bone);
+  margin: 0;
+}
+
+.company {
+  color: var(--bone-muted);
+  margin-block-start: 0.2rem;
+}
+
+.date {
+  color: var(--bone-subtle);
+  flex-shrink: 0;
+}
+
+.points {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.points li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  color: var(--bone-muted);
+  max-inline-size: 64ch;
+}
+
+.points li::before {
+  content: "";
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--signal);
+  margin-block-start: 0.55em;
+}
+
+/* ── Education + highlights (rail) ── */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.sideLabel {
+  color: var(--bone-subtle);
+  padding-block-end: var(--space-3);
+  border-block-end: 1px solid var(--line);
+}
+
+.edu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.school {
+  color: var(--bone);
+  font-weight: 500;
+}
+
+.degree {
+  color: var(--bone-muted);
+}
+
+.eduMeta {
+  color: var(--bone-subtle);
+  margin-block-start: 0.2rem;
+}
+
+.highlights {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.highlights li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-3);
+  color: var(--bone-muted);
+}
+
+.highlights li::before {
+  content: "";
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--radius-full);
+  background-color: var(--ember);
+  margin-block-start: 0.55em;
+}

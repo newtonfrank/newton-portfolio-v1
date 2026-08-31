@@ -1,0 +1,223 @@
+.section {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--container-pad);
+}
+
+.eyebrow {
+  color: var(--bone-subtle);
+  margin-block-end: var(--space-6);
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-block-start: 1px solid var(--line-strong);
+}
+
+.row {
+  border-block-end: 1px solid var(--line-strong);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.rowDimmed {
+  color: var(--bone-subtle);
+}
+
+.rowLink {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  padding-block: clamp(1.1rem, 3vw, 2.4rem);
+  color: inherit;
+  text-decoration: none;
+}
+
+.rowIndex {
+  align-self: flex-start;
+  padding-block-start: 0.7em;
+  min-inline-size: 2.5ch;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  color: var(--bone-subtle);
+}
+
+.rowTitle {
+  flex: 1;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.25rem, 6.5vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: var(--ls-display);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.rowMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-shrink: 0;
+  color: var(--bone-muted);
+}
+
+.rowArrow {
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-0.35em);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+/* Hover affordance — only where a fine pointer can hover. */
+@media (hover: hover) and (pointer: fine) {
+  .rowLink:hover .rowTitle {
+    transform: translateX(var(--space-4));
+  }
+
+  .rowLink:hover .rowArrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.rowLink:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Coarse-pointer fallback thumbnail ── */
+.thumb {
+  display: none;
+}
+
+/* ── Floating preview (fine pointer) ── */
+.preview {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: var(--z-menu);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+  will-change: transform, opacity;
+}
+
+.previewOn {
+  opacity: 1;
+}
+
+.previewFrame {
+  position: relative;
+  inline-size: clamp(15rem, 24vw, 23rem);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transform: scale(0.92);
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.previewOn .previewFrame {
+  transform: scale(1);
+}
+
+/* Each frame fills the clipped frame and stacks. Travelling *down* the list
+ * sends the incoming frame up from below while the outgoing one leaves through
+ * the top; travelling up reverses it — so the reveal tracks the pointer's own
+ * direction instead of cross-fading. The first reveal has nothing to slide
+ * past, so it just appears. Under reduced motion the global floor in reset.css
+ * collapses these to an instant swap. */
+.previewSlide {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+.previewSlide[data-enter="up"] {
+  animation: preview-in-up var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-enter="down"] {
+  animation: preview-in-down var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-exit="up"] {
+  animation: preview-out-up var(--duration-base) var(--ease-out) both;
+}
+
+.previewSlide[data-exit="down"] {
+  animation: preview-out-down var(--duration-base) var(--ease-out) both;
+}
+
+@keyframes preview-in-up {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes preview-in-down {
+  from {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes preview-out-up {
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes preview-out-down {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+.previewImg {
+  object-fit: cover;
+}
+
+.badge {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  translate: -50% -50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 4.75rem;
+  block-size: 4.75rem;
+  border-radius: var(--radius-full);
+  background-color: var(--ember);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 500;
+}
+
+/* Coarse pointer / reduced motion: static list with inline thumbnails. Both
+ * cases make `useFinePointer` false, so the thumbnail is already in the DOM —
+ * these queries just reveal it (kept hidden on a normal desktop to avoid a
+ * pre-hydration flash). */
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .rowLink {
+    align-items: center;
+  }
+
+  .thumb {
+    position: relative;
+    display: block;
+    inline-size: 4rem;
+    block-size: 3rem;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .thumbImg {
+    object-fit: cover;
+  }
+}

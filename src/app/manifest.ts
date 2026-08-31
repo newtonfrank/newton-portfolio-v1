@@ -1,20 +1,23 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
-    return {
-        name: 'Newton Frank F | Frontend Developer',
-        short_name: 'Newton Portfolio',
-        description: 'Portfolio of Newton Frank F, a Frontend Developer specialized in React, Next.js, and Modern Web.',
-        start_url: '/',
-        display: 'standalone',
-        background_color: '#050505',
-        theme_color: '#050505',
-        icons: [
-            {
-                src: '/favicon.png',
-                sizes: 'any',
-                type: 'image/png',
-            },
-        ],
-    };
+  return {
+    name: "Newton Frank — Fullstack Developer & Product Designer",
+    short_name: "Newton Frank",
+    description:
+      "Portfolio of Newton Frank — fullstack developer and product designer building real-time dashboards, scalable UI systems, and polished product interfaces.",
+    start_url: "/",
+    display: "standalone",
+    // Aligned with layout.viewport.themeColor (the hero field) and the light
+    // editorial surface, so the PWA chrome no longer contradicts the site.
+    background_color: "#f4f3ee",
+    theme_color: "#d0d0d0",
+    icons: [
+      {
+        src: "/favicon.png",
+        sizes: "any",
+        type: "image/png",
+      },
+    ],
+  };
 }

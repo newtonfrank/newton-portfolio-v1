@@ -1,0 +1,157 @@
+.section {
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+  padding: var(--section-y) var(--container-pad);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-block-end: var(--space-8);
+  max-inline-size: 46ch;
+}
+
+.eyebrow {
+  color: var(--bone-subtle);
+}
+
+.heading {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+  color: var(--bone);
+  margin: 0;
+  text-wrap: balance;
+}
+
+.intro {
+  color: var(--bone-muted);
+}
+
+.cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-8);
+}
+
+@media (min-width: 64rem) {
+  .cols {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-9);
+  }
+}
+
+/* Each discipline is topped by its axis accent — Signal for Build, Ember for
+   Craft — so the duality reads before a single word is. */
+.disc {
+  border-block-start: 2px solid var(--line-strong);
+  padding-block-start: var(--space-5);
+}
+
+.build {
+  border-block-start-color: var(--signal);
+}
+
+.craft {
+  border-block-start-color: var(--ember);
+}
+
+.discHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.discDot {
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: var(--radius-full);
+}
+
+.build .discDot {
+  background-color: var(--signal);
+}
+
+.craft .discDot {
+  background-color: var(--ember);
+}
+
+.discTitle {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--fs-h3);
+  letter-spacing: var(--ls-tight);
+  color: var(--bone);
+  margin: 0;
+}
+
+.discBlurb {
+  color: var(--bone-muted);
+  margin: var(--space-3) 0 var(--space-6);
+  max-inline-size: 42ch;
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin: 0;
+}
+
+.group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 30rem) {
+  .group {
+    grid-template-columns: 9rem 1fr;
+    gap: var(--space-4);
+  }
+}
+
+.groupLabel {
+  color: var(--bone-subtle);
+  padding-block-start: 0.35rem;
+}
+
+.groupItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.chip {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  color: var(--bone-muted);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-full);
+  padding: 0.3rem 0.7rem;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .build .chip:hover {
+    color: var(--signal);
+    border-color: var(--signal);
+  }
+
+  .craft .chip:hover {
+    color: var(--ember);
+    border-color: var(--ember);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chip {
+    transition: none;
+  }
+}

@@ -1,0 +1,97 @@
+/* The 404 runs on the :root ink surface — the same ground the overscroll
+   gutters and the Contact close sit on, so a wrong URL still lands somewhere
+   that belongs to the site. */
+
+.page {
+  min-block-size: 100dvh;
+  display: grid;
+  align-content: center;
+  gap: var(--space-6);
+  padding: var(--section-y) var(--container-pad);
+  max-inline-size: var(--container-max);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--bone-subtle);
+}
+
+/* The rule runs off toward the edge — the page is a dead end, the line isn't. */
+.eyebrow::after {
+  content: "";
+  block-size: 1px;
+  flex: 1;
+  max-inline-size: 12rem;
+  background: var(--line-strong);
+}
+
+.code {
+  font-family: var(--font-display-condensed);
+  font-size: clamp(6rem, 26vw, 20rem);
+  line-height: 0.8;
+  letter-spacing: var(--ls-display);
+  text-transform: uppercase;
+  color: var(--bone);
+  /* Optical: the condensed digits carry their own left bearing. */
+  margin-inline-start: -0.04em;
+}
+
+.body {
+  max-inline-size: 44ch;
+  color: var(--bone-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5);
+  margin-block-start: var(--space-2);
+}
+
+.home {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--bone);
+  padding-block-end: var(--space-1);
+  border-block-end: 1px solid var(--line-strong);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.home:hover {
+  color: var(--ember);
+  border-block-end-color: var(--ember);
+}
+
+.home:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.arrow {
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.home:hover .arrow {
+  transform: translateX(0.2rem);
+}
+
+.email {
+  color: var(--bone-subtle);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.email:hover {
+  color: var(--bone);
+}
+
+.email:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

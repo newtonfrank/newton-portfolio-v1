@@ -1,0 +1,51 @@
+.button {
+  --size: 8rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--size);
+  block-size: var(--size);
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  text-align: center;
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  letter-spacing: var(--ls-tight);
+  will-change: transform;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  will-change: transform;
+}
+
+.ink {
+  background-color: var(--bone);
+  color: var(--ink);
+}
+
+.ink:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.accent {
+  background-color: var(--ember);
+  color: #ffffff;
+}
+
+.accent:hover {
+  box-shadow: var(--shadow-glow-ember);
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}

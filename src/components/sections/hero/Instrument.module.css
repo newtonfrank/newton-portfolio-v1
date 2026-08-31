@@ -1,0 +1,77 @@
+/* Spec-sheet rules: label at the left margin, trace across the middle, value at
+   the right — the same hairline language that divides the project rows, rather
+   than a boxed dashboard widget in a page that has no other boxes. */
+.instrument {
+  position: absolute;
+  inset-inline: var(--container-pad);
+  top: 24%;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--instrument-row-gap);
+  pointer-events: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--instrument-label-w) 1fr var(--instrument-value-w);
+  align-items: center;
+  gap: var(--instrument-gap);
+
+  /* The beat the portrait's develop used to own: the rules typeset themselves
+     in from the left, one after another. */
+  clip-path: inset(0 100% 0 0);
+  animation: instrument-draw var(--duration-base) var(--ease-out) forwards;
+  animation-delay: calc(var(--i) * var(--entrance-row-stagger));
+}
+
+@keyframes instrument-draw {
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.label {
+  color: var(--bone-muted);
+  letter-spacing: var(--ls-mono);
+}
+
+/* The global `mono` utility uppercases text (right, for the FRAME/CURSOR/
+   SCROLL/VIEWPORT labels) — but this row prints a real reading like
+   "16.7ms" or "412px/s", and uppercasing the unit reads as a typo, not an
+   instrument. The attribute selector outranks `.mono`'s class specificity
+   so the override holds regardless of stylesheet order. */
+.value[data-value] {
+  color: var(--bone);
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  text-transform: none;
+}
+
+.trace {
+  inline-size: 100%;
+  block-size: var(--instrument-trace-h);
+  display: block;
+}
+
+/* VIEWPORT has no series; it gets the hairline the others' traces stand in for. */
+.rule {
+  block-size: var(--hairline);
+  background: var(--line);
+}
+
+/* No cursor, no CURSOR row. Hidden in CSS rather than via `useFinePointer`,
+   which returns false on the server and first client render and would flash the
+   row in and out. A media query is correct at first paint. */
+@media (pointer: coarse) {
+  .row[data-channel="cursor"] {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row {
+    animation: none;
+    clip-path: none;
+  }
+}

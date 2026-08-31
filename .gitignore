@@ -47,3 +47,22 @@ junit.xml
 .yarn/raw
 .yarn/metadata.json
 .yarn/ci-things
+
+# TS incremental build info
+tsconfig.tsbuildinfo
+
+# Redundant archive of docs/rebuild/*.md
+docs/rebuild/*.zip
+
+# Font sources — the woff2 build outputs live in src/fonts/ and are committed
+public/fonts/
+
+# Reference captures — large local-only media, not build inputs
+docs/ref/**/*.mp4
+docs/results/
+
+# SDD scratch (subagent-driven development workspaces)
+.superpowers/
+
+/test-results/
+/playwright-report/

@@ -1,0 +1,75 @@
+/* Type role classes. 03-DESIGN-SYSTEM.md B.3.
+ * Global (not a CSS module) so sections apply them as plain strings alongside
+ * their own scoped module classes. */
+
+.displayXl {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-xl);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+}
+
+.displayL {
+  font-family: var(--font-display);
+  font-size: var(--fs-display-l);
+  font-weight: 500;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-display);
+}
+
+.h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+}
+
+.h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+  letter-spacing: var(--ls-tight);
+}
+
+.h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: 500;
+  line-height: var(--lh-snug);
+}
+
+.bodyL {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body-l);
+  line-height: var(--lh-normal);
+}
+
+.body {
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-normal);
+}
+
+.small {
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  line-height: var(--lh-normal);
+}
+
+/* Tabular figures so counters and years don't jitter mid-animation. B.4 */
+.mono {
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  text-transform: uppercase;
+  letter-spacing: var(--ls-mono);
+  font-feature-settings: "tnum";
+}
+
+/* Long-form prose caps at ~68ch. B.4 */
+.prose {
+  max-width: 68ch;
+  line-height: var(--lh-relaxed);
+}
