@@ -107,7 +107,9 @@
   gap: var(--space-3);
 }
 
-@media (min-width: 30rem) {
+/* A fixed 9rem label column starting at --bp-sm left the chips about 290px on a
+   480px screen. It earns its place at --bp-md, not before. */
+@media (min-width: 48rem) {
   .group {
     grid-template-columns: 9rem 1fr;
     gap: var(--space-4);

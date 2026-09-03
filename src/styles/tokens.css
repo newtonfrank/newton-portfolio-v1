@@ -89,7 +89,15 @@
 
   --section-y: clamp(5rem, 12vh, 11rem);
   --container-max: 90rem;
-  --container-pad: clamp(1.25rem, 5vw, 5rem);
+  /* The viewport is `viewportFit: cover` (see app/layout.tsx), so on a notched
+     phone held sideways the display cuts into the inline edges. Folding the
+     inset into the pad is what keeps content clear of it; on every other device
+     the env() values are 0 and the clamp wins. */
+  --container-pad: max(
+    clamp(1.25rem, 5vw, 5rem),
+    env(safe-area-inset-left),
+    env(safe-area-inset-right)
+  );
   --gutter: clamp(1rem, 2vw, 1.5rem);
 
   /* ─── Breakpoints (min-widths) ───
@@ -143,7 +151,10 @@
   /* ─── Hero instrument ─── */
   --instrument-row-gap: clamp(1.25rem, 3vh, 2.5rem);
   --instrument-trace-h: 1.75rem;
-  --instrument-label-w: 7ch;
+  /* `ch` measures the zero glyph and knows nothing about tracking, so these are
+     sized for the longest label ("VIEWPORT", 8 characters) *plus* the 0.08em
+     --ls-mono it is set in. At 7ch it overflowed its own track at every width. */
+  --instrument-label-w: 9.5ch;
   --instrument-value-w: 9ch;
   --instrument-gap: var(--space-5);
   --entrance-row-stagger: 90ms;

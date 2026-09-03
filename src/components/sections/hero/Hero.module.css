@@ -1,8 +1,33 @@
 .hero {
+  /* Hoisted so the padding below can reserve exactly the band the marquee
+     occupies, rather than guessing at a magic value. */
+  --hero-word-size: clamp(4.5rem, 17vw, 20rem);
+
   position: relative;
   min-height: 100dvh;
   overflow: hidden;
   isolation: isolate;
+
+  /* One grid at every width. The composition used to anchor the instrument, the
+     role and the location pill to percentage tops — 24%, 42%, 56% — which only
+     holds while the viewport is tall enough for them to miss each other. The
+     instrument's own height is content-driven, so on a 900px-tall desktop it
+     already grew past the 42% mark and printed over the role; a phone was worse.
+     Stacking them makes the collision impossible instead of a matter of tuning.
+
+     The marquee stays out of this flow: it is a full-bleed clipped band, and
+     leaving it absolute keeps its scroll-driven transform exactly as tested. */
+  display: grid;
+  grid-template-columns: 1fr;
+  /* The three bands share whatever height is left over the nameplate, so the
+     composition breathes on a tall screen and closes up on a short one without
+     a breakpoint per height. --space-6 is the floor it never drops below. */
+  align-content: space-between;
+  gap: var(--space-6);
+  padding-inline: var(--container-pad);
+  /* The top pad is tuned so the bands plus the nameplate's reserved band still
+     clear 100dvh on a 720p laptop, the shortest screen this layout must hold. */
+  padding-block: clamp(5rem, 14vh, 10rem) calc(var(--hero-word-size) * 0.9 + var(--space-5));
   /* The hero sits on the page's own surface. It had a flat grey field of its own
      while it held a studio portrait; without one, that field only made the hero
      an island above a bone page — and it was the reason the chrome below had to
@@ -34,25 +59,24 @@
   }
 }
 
-/* Quiet UI layer over the hero. */
+/* Dissolved so the pill and the role become grid items of the hero itself. The
+   wrapper carries no semantics — it only existed to share the absolute frame. */
 .chrome {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  pointer-events: none;
+  display: contents;
 }
 
 .locate,
 .role {
-  position: absolute;
-  pointer-events: auto;
+  /* Above the marquee's z-index: 1, so the nameplate can never print over them
+     on a short screen. Grid items honour z-index without being positioned. */
+  z-index: 2;
   animation: hero-chrome var(--duration-base) var(--ease-out) var(--entrance-chrome-delay) both;
 }
 
 /* Dark location pill, lower-left. */
 .locate {
-  left: var(--container-pad);
-  top: 56%;
+  grid-row: 3;
+  justify-self: start;
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
@@ -102,10 +126,10 @@
   }
 }
 
-/* Role + scroll cue, right of centre. */
+/* Role + scroll cue, set against the right margin below the instrument. */
 .role {
-  right: var(--container-pad);
-  top: 42%;
+  grid-row: 2;
+  justify-self: end;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -122,7 +146,10 @@
 .roleText {
   font-size: var(--fs-body);
   line-height: 1.4;
-  max-inline-size: 16ch;
+  /* 16ch broke the line four times, which read as a cramped rag against the
+     right margin and cost the composition enough height to push the nameplate
+     off a 720p screen. Two lines sit better and buy that height back. */
+  max-inline-size: 22ch;
 }
 
 /* Right-to-left name marquee across the base, overlapping the lower torso. */
@@ -187,7 +214,7 @@
 .word {
   font-family: var(--font-sans);
   font-weight: 500;
-  font-size: clamp(4.5rem, 17vw, 20rem);
+  font-size: var(--hero-word-size);
   line-height: 0.9;
   letter-spacing: -0.02em;
   /* Soft charcoal, not pure black — a quiet name across the base that reads on
@@ -199,16 +226,48 @@
   color: rgba(51, 54, 61, 0.5);
 }
 
-@media (max-width: 48rem) {
+/* ── Small screens re-order the same grid ──
+ * The role leads: on a phone the first thing read should be what he does, not
+ * where he is (BUILD_GUIDE §9, "lead with the answer"), and set against the left
+ * margin rather than the right, where a 24ch measure would leave it ragged.
+ *
+ * The second query catches a landscape phone, which is wider than --bp-md but
+ * far too short to give each band its own room. */
+@media (max-width: 47.99rem), (orientation: landscape) and (max-height: 32rem) {
+  .hero {
+    --hero-word-size: clamp(3.5rem, 22vw, 9rem);
+
+    /* Clears the absolutely positioned header — a --space-4 pad around a 3rem
+       toggle — with a little air beneath it. */
+    padding-block-start: calc(var(--space-9) + var(--space-4));
+  }
+
   .role {
-    top: 28%;
+    grid-row: 1;
+    justify-self: start;
+    align-items: flex-start;
+    text-align: start;
   }
 
-  .locate {
-    top: 62%;
+  .roleText {
+    max-inline-size: 24ch;
+  }
+}
+
+/* A landscape phone has no room for a full-height hero. Let it grow past the
+ * viewport and bring the marquee into the flow beneath the stack, so the whole
+ * composition scrolls instead of overlapping itself. */
+@media (orientation: landscape) and (max-height: 32rem) {
+  .hero {
+    min-height: auto;
+    /* The marquee joins the flow below, so there is no band left to reserve. */
+    padding-block-end: var(--space-6);
   }
 
-  .word {
-    font-size: clamp(3.5rem, 22vw, 9rem);
+  .marquee {
+    /* Still a containing block for the absolutely positioned ghost plates. */
+    position: relative;
+    inset: auto;
+    margin-block-start: var(--space-7);
   }
 }

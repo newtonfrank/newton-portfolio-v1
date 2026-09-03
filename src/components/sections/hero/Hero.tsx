@@ -44,9 +44,16 @@ export function Hero() {
         {hero.name.join(" ")} — {hero.role}
       </h1>
 
-      <Instrument onFirstFrame={markAssetReady} />
-
       <div className={styles.chrome}>
+        <span className={styles.role}>
+          <span className={styles.arrow} aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+              <path d="M7 7l10 10M17 17V8M17 17H8" />
+            </svg>
+          </span>
+          <span className={cn(styles.roleText, "mono")}>{hero.role}</span>
+        </span>
+
         <span className={cn(styles.locate, "mono")}>
           <span className={styles.globe} aria-hidden="true">
             <svg
@@ -64,16 +71,9 @@ export function Hero() {
           </span>
           {hero.status}
         </span>
-
-        <span className={styles.role}>
-          <span className={styles.arrow} aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
-              <path d="M7 7l10 10M17 17V8M17 17H8" />
-            </svg>
-          </span>
-          <span className={cn(styles.roleText, "mono")}>{hero.role}</span>
-        </span>
       </div>
+
+      <Instrument onFirstFrame={markAssetReady} />
 
       <div className={styles.marquee} ref={marqueeRef} aria-hidden="true">
         <div className={styles.ghost} data-track="ghost" data-plate="signal">

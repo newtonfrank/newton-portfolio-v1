@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { primaryNav, site } from "@/content/site";
+import { lockScroll, unlockScroll } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 import { MenuOverlay } from "./MenuOverlay";
 import styles from "./Header.module.css";
@@ -15,13 +16,30 @@ import styles from "./Header.module.css";
  */
 export function Header() {
   const [open, setOpen] = useState(false);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Close on Escape while the overlay is open.
+  // Close on Escape while the overlay is open, and hand focus back to the toggle
+  // — the only close that doesn't already end with focus somewhere sensible.
+  // Closing by the toggle leaves focus on it; closing by a link is a navigation,
+  // and pulling focus back to the header would fight the anchor.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      toggleRef.current?.focus({ preventScroll: true });
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  // Freeze the page behind the overlay. Without this Lenis keeps scrolling the
+  // content underneath while the menu covers it, and on a phone the overlay's
+  // own scroll chains straight into the page.
+  useEffect(() => {
+    if (!open) return;
+    lockScroll();
+    return () => unlockScroll();
   }, [open]);
 
   return (
@@ -47,6 +65,7 @@ export function Header() {
         </nav>
 
         <button
+          ref={toggleRef}
           type="button"
           className={cn(styles.toggle, open && styles.toggleOpen)}
           aria-expanded={open}

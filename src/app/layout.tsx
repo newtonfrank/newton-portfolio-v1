@@ -80,6 +80,11 @@ export const viewport = {
   // Matches the light editorial surface the hero now shares, so mobile browser
   // chrome blends into the first paint rather than banding against it.
   themeColor: "#f4f3ee",
+  // The hero is a full-bleed dark field; letterboxing it inside the safe area
+  // would band it against the display cutout. `cover` runs it edge to edge, and
+  // --container-pad folds in env(safe-area-inset-*) so content still clears the
+  // notch when the phone is held sideways.
+  viewportFit: "cover" as const,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
