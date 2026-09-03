@@ -22,6 +22,13 @@ to `/`** and the legacy world deleted. What follows is verified against source.
 
 - **The home is the editorial composition:** Hero → Intro → ProjectList →
   WorkGrid → Capabilities → Experience → Contact.
+- **The hero is one grid at every width**, not an absolute overlay: the
+  instrument, the role and the location pill are bands sharing the leftover
+  height (`align-content: space-between`), re-ordered on small screens so the
+  role leads. Only the name marquee stays absolute — it is a clipped full-bleed
+  band, and keeping it out of the flow keeps its scroll-driven transform intact.
+  Breakpoints live at `--bp-sm/md/lg` plus a short-viewport
+  `(orientation: landscape) and (max-height: 32rem)` for a phone held sideways.
 - **`page.tsx` is a server component.** Sections are `"use client"` islands that
   still SSR to static HTML, so the hero's name marquee (the LCP element) is in
   the initial paint — not gated behind a client-only dynamic import.
@@ -105,17 +112,21 @@ Tracked in the design-audit roadmap (see the `portfolio-consolidation` memory):
   `texture`, `ambient` and `public/showcase/*.jpg` served the deleted R3F
   scene. `ProjectRow` renders `displayTitle`, so the list shows carousel
   shorthand ("Healthcare On-Chain") and the canonical `title` never appears.
-- **`MenuOverlay` has no scroll lock or focus return** — Lenis keeps scrolling
-  the page behind the open menu, and closing drops focus rather than returning
-  it to the toggle. Lenis also isn't wired to hash anchors (`anchors: true`).
+- **Lenis isn't wired to hash anchors** (`anchors: true`), so in-page nav links
+  jump rather than glide. (The overlay's scroll lock and focus return are done —
+  `lib/lenis.ts` publishes the instance so `Header` can pause it.)
 - **Copy drift on the title:** `site.tagline` / `headlineTop` say "Frontend
   developer"; metadata, JSON-LD, and the hero say "Fullstack Developer &
   Product Designer".
 - **16 hard-coded colours in CSS modules**, against the golden rule — worst in
   `Header.module.css` (hardcoded ink/bone, so the header can't respond to the
   theme flip it sits on) and `Hero.module.css`.
-- **No tests**, though Playwright is installed and `content/capabilities.ts`
-  advertises RTL/Selenium.
+- **Thin test coverage.** Playwright covers the hero entrance
+  (`tests/hero-entrance.spec.ts`) and responsive behaviour
+  (`tests/responsive.spec.ts` — overflow, hero collision, tap targets, the menu
+  on a short screen); nothing else has tests, and there are no unit tests though
+  `content/capabilities.ts` advertises RTL/Selenium. Both specs run against a
+  production build, not `next dev`.
 - **Three cursor systems** (`CustomCursor`, the `data-cursor` attributes, and the
   ProjectList preview follower) are not yet unified into one context-aware
   cursor — planned P1.

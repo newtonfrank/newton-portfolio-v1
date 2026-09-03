@@ -2,9 +2,9 @@
    the right — the same hairline language that divides the project rows, rather
    than a boxed dashboard widget in a page that has no other boxes. */
 .instrument {
-  position: absolute;
-  inset-inline: var(--container-pad);
-  top: 24%;
+  /* A band in the hero's grid (see Hero.module.css) — first on a wide screen,
+     second on a phone, where the role leads. */
+  grid-row: 1;
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -15,6 +15,7 @@
 .row {
   display: grid;
   grid-template-columns: var(--instrument-label-w) 1fr var(--instrument-value-w);
+  grid-template-areas: "label trace value";
   align-items: center;
   gap: var(--instrument-gap);
 
@@ -32,6 +33,7 @@
 }
 
 .label {
+  grid-area: label;
   color: var(--bone-muted);
   letter-spacing: var(--ls-mono);
 }
@@ -41,6 +43,10 @@
    "16.7ms" or "412px/s", and uppercasing the unit reads as a typo, not an
    instrument. The attribute selector outranks `.mono`'s class specificity
    so the override holds regardless of stylesheet order. */
+.value {
+  grid-area: value;
+}
+
 .value[data-value] {
   color: var(--bone);
   text-align: end;
@@ -49,6 +55,7 @@
 }
 
 .trace {
+  grid-area: trace;
   inline-size: 100%;
   block-size: var(--instrument-trace-h);
   display: block;
@@ -56,8 +63,28 @@
 
 /* VIEWPORT has no series; it gets the hairline the others' traces stand in for. */
 .rule {
+  grid-area: trace;
   block-size: var(--hairline);
   background: var(--line);
+}
+
+/* Below --bp-sm three tracks leave the trace a sliver — roughly 100px once the
+ * label and value have taken their share. The row wraps instead: the reading
+ * (label and value) on one line, the trace full-width beneath it. Every channel
+ * survives, which a narrower single line could not have promised.
+ *
+ * No JS change is needed for the reflow: `useInstrument` sizes each canvas from
+ * its own getBoundingClientRect and repaints off a ResizeObserver on the
+ * instrument root, including while its RAF loop is suspended. */
+@media (max-width: 29.99rem) {
+  .row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "label value"
+      "trace trace";
+    column-gap: var(--space-4);
+    row-gap: var(--space-2);
+  }
 }
 
 /* No cursor, no CURSOR row. Hidden in CSS rather than via `useFinePointer`,
@@ -73,5 +100,14 @@
   .row {
     animation: none;
     clip-path: none;
+  }
+}
+
+/* Where the role leads, the instrument follows it (see Hero.module.css). The
+ * query is duplicated rather than shared because the two classes live in
+ * separate CSS modules. */
+@media (max-width: 47.99rem), (orientation: landscape) and (max-height: 32rem) {
+  .instrument {
+    grid-row: 2;
   }
 }

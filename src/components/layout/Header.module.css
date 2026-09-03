@@ -10,6 +10,9 @@
   z-index: var(--z-header);
 
   display: grid;
+  /* Three tracks for wordmark / nav / toggle. Below --bp-md the nav is hidden,
+     so the middle track becomes a phantom that pulls the toggle off the edge —
+     the two-track form below drops it. */
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   gap: var(--space-5);
@@ -88,6 +91,12 @@
   gap: var(--space-6);
 }
 
+@media (max-width: 47.99rem) {
+  .header {
+    grid-template-columns: 1fr auto;
+  }
+}
+
 @media (min-width: 48rem) {
   .nav {
     display: flex;
@@ -95,6 +104,11 @@
 }
 
 .navLink {
+  /* The inline nav appears at --bp-md, which includes touch tablets; the padding
+     brings a 13px mono link up to the 44px hit area. */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
   color: var(--bone-muted);
   text-decoration: none;
 }

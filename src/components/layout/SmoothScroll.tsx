@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger, registerGsap } from "@/lib/gsap";
+import { registerLenis } from "@/lib/lenis";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 /**
@@ -19,6 +20,9 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     const lenis = new Lenis({ lerp: 0.1, smoothWheel: true });
     lenis.on("scroll", ScrollTrigger.update);
+    // Published so the overlay's scroll lock can pause it; under reduced motion
+    // we return above and nothing is ever registered.
+    registerLenis(lenis);
 
     const raf = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(raf);
@@ -26,6 +30,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
 
     return () => {
       gsap.ticker.remove(raf);
+      registerLenis(null);
       lenis.destroy();
     };
   }, [reduced]);

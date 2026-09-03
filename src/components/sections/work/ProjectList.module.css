@@ -47,7 +47,9 @@
   flex: 1;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: clamp(2.25rem, 6.5vw, 5.5rem);
+  /* The floor carries a 320px screen, where the title has the row to itself but
+     not much of it. */
+  font-size: clamp(1.9rem, 6.5vw, 5.5rem);
   line-height: 1.02;
   letter-spacing: var(--ls-display);
   transition: transform var(--duration-fast) var(--ease-out);
@@ -90,7 +92,41 @@
 
 /* ── Coarse-pointer fallback thumbnail ── */
 .thumb {
+  grid-area: thumb;
   display: none;
+}
+
+/* Below --bp-md the row stops being one line. A 320px screen cannot carry a
+ * thumbnail, an index, a display title and a non-shrinking category label side
+ * by side, so the mono marks take the first line and the title gets the second
+ * to itself. The hairline rules and the row rhythm are untouched — they are what
+ * makes the list read as a contents page rather than a stack of cards. */
+@media (max-width: 47.99rem) {
+  .rowLink {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas:
+      "thumb index meta"
+      "title title title";
+    align-items: center;
+    column-gap: var(--space-4);
+    row-gap: var(--space-4);
+  }
+
+  .rowIndex {
+    grid-area: index;
+    align-self: center;
+    padding-block-start: 0;
+  }
+
+  .rowTitle {
+    grid-area: title;
+  }
+
+  .rowMeta {
+    grid-area: meta;
+    justify-content: flex-end;
+  }
 }
 
 /* ── Floating preview (fine pointer) ── */

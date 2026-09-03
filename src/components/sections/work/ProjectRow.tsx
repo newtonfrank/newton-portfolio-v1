@@ -12,7 +12,11 @@ interface ProjectRowProps {
   /** Whether the floating-preview experience is on (fine pointer, motion ok). */
   fine: boolean;
   onActivate: (index: number) => void;
-  /** Small inline thumbnail shown only on the coarse-pointer fallback. */
+  /**
+   * Small inline thumbnail shown only on the coarse-pointer fallback. It renders
+   * inside the link so the row can lay itself out as a single grid; it is
+   * decorative (empty alt) and adds nothing to the link's accessible name.
+   */
   children?: React.ReactNode;
 }
 
@@ -35,6 +39,7 @@ export function ProjectRow({
 
   const body = (
     <>
+      {children}
       <span className={styles.rowIndex}>{String(index + 1).padStart(2, "0")}</span>
       <span className={styles.rowTitle}>{project.displayTitle.join(" ")}</span>
       <span className={cn(styles.rowMeta, "mono")}>
@@ -67,7 +72,6 @@ export function ProjectRow({
           {body}
         </span>
       )}
-      {children}
     </li>
   );
 }

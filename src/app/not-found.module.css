@@ -30,13 +30,22 @@
 
 .code {
   font-family: var(--font-display-condensed);
-  font-size: clamp(6rem, 26vw, 20rem);
+  font-size: clamp(4.5rem, 26vw, 20rem);
   line-height: 0.8;
   letter-spacing: var(--ls-display);
   text-transform: uppercase;
   color: var(--bone);
-  /* Optical: the condensed digits carry their own left bearing. */
+  /* Optical: the condensed digits carry their own left bearing. The correction
+     is only worth making where there is margin to bleed into — at --bp-sm and
+     below the code already reaches the container pad, and the negative start
+     pushes it past the edge. */
   margin-inline-start: -0.04em;
+}
+
+@media (max-width: 29.99rem) {
+  .code {
+    margin-inline-start: 0;
+  }
 }
 
 .body {
