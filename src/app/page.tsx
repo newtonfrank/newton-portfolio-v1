@@ -5,7 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Hero } from "@/components/sections/hero/Hero";
 import { Intro } from "@/components/sections/intro/Intro";
 import { ProjectList } from "@/components/sections/work/ProjectList";
-import { WorkGrid } from "@/components/sections/work/WorkGrid";
+import { DesignGallery } from "@/components/sections/design/DesignGallery";
 import { Capabilities } from "@/components/sections/capabilities/Capabilities";
 import { Experience } from "@/components/sections/experience/Experience";
 import { Contact } from "@/components/sections/contact/Contact";
@@ -32,7 +32,7 @@ export default function Home() {
           <Hero />
           <Intro />
           <ProjectList projects={projects} />
-          <WorkGrid />
+          <DesignGallery />
           <Capabilities />
           <Experience />
           <Contact />

@@ -1,0 +1,224 @@
+.section {
+  position: relative;
+  background-color: var(--ink);
+  /* 0…1, written by useDesignScroll on every scroll frame. */
+  --progress: 0;
+}
+
+/* ── Scene mode ───────────────────────────────────────────────────────────
+ * The stage is what ScrollTrigger pins. It clips its own overflow so the
+ * off-screen half of the field never becomes document overflow — the same
+ * discipline the hero marquee follows, and what keeps the responsive spec's
+ * zero-overflow assertion true.
+ */
+.section[data-mode="scene"] .stage {
+  position: relative;
+  block-size: 100dvh;
+  overflow: hidden;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── Chrome ─────────────────────────────────────────────────────────────── */
+
+.chrome {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: var(--container-pad);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  /* Everything here is a label over the field; only the buttons below take
+     pointer events back. */
+  pointer-events: none;
+}
+
+.label {
+  margin: 0;
+  justify-self: start;
+  writing-mode: vertical-rl;
+  font-family: var(--font-mono);
+  font-size: var(--fs-mono);
+  font-weight: 400;
+  letter-spacing: var(--ls-mono);
+  text-transform: uppercase;
+  color: var(--bone-muted);
+}
+
+.foot {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.rule {
+  position: relative;
+  flex: 1;
+  block-size: var(--hairline);
+  background-color: var(--line-strong);
+  overflow: hidden;
+}
+
+.ruleFill {
+  position: absolute;
+  inset: 0;
+  /* Ember is the design/craft half of the duality — this section's one accent. */
+  background-color: var(--ember);
+  transform-origin: left center;
+  transform: scaleX(var(--progress));
+}
+
+.counter {
+  font-size: var(--fs-mono);
+  letter-spacing: var(--ls-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--bone-muted);
+}
+
+/* ── The piece list ───────────────────────────────────────────────────────
+ * In scene mode this is clipped rather than hidden: `display: none` would take
+ * it out of the accessibility tree and off the crawl, which is the whole reason
+ * it exists. Clipping keeps it focusable, and a focused card un-clips itself so
+ * keyboard users can see what they are on.
+ */
+.section[data-mode="scene"] .list {
+  position: absolute;
+  inset-block-end: var(--space-9);
+  inset-inline-start: var(--container-pad);
+  z-index: 2;
+  /* Collapsed to a point. The cards inside are stacked on it and invisible
+     until focused — never `display: none` or `visibility: hidden`, either of
+     which would pull them out of the tab order and defeat the whole layer. */
+  inline-size: 1px;
+  block-size: 1px;
+}
+
+.section[data-mode="scene"] .item {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  opacity: 0;
+  /* The mesh under the pointer is what a mouse hits; these are for keyboards. */
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+/* Tab onto a card and it surfaces over the field, so keyboard users can see
+   which piece they are about to open. */
+.section[data-mode="scene"] .item:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.section[data-mode="scene"] .card {
+  inline-size: clamp(9rem, 18vw, 14rem);
+}
+
+/* ── Rail mode ────────────────────────────────────────────────────────────
+ * No pin, no canvas: a native horizontal scroller. Its own overflow means the
+ * document never gains a horizontal scrollbar.
+ */
+.section[data-mode="rail"] {
+  padding-block: var(--section-y);
+}
+
+.section[data-mode="rail"] .chrome {
+  position: static;
+  padding-inline: var(--container-pad);
+  padding-block: 0 var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.section[data-mode="rail"] .label {
+  writing-mode: horizontal-tb;
+}
+
+.section[data-mode="rail"] .list {
+  display: flex;
+  gap: var(--gutter);
+  margin: 0;
+  padding-inline: var(--container-pad);
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.section[data-mode="rail"] .item {
+  flex: 0 0 auto;
+  scroll-snap-align: center;
+}
+
+.section[data-mode="rail"] .card {
+  inline-size: min(70vw, 22rem);
+}
+
+/* ── The card button, shared by both modes ────────────────────────────────── */
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: block;
+  position: relative;
+  padding: 0;
+  border: var(--hairline) solid var(--line);
+  border-radius: var(--radius-sm);
+  background-color: var(--ink-elevated);
+  color: inherit;
+  overflow: hidden;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(calc(var(--space-1) * -1));
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+}
+
+.thumb {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* The title rides under the thumb in the rail and is the accessible name in
+   both modes. */
+.name {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  padding: var(--space-4) var(--space-3) var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--fs-small);
+  text-align: start;
+  color: var(--bone);
+  background-image: linear-gradient(to top, var(--overlay), transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .section[data-mode="scene"] .item {
+    transition: none;
+  }
+
+  .card:hover {
+    transform: none;
+  }
+}

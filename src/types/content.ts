@@ -33,14 +33,23 @@ export interface DesignPiece {
   file: string;
   width: number;
   height: number;
+  /** Real name of the piece. Becomes the alt text and the lightbox caption. */
+  title: string;
+  /** Broad discipline label, shown under the title in the lightbox. */
+  kind: DesignKind;
 }
 
-/** A DesignPiece with its derived display title and URL-safe src. */
+export type DesignKind = "Poster" | "Brand" | "Product" | "Social" | "Apparel" | "Banner";
+
+/** A DesignPiece with its URL-safe src and derived aspect ratio. */
 export interface DesignProject {
   title: string;
+  kind: DesignKind;
   image: string;
   width: number;
   height: number;
+  /** width / height. The card's plane aspect, precomputed so the scene never waits on a texture to lay out. */
+  aspect: number;
 }
 
 export interface EducationEntry {

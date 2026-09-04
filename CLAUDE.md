@@ -21,7 +21,7 @@ legacy homepage and an editorial `/preview`. The editorial build was **promoted
 to `/`** and the legacy world deleted. What follows is verified against source.
 
 - **The home is the editorial composition:** Hero → Intro → ProjectList →
-  WorkGrid → Capabilities → Experience → Contact.
+  DesignGallery → Capabilities → Experience → Contact.
 - **The hero is one grid at every width**, not an absolute overlay: the
   instrument, the role and the location pill are bands sharing the leftover
   height (`align-content: space-between`), re-ordered on small screens so the
@@ -38,7 +38,11 @@ to `/`** and the legacy world deleted. What follows is verified against source.
   Contact close.
 - **Stack:** Next 15 (App Router) · React 19 · TypeScript strict · CSS Modules +
   custom-property tokens · GSAP/ScrollTrigger + Lenis smooth scroll.
-  **No three.js** — the R3F carousel was orphaned and removed. **No Tailwind**
+  **three.js + React Three Fiber**, but *only* in the design gallery and only
+  as a lazily-imported chunk — never in the initial bundle. (This reverses the
+  earlier "no three.js" rule: the orphaned R3F carousel was removed in the
+  consolidation, and WebGL returned deliberately in 2026-09 to build the design
+  card field.) **No Tailwind**
   and **no Framer Motion** — Tailwind was never actually loaded (the only file
   using it, `not-found.tsx`, rendered unstyled), and Framer Motion had one
   caller, now plain CSS keyframes. PostCSS went with Tailwind.
@@ -55,8 +59,10 @@ to `/`** and the legacy world deleted. What follows is verified against source.
 - `src/components/layout/` — `Header`, `MenuOverlay`, `CustomCursor`,
   `SmoothScroll` (Lenis+GSAP), `SkipLink`
 - `src/components/sections/<name>/` — `hero`, `intro`, `work`
-  (`ProjectList`/`ProjectRow`/`WorkGrid`), `capabilities`, `experience`,
-  `contact`. One folder + `.module.css` per section.
+  (`ProjectList`/`ProjectRow`), `design`, `capabilities`, `experience`,
+  `contact`. One folder + `.module.css` per section. `design/` additionally
+  holds `scene/` (the R3F `Canvas`, `CardField`, `Card`), `layout.ts` (the
+  deterministic scatter) and `useDesignScroll.ts` (the ScrollTrigger pin).
 - `src/components/ui/` — `MagneticButton`
 - `src/components/motion/` — `Reveal`, `SplitText` (GSAP primitives; **available
   but not yet wired into the sections**)
@@ -92,6 +98,14 @@ npm run format    # prettier --write .
   to plain static UI on touch and under reduced motion.
 - Design filenames in `public/design/` contain spaces/parens; `content/design.ts`
   runs them through `encodeURI`.
+- **The design gallery's DOM list is not decoration.** It is the same markup in
+  both modes — clipped but focusable while the WebGL field is up, and the
+  visible scroll-snap rail when it is not. Never `display: none` it: that would
+  take seventeen pieces out of the tab order and off the crawl. The canvas is
+  `aria-hidden`.
+- **Card scatter is a fixed table** (`design/layout.ts`), never `Math.random()` —
+  the scene remounts on lazy attach and a random field would reshuffle itself
+  under the viewer.
 - Fonts are self-hosted via `next/font/local`; the woff2 in `src/fonts/` are the
   source. Clash Display + General Sans are preloaded (hero-critical).
 - `next/font` sets `--font-mono` on `<body>`; that scoped value wins over the
@@ -101,10 +115,9 @@ npm run format    # prettier --write .
 
 Tracked in the design-audit roadmap (see the `portfolio-consolidation` memory):
 
-- **GSAP ships for a rAF loop.** `SmoothScroll` is its only caller
-  (`gsap.ticker` + `ScrollTrigger.update`), and the components that justify it —
-  `motion/Reveal`, `motion/SplitText` — are imported by nothing. Either wire
-  them into the section reveals or drop GSAP for a plain rAF.
+- **`motion/Reveal` and `motion/SplitText` are still imported by nothing.** GSAP
+  itself now earns its place — `useDesignScroll` drives a real ScrollTrigger pin
+  — but these two primitives remain unwired into the section reveals.
 - **Project rows promise links they don't have.** Only Unipix has an `href`; the
   other three render as a `<span>` that still shows the `↗`, and are not
   keyboard-reachable.
@@ -122,11 +135,13 @@ Tracked in the design-audit roadmap (see the `portfolio-consolidation` memory):
   `Header.module.css` (hardcoded ink/bone, so the header can't respond to the
   theme flip it sits on) and `Hero.module.css`.
 - **Thin test coverage.** Playwright covers the hero entrance
-  (`tests/hero-entrance.spec.ts`) and responsive behaviour
+  (`tests/hero-entrance.spec.ts`), responsive behaviour
   (`tests/responsive.spec.ts` — overflow, hero collision, tap targets, the menu
-  on a short screen); nothing else has tests, and there are no unit tests though
-  `content/capabilities.ts` advertises RTL/Selenium. Both specs run against a
-  production build, not `next dev`.
+  on a short screen) and the design gallery
+  (`tests/design-gallery.spec.ts` — both modes, the pin, the lightbox); nothing
+  else has tests, and there are no unit tests though `content/capabilities.ts`
+  advertises RTL/Selenium. All specs run against a production build, not
+  `next dev`.
 - **Three cursor systems** (`CustomCursor`, the `data-cursor` attributes, and the
   ProjectList preview follower) are not yet unified into one context-aware
   cursor — planned P1.
